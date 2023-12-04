@@ -1,0 +1,57 @@
+/*!**************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/scss/style.scss ***!
+  \**************************************************************************************************************/
+html {
+  scroll-behavior: smooth;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat 12, 1fr;
+  gap: 30px;
+  max-width: 1400px;
+}
+
+.center {
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-color: rgba(0, 0, 0, 0.874);
+  color: white;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: black;
+  height: 50px;
+}
+footer .footer-btn {
+  background-color: rgb(0, 200, 255);
+  color: black;
+  font-weight: bold;
+  height: 40px;
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.homepage {
+  text-align: center;
+}
+.homepage h1 {
+  color: rgb(0, 200, 255);
+  font-size: 7vw;
+  text-shadow: 0 0 5px rgb(0, 200, 255);
+}

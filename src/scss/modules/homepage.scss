@@ -1,0 +1,10 @@
+@import "../variables.scss";
+.homepage {
+    text-align: center;
+
+    h1 {
+        color: $color-main;
+        font-size: 7vw;
+        text-shadow: 0 0 5px $color-main;
+    }
+}
