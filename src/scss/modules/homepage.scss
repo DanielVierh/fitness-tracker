@@ -7,4 +7,25 @@
         font-size: 7vw;
         text-shadow: 0 0 5px $color-main;
     }
+
+
+    .exercises {
+        display: flex;
+        flex-direction: column;
+        background-color: black;
+        height: 70vh;
+        overflow: scroll;
+
+        .exercise {
+            background-color: $color-secondary;
+            color: white;
+            font-weight: bold;
+            letter-spacing: 2px;
+            min-height: 40px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
 }
