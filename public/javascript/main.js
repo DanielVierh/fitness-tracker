@@ -37,7 +37,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _js_
   \**************************/
 /***/ (() => {
 
-eval("\n\n//# sourceURL=webpack://project-template/./src/js/modals.js?");
+eval("const modal_edit = document.getElementById(\"modal_edit\");\nconst modal_exercise = document.getElementById(\"modal_exercise\");\nconst modal_settings = document.getElementById(\"modal_settings\");\n\nconst btn_home = document.getElementById(\"btn_home\");\nconst btn_open_edit = document.getElementById(\"btn_open_edit\");\nconst btn_settings = document.getElementById(\"btn_settings\");\n\nconst modal_list = [modal_edit, modal_exercise, modal_settings];\n\n\nbtn_open_edit.addEventListener('click', ()=> {\n    open_modal(modal_edit);\n});\n\nbtn_settings.addEventListener('click', ()=> {\n    open_modal(modal_settings);\n});\n\nbtn_home.addEventListener('click', () => {\n    close_all_modals();\n});\n\nfunction open_modal(modal) {\n    close_all_modals();\n    modal.classList.add('active');\n}\n\nfunction close_all_modals() {\n    for (let i = 0; i < modal_list.length; i++) {\n        modal_list[i].classList.remove('active');\n    }\n}\n\n//# sourceURL=webpack://project-template/./src/js/modals.js?");
 
 /***/ }),
 

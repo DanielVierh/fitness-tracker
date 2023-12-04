@@ -1,3 +1,5 @@
+@import "../variables.scss";
+
 html {
     scroll-behavior: smooth;
 }
@@ -19,6 +21,10 @@ body {
     font-family: sans-serif;
     background-color: rgba(0, 0, 0, 0.874);
     color: white;
+    
+    &.active-exercise {
+        animation: active-sport-animation 5s ease infinite;
+    }
 }
 
 footer {
@@ -29,17 +35,66 @@ footer {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: black;
+    background-color: $color-primary-4;
     height: 50px;
 
     .footer-btn {
-        background-color: $color-main;
-        color: black;
+        background-color: $color-primary-3;
+        color: white;
         font-weight: bold;
-        height: 40px;
+        height: 35px;
         width: 30%;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+}
+
+.add-button {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background-color: $color-primary-3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 34px;
+}
+
+.finish-button {
+    display: none;
+
+    &.active-exercise {
+        display: block;
+        position: fixed;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: $color-secondary-1-0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        padding: 13px 25px;
+        box-shadow: inset 0 0 10px white;
+        border: 1px solid white;
+    }
+}
+
+
+@keyframes active-sport-animation {
+    0% {
+        border: 8px solid $color-primary-1;
+    }
+
+    50% {
+        border: 8px solid $color-primary-4;
+    }
+
+    100% {
+        border: 8px solid $color-primary-1;
     }
 }

@@ -12,12 +12,13 @@
     .exercises {
         display: flex;
         flex-direction: column;
-        background-color: black;
-        height: 70vh;
+        background-color: transparent;
+        height: 65vh;
         overflow: scroll;
+        padding-bottom: 50px;
 
         .exercise {
-            background-color: $color-secondary;
+            background-color: $color-primary-0;
             color: white;
             font-weight: bold;
             letter-spacing: 2px;
