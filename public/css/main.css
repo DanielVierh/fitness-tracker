@@ -104,6 +104,7 @@ footer .footer-btn {
   color: rgb(0, 200, 255);
   font-size: 7vw;
   text-shadow: 0 0 5px rgb(0, 200, 255);
+  letter-spacing: 3px;
 }
 .homepage .exercises {
   display: flex;
