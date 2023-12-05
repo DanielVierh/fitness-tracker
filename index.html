@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="public/css/main.css">
     <title>Fitness-Tracker</title>
 </head>
+
 <body>
     <section class="homepage">
         <h1>Fitness Tracker</h1>
@@ -21,8 +23,48 @@
     </section>
 
 
+    <!-- Modal for new Exercise -->
+    <div class="modal-edit" id="modal_edit">
+        <div class="modal_close_btn">X</div>
+        <h2>Übung erfassen</h2>
+        <section class="newExercise">
+            <form>
+                <input type="text" id="inpExercise_Name" placeholder="Übungsbezeichnung">
+                <input type="number" id="inpExercise_Weight" placeholder="Trainingsgewicht">
+                <input type="number" id="inpExercise_Sets" placeholder="Anzahl Sätze">
+                <input type="number" id="inpExercise_Repeats" placeholder="Anzahl Wiederholungen">
+                <input type="number" id="inpExercise_number" placeholder="Gerätenummer">
+                <input type="number" id="inpExercise_seatSettings" placeholder="Sitzeinstellungen">
+                <div>
+                    <label>Muskelgruppe:</label>
+                    <select name="muscleGroup" id="muscle-select">
+                        <option value="">--auswählen-</option>
+                        <option value="Nacken">Nacken</option>
+                        <option value="Schulter">Schulter</option>
+                        <option value="Brust">Brust</option>
+                        <option value="Bizeps">Bizeps</option>
+                        <option value="Trizeps">Trizeps</option>
+                        <option value="Bauch">Bauch</option>
+                        <option value="oberer-Rücken">oberer-Rücken</option>
+                        <option value="unterer-Rücken">unterer-Rücken</option>
+                        <option value="Gesäß">Gesäß</option>
+                        <option value="Oberschenkel">Oberschenkel</option>
+                        <option value="Waden">Waden</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Trainingsort:</label>
+                    <select name="trainingArea" id="training_Area">
+                        <option value="">--auswählen-</option>
+                        <option value="Fitnessstudio">Fitnessstudio</option>
+                        <option value="Heimtraining">Heimtraining</option>
+                    </select>
+                </div>
+                <div class="submitButton" onclick="saveNewExercise()">Speichern</div>
 
-    <div class="modal-edit" id="modal_edit"></div>
+            </form>
+        </section>
+    </div>
 
     <div class="modal-exercise" id="modal_exercise"></div>
 
@@ -40,4 +82,5 @@
 
     <script src="public/javascript/main.js"></script>
 </body>
+
 </html>
