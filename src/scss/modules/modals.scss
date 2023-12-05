@@ -1,15 +1,21 @@
 .modal {
-    position: fixed;
-    background-color: $color-primary-3;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-y: scroll;
+    transform: translateY(-300%);
+    transition: all 2s ease;
+
+    &.active {
+        transform: translateY(0);
+        position: fixed;
+        background-color: $color-primary-3;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: scroll;
+    }
 
     .modal_close_btn{
         position: fixed;
