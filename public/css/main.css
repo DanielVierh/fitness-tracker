@@ -38,6 +38,7 @@ footer {
   align-items: center;
   background-color: #051C38;
   height: 50px;
+  z-index: 10;
 }
 footer .footer-btn {
   background-color: #143153;
@@ -99,6 +100,7 @@ footer .footer-btn {
 }
 .homepage {
   text-align: center;
+  z-index: 1;
 }
 .homepage h1 {
   color: rgb(0, 200, 255);
@@ -124,4 +126,14 @@ footer .footer-btn {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.modal {
+  position: fixed;
+  background-color: #143153;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 9;
 }

@@ -1,6 +1,7 @@
 @import "../variables.scss";
 .homepage {
     text-align: center;
+    z-index: 1;
 
     h1 {
         color: $color-main;
