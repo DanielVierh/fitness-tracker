@@ -1,6 +1,6 @@
 .modal {
     transform: translateY(-300%);
-    transition: all 2s ease;
+    transition: all 1s ease;
 
     &.active {
         transform: translateY(0);

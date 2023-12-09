@@ -130,7 +130,7 @@ footer .footer-btn {
 
 .modal {
   transform: translateY(-300%);
-  transition: all 2s ease;
+  transition: all 1s ease;
 }
 .modal.active {
   transform: translateY(0);

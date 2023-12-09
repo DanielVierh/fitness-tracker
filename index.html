@@ -29,11 +29,11 @@
                 <input type="number" id="inpExercise_Weight" placeholder="Trainingsgewicht">
                 <input type="number" id="inpExercise_Sets" placeholder="Anzahl Sätze">
                 <input type="number" id="inpExercise_Repeats" placeholder="Anzahl Wiederholungen">
-                <input type="number" id="inpExercise_number" placeholder="Gerätenummer">
-                <input type="number" id="inpExercise_seatSettings" placeholder="Sitzeinstellungen">
+                <input type="text" id="inpExercise_number" placeholder="Gerätenummer">
+                <input type="text" id="inpExercise_seatSettings" placeholder="Sitzeinstellungen">
                 <div>
                     <label>Muskelgruppe:</label>
-                    <select name="muscleGroup" id="muscle-select">
+                    <select name="muscleGroup" id="muscle_select">
                         <option value="">--auswählen-</option>
                         <option value="Nacken">Nacken</option>
                         <option value="Schulter">Schulter</option>
@@ -54,9 +54,10 @@
                         <option value="">--auswählen-</option>
                         <option value="Fitnessstudio">Fitnessstudio</option>
                         <option value="Heimtraining">Heimtraining</option>
+                        <option value="Heimtraining">Kombo</option>
                     </select>
                 </div>
-                <div class="submitButton" onclick="saveNewExercise()">Speichern</div>
+                <div class="submitButton" id="btn_saveExercise">Speichern</div>
 
             </form>
         </section>
