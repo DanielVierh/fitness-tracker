@@ -191,7 +191,7 @@ btn_saveExercise.addEventListener('click', ()=> {
     let muscle_select = document.getElementById('muscle_select');
     let training_Area = document.getElementById('training_Area');
     if(inpExercise_Name.value === '') {
-        inpExercise_Name.value = '-'
+        return
     }
     if(inpExercise_Weight.value === '') {
         inpExercise_Weight.value = 0;
@@ -246,6 +246,10 @@ function open_exercise() {
     lbl_muscleselect.innerHTML = `Muskelgruppe: __________ ${selected_Exercise.musclegroup}`;
     lbl_donesets.innerHTML = `Übungen absolviert: __________ ${selected_Exercise.solved_sets}`;
 }
+
+
+
+
 /////////////////////////////////////
 //* ANCHOR -
 /////////////////////////////////////
