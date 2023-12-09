@@ -238,13 +238,13 @@ btn_saveExercise.addEventListener('click', ()=> {
 function open_exercise() {
     open_modal(modal_exercise);
     lbl_trainingsname.innerHTML = selected_Exercise.name;
-    lbl_weight.innerHTML = `Übungsgewicht: __________ ${selected_Exercise.weight} Kg`;
-    lbl_sets.innerHTML = `Sätze: __________ ${selected_Exercise.sets}`;
-    lbl_repeats.innerHTML = `Wiederholungen: __________ ${selected_Exercise.repeats}`;
-    lbl_number.innerHTML = `Gerätenummer: Nr.__________ ${selected_Exercise.machineNumber}`;
-    lbl_seatsettings.innerHTML = `Geräteeinstellungen: __________ ${selected_Exercise.machine_seat_settings}`;
-    lbl_muscleselect.innerHTML = `Muskelgruppe: __________ ${selected_Exercise.musclegroup}`;
-    lbl_donesets.innerHTML = `Übungen absolviert: __________ ${selected_Exercise.solved_sets}`;
+    lbl_weight.innerHTML = `Übungsgewicht: <span>${selected_Exercise.weight}</span> Kg`;
+    lbl_sets.innerHTML = `Sätze: <span>${selected_Exercise.sets}</span>`;
+    lbl_repeats.innerHTML = `Wiederholungen: <span>${selected_Exercise.repeats}</span>`;
+    lbl_number.innerHTML = `Gerätenummer: Nr.<span>${selected_Exercise.machineNumber}</span>`;
+    lbl_seatsettings.innerHTML = `Geräteeinstellungen: <span>${selected_Exercise.machine_seat_settings}</span>`;
+    lbl_muscleselect.innerHTML = `Muskelgruppe: <span>${selected_Exercise.musclegroup}</span>`;
+    lbl_donesets.innerHTML = `Übungen absolviert: <span>${selected_Exercise.solved_sets}</span>`;
 }
 
 

@@ -164,16 +164,24 @@ footer .footer-btn {
 }
 
 .modal-exercise .info-container {
+  padding-left: 10px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-start;
-  padding-right: 70px;
 }
 .modal-exercise .info-container .exercise-info {
-  margin: 0 0 15px 0;
-  text-align: right;
-  font-size: 18px;
+  margin: 0 15px 15px 0;
+  text-align: left;
+  font-size: 14px;
+  background-color: black;
+  padding: 7px;
+  border-radius: 5px;
+  letter-spacing: 1.5px;
+}
+.modal-exercise .info-container .exercise-info span {
+  color: yellow;
+  font-weight: bold;
 }
 
 .newExercise {
