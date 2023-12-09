@@ -1,18 +1,52 @@
+/////////////////////////////////////
+// * Variablen
+/////////////////////////////////////
+//* ANCHOR - Elemente
 
-//?#######################################
-//? Class for training
-//?#######################################
+const exercise_container = document.getElementById('exercise_container');
+
+
+//* ANCHOR -  Variablen
+
+
+//*  Saveobj
+let save_Object = {
+    training_is_running: false,
+    exercises: [],
+    trainings: [],
+    current_training: [],
+    training_place_filter: '',
+};
+
+
+
+/////////////////////////////////////
+// * ANCHOR - Init
+/////////////////////////////////////
+window.onload = ()=> {
+    loadAndShow();
+    
+    setTimeout(() => {
+        render_exercises();
+    }, 500);
+}
+
+
+
+
+/////////////////////////////////////
+//* ANCHOR - Class for training
+/////////////////////////////////////
 class Training {
     constructor(training_id = rnd_id(),start_date, set_amount, start, end, exercises) {
 
     }
 }
-
-//?#######################################
-//? Class for Exercise
-//?#######################################
+/////////////////////////////////////
+//* ANCHOR - Class for Exercise
+/////////////////////////////////////
 class Exercise {
-    constructor(exercise_id = rnd_id(), name = 'Leere Übung', weight = '0', sets = 0, repeats = 0, machineNumber = '-', machine_seat_settings = '-') {
+    constructor(exercise_id = rnd_id(), name = 'Leere Übung', weight = '0', sets = 0, repeats = 0, machineNumber = '-', machine_seat_settings = '-', musclegroup = '-', trainingsplace = '-', solved_sets = 0) {
         this.exercise_id = exercise_id;
         this.name = name;
         this.weight = weight;
@@ -20,23 +54,29 @@ class Exercise {
         this.repeats = repeats;
         this.machineNumber = machineNumber;
         this.machine_seat_settings = machine_seat_settings;
+        this.musclegroup = musclegroup;
+        this.trainingsplace = trainingsplace;
+        this.solved_sets = solved_sets;
     }
 
     show_exercise_in_console() {
         console.log(`ID=${this.exercise_id} 
-        Name=${this.name} \n 
-        Gewicht=${this.weight} \n 
-        Sätze=${this.sets} \n 
-        Wdh=${this.repeats} \n 
-        Nummer=${this.machineNumber} \n 
-        Geräteeinstellungen=${this.machine_seat_settings} \n`);
+        Name = ${this.name} \n 
+        Gewicht = ${this.weight} \n 
+        Sätze = ${this.sets} \n 
+        Wdh = ${this.repeats} \n 
+        Nummer = ${this.machineNumber} \n 
+        Geräteeinstellungen = ${this.machine_seat_settings} \n
+        Muskelgruppe = ${this.musclegroup} \n
+        Trainingsort = ${this.trainingsplace} \n
+        SolvedSets = ${this.solved_sets}`);
     }
 
 }
 
-//?#######################################
-//? Random ID Creator
-//?#######################################
+/////////////////////////////////////
+//* ANCHOR - Random ID Creator
+/////////////////////////////////////
 function rnd_id() {
     const rndStuff = [
         'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
@@ -50,14 +90,44 @@ function rnd_id() {
     return key;
 }
 
-//?#######################################
-//TODO  Delete test objects
-//?#######################################
+/////////////////////////////////////
+//*DELETE test objects
+/////////////////////////////////////
+function loadAndShow() {
     const liegestuetze = new Exercise(rnd_id(), 'Liegestütze', '-', 3, 10, '-', '-')
-    liegestuetze.show_exercise_in_console()
+    const chesspress = new Exercise(rnd_id(), 'chestpress', 45, 3, 12, '31', 'Stufe 6', 'Brust', 'Fitnessstudio')
 
-    const chesspress = new Exercise(rnd_id(), 'chestpress', 45, 3, 12, '31', 'Stufe 6')
-    chesspress.show_exercise_in_console()
+    save_Object.exercises.push(chesspress);
+    save_Object.exercises.push(liegestuetze);
 
-    const test = new Exercise();
-    test.show_exercise_in_console();
+    console.log('Saveobject', save_Object);
+}
+
+/////////////////////////////////////
+//* ANCHOR - Render exercises
+/////////////////////////////////////
+
+function render_exercises() {
+
+    for(let i = 0; i < save_Object.exercises.length; i++) {
+        let exercisebtn = document.createElement('div');
+        exercisebtn.classList.add('exercise');
+        exercisebtn.innerHTML = save_Object.exercises[i].name;
+        exercisebtn.id = save_Object.exercises[i].exercise_id;
+        exercise_container.appendChild(exercisebtn);
+    }
+
+}
+
+/////////////////////////////////////
+//* ANCHOR -
+/////////////////////////////////////
+
+/////////////////////////////////////
+//* ANCHOR -
+/////////////////////////////////////
+
+/////////////////////////////////////
+//* ANCHOR -
+/////////////////////////////////////
+
