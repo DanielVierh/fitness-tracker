@@ -47,7 +47,7 @@ eval("const modal_edit = document.getElementById(\"modal_edit\");\nconst modal_e
   \**************************/
 /***/ (() => {
 
-eval("\n\n//# sourceURL=webpack://project-template/./src/js/script.js?");
+eval("\n\n\n\n\n\n\n\n\nclass Exercise {\n    constructor(name, weight = '0', sets, repeats, number = '-', seat_settings = '-') {\n        this.name = name;\n        this.weight = weight;\n        this.sets = sets;\n        this.repeats = repeats;\n        this.number = number;\n        this.seat_settings = seat_settings;\n    }\n\n    show_exercise_in_console() {\n        console.log(`Name=${this.name} \\n Gewicht=${this.weight} \\n Sätze=${this.sets} \\n Wdh=${this.repeats} \\n Nummer=${this.number} \\n Geräteeinstellungen=${this.seat_settings} \\n`);\n    }\n\n}\n\n\n\nconst liegestuetze = new Exercise('Liegestütze', '-', 3, 10, '-', '-')\nconsole.log(liegestuetze.show_exercise_in_console());\n\nconst chesspress = new Exercise('chestpress', 45, 3, 12, '31', 'Stufe 6')\nconsole.log(chesspress.show_exercise_in_console());\n\n//# sourceURL=webpack://project-template/./src/js/script.js?");
 
 /***/ })
 
