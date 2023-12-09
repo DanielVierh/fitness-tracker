@@ -129,11 +129,10 @@ footer .footer-btn {
 }
 
 .modal {
-  transform: translateY(-300%);
-  transition: all 1s ease;
+  display: none;
 }
 .modal.active {
-  transform: translateY(0);
+  display: block;
   position: fixed;
   background-color: #143153;
   left: 0;
@@ -162,6 +161,20 @@ footer .footer-btn {
   text-align: center;
   font-size: 1.5em;
   cursor: pointer;
+}
+
+.modal-exercise .info-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-right: 150px;
+}
+.modal-exercise .info-container .exercise-info {
+  margin: 0 0 15px 0;
+  text-align: right;
+  font-size: 18px;
 }
 
 .newExercise {

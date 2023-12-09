@@ -13,14 +13,22 @@ const btn_home = document.getElementById("btn_home");
 const btn_open_edit = document.getElementById("btn_open_edit");
 const btn_settings = document.getElementById("btn_settings");
 const modal_close_btn = document.querySelectorAll('.modal_close_btn');
-
+const lbl_trainingsname = document.getElementById('lbl_trainingsname');
+const lbl_weight = document.getElementById('lbl_weight');
+const lbl_sets = document.getElementById('lbl_sets');
+const lbl_repeats = document.getElementById('lbl_repeats');
+const lbl_number = document.getElementById('lbl_number');
+const lbl_seatsettings = document.getElementById('lbl_seatsettings');
+const lbl_muscleselect = document.getElementById('lbl_muscleselect');
+const lbl_donesets = document.getElementById('lbl_donesets');
 
 const modal_list = [modal_edit, modal_exercise, modal_settings];
 
 
 //* ANCHOR -  Variablen
 let training_running = false;
-
+let training_place_filter = '';
+let selected_Exercise;
 
 //*  Saveobj
 let save_Object = {
@@ -50,11 +58,15 @@ function load_local_storage() {
             save_Object = JSON.parse(
                 localStorage.getItem('stored_fitness_saveobj'),
             );
+
             training_running = save_Object.training_is_running;
+            training_place_filter = save_Object.training_place_filter;
+
             setTimeout(() => {
                 //* Render func
                 render_exercises();
             }, 500);
+
             try {
                 weeklylist = save_Object.saved_weekly_list;
                 if(weeklylist === undefined) {
@@ -155,6 +167,12 @@ function render_exercises() {
         exercisebtn.classList.add('exercise');
         exercisebtn.innerHTML = save_Object.exercises[i].name;
         exercisebtn.id = save_Object.exercises[i].exercise_id;
+        exercisebtn.addEventListener('click', ()=> {
+            selected_Exercise = save_Object.exercises[i];
+            console.log('selected_Exercise', selected_Exercise);
+            open_exercise();
+        })
+
         exercise_container.appendChild(exercisebtn);
     }
 
@@ -215,8 +233,19 @@ btn_saveExercise.addEventListener('click', ()=> {
 
 
 /////////////////////////////////////
-//* ANCHOR -
+//* ANCHOR - open Exercise
 /////////////////////////////////////
+function open_exercise() {
+    open_modal(modal_exercise);
+    lbl_trainingsname.innerHTML = selected_Exercise.name;
+    lbl_weight.innerHTML = `Übungsgewicht: __________ ${selected_Exercise.weight} Kg`;
+    lbl_sets.innerHTML = `Sätze: __________ ${selected_Exercise.sets}`;
+    lbl_repeats.innerHTML = `Wiederholungen: __________ ${selected_Exercise.repeats}`;
+    lbl_number.innerHTML = `Gerätenummer: Nr.__________ ${selected_Exercise.machineNumber}`;
+    lbl_seatsettings.innerHTML = `Geräteeinstellungen: __________ ${selected_Exercise.machine_seat_settings}`;
+    lbl_muscleselect.innerHTML = `Muskelgruppe: __________ ${selected_Exercise.musclegroup}`;
+    lbl_donesets.innerHTML = `Übungen absolviert: __________ ${selected_Exercise.solved_sets}`;
+}
 /////////////////////////////////////
 //* ANCHOR -
 /////////////////////////////////////
