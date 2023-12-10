@@ -48,7 +48,7 @@ let save_Object = {
 /////////////////////////////////////
 // * ANCHOR - Init
 /////////////////////////////////////
-window.onload = ()=> {
+window.onload = () => {
     load_local_storage();
 
     setInterval(() => {
@@ -79,7 +79,7 @@ function load_local_storage() {
 
             try {
                 weeklylist = save_Object.saved_weekly_list;
-                if(weeklylist === undefined) {
+                if (weeklylist === undefined) {
                     weeklylist = [];
                 }
             } catch (error) {
@@ -157,9 +157,9 @@ class Exercise {
 /////////////////////////////////////
 function rnd_id() {
     const rndStuff = [
-        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
-        'R','S','T','U','V','W','X','Y','Z','$','?','1','2','3','4','8','7',
-        '6','5','9','0','#',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+        'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '$', '?', '1', '2', '3', '4', '8', '7',
+        '6', '5', '9', '0', '#',
     ];
     let key = '';
     for (let i = 1; i <= 16; i++) {
@@ -175,12 +175,12 @@ function rnd_id() {
 
 function render_exercises() {
 
-    for(let i = 0; i < save_Object.exercises.length; i++) {
+    for (let i = 0; i < save_Object.exercises.length; i++) {
         let exercisebtn = document.createElement('div');
         exercisebtn.classList.add('exercise');
         exercisebtn.innerHTML = save_Object.exercises[i].name;
         exercisebtn.id = save_Object.exercises[i].exercise_id;
-        exercisebtn.addEventListener('click', ()=> {
+        exercisebtn.addEventListener('click', () => {
             selected_Exercise = save_Object.exercises[i];
             console.log('selected_Exercise', selected_Exercise);
             open_exercise();
@@ -194,7 +194,7 @@ function render_exercises() {
 /////////////////////////////////////
 //* ANCHOR - Save new Exercise
 /////////////////////////////////////
-btn_saveExercise.addEventListener('click', ()=> {
+btn_saveExercise.addEventListener('click', () => {
     let inpExercise_Name = document.getElementById('inpExercise_Name');
     let inpExercise_Weight = document.getElementById('inpExercise_Weight');
     let inpExercise_Sets = document.getElementById('inpExercise_Sets');
@@ -203,41 +203,41 @@ btn_saveExercise.addEventListener('click', ()=> {
     let inpExercise_seatSettings = document.getElementById('inpExercise_seatSettings');
     let muscle_select = document.getElementById('muscle_select');
     let training_Area = document.getElementById('training_Area');
-    if(inpExercise_Name.value === '') {
+    if (inpExercise_Name.value === '') {
         return
     }
-    if(inpExercise_Weight.value === '') {
+    if (inpExercise_Weight.value === '') {
         inpExercise_Weight.value = 0;
     }
-    if(inpExercise_Sets.value === '') {
+    if (inpExercise_Sets.value === '') {
         inpExercise_Sets.value = 0;
     }
-    if(inpExercise_Repeats.value === '') {
-        inpExercise_Repeats.value = 0; 
+    if (inpExercise_Repeats.value === '') {
+        inpExercise_Repeats.value = 0;
     }
-    if(inpExercise_number.value === '') {
+    if (inpExercise_number.value === '') {
         inpExercise_number.value = '-'
     }
-    if(inpExercise_seatSettings.value === '') {
+    if (inpExercise_seatSettings.value === '') {
         inpExercise_seatSettings.value = '-'
     }
-    if(muscle_select.value === '') {
+    if (muscle_select.value === '') {
         muscle_select.value = '-';
     }
-    if(training_Area.value === '') {
+    if (training_Area.value === '') {
         training_Area.value = '-';
     }
 
-    const newExercise = new Exercise(rnd_id(), 
-                            inpExercise_Name.value, 
-                            inpExercise_Weight.value, 
-                            inpExercise_Sets.value, 
-                            inpExercise_Repeats.value, 
-                            inpExercise_number.value, 
-                            inpExercise_seatSettings.value, 
-                            muscle_select.value, 
-                            training_Area.value, 
-                            0
+    const newExercise = new Exercise(rnd_id(),
+        inpExercise_Name.value,
+        inpExercise_Weight.value,
+        inpExercise_Sets.value,
+        inpExercise_Repeats.value,
+        inpExercise_number.value,
+        inpExercise_seatSettings.value,
+        muscle_select.value,
+        training_Area.value,
+        0
     );
     save_Object.exercises.push(newExercise);
     save_into_storage();
@@ -266,8 +266,8 @@ function open_exercise() {
 /////////////////////////////////////
 //* ANCHOR - Tracking
 /////////////////////////////////////
-btn_trackSport.addEventListener('click', ()=> {
-    if(training_running === false) {
+btn_trackSport.addEventListener('click', () => {
+    if (training_running === false) {
         training_running = true;
         //* Training boolean speichern
         save_Object.training_is_running = true;
@@ -282,32 +282,37 @@ btn_trackSport.addEventListener('click', ()=> {
         // * persistent speichern
         save_into_storage();
 
-    }else {
+        //TODO -  replace alert 
+        alert("Ein weiterer Satz wurde hinzugefügt");
+
+    } else {
         //* Set in Training Array speichern
         add_solved_set()
 
         // * persistent speichern
         save_into_storage();
+
+        //TODO -  replace alert 
+        alert("Ein weiterer Satz wurde hinzugefügt");
     }
 })
 
 function add_solved_set() {
-        //* Übung in Training Array speichern
-        //* Abgleichen ob bereits vorhanden per id match, 
-        //* wenn vorhanden eins hochzählen
-        if(check_exercise_in_currentTraining(selected_Exercise)) {
-            let currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
-            let new_set_amount = currentSet += 1;
-            console.log('index', indexOfExercise(selected_Exercise, save_Object.current_training));
-            save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets = new_set_amount;
-            lbl_donesets.innerHTML = `Übungen absolviert: <span>${new_set_amount}</span>`;
-        }else {
-            //* wenn nein, in das Array übertragen und eins hochzählen
-            let cloned_exercise = Object.assign({}, selected_Exercise);
-            cloned_exercise.solved_sets = cloned_exercise.solved_sets += 1;
-            save_Object.current_training.push(cloned_exercise);
-            lbl_donesets.innerHTML = `Übungen absolviert: <span>${cloned_exercise.solved_sets}</span>`;
-        }
+    //* Übung in Training Array speichern
+    //* Abgleichen ob bereits vorhanden per id match, 
+    //* wenn vorhanden eins hochzählen
+    if (check_exercise_in_currentTraining(selected_Exercise)) {
+        let currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
+        let new_set_amount = currentSet += 1;
+        save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets = new_set_amount;
+        lbl_donesets.innerHTML = `Übungen absolviert: <span>${new_set_amount}</span>`;
+    } else {
+        //* wenn nein, in das Array übertragen und eins hochzählen
+        let cloned_exercise = Object.assign({}, selected_Exercise);
+        cloned_exercise.solved_sets = cloned_exercise.solved_sets += 1;
+        save_Object.current_training.push(cloned_exercise);
+        lbl_donesets.innerHTML = `Übungen absolviert: <span>${cloned_exercise.solved_sets}</span>`;
+    }
 }
 
 
@@ -315,8 +320,8 @@ function check_exercise_in_currentTraining(exercise) {
     const exerciseId = exercise.exercise_id;
     let is_in_currentTraining = false;
 
-    for(let i = 0; i < save_Object.current_training.length; i++) {
-        if(save_Object.current_training[i].exercise_id === exerciseId) {
+    for (let i = 0; i < save_Object.current_training.length; i++) {
+        if (save_Object.current_training[i].exercise_id === exerciseId) {
             is_in_currentTraining = true;
             break;
         }
@@ -329,8 +334,8 @@ function indexOfExercise(exercise, arr) {
     const exerciseId = exercise.exercise_id;
     let index = -1;
 
-    for(let i = 0; i < arr.length; i++) {
-        if(arr[i].exercise_id === exerciseId) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].exercise_id === exerciseId) {
             index = i;
             break;
         }
@@ -344,17 +349,17 @@ function indexOfExercise(exercise, arr) {
 //* ANCHOR - MinutesDiff
 /////////////////////////////////////
 function minutesDiff(dateTimeValue2, dateTimeValue1) {
-   var differenceValue =(dateTimeValue2.getTime() - dateTimeValue1.getTime()) / 1000;
-   differenceValue /= 60;
-   const rawMinuteTime = Math.abs(Math.round(differenceValue))
-   const hour = Math.floor(rawMinuteTime/60);
-   const minutes = Math.floor(rawMinuteTime%60);
-   const time = `${add_zero(hour)}:${add_zero(minutes)}`;
-   return time;
+    var differenceValue = (dateTimeValue2.getTime() - dateTimeValue1.getTime()) / 1000;
+    differenceValue /= 60;
+    const rawMinuteTime = Math.abs(Math.round(differenceValue))
+    const hour = Math.floor(rawMinuteTime / 60);
+    const minutes = Math.floor(rawMinuteTime % 60);
+    const time = `${add_zero(hour)}:${add_zero(minutes)}`;
+    return time;
 }
 
 function add_zero(val) {
-    if(val < 10) {
+    if (val < 10) {
         val = `0${val}`;
     }
     return val;
@@ -365,15 +370,15 @@ function add_zero(val) {
 //* ANCHOR - Modals
 /////////////////////////////////////
 
-btn_open_edit.addEventListener('click', ()=> {
+btn_open_edit.addEventListener('click', () => {
     open_modal(modal_edit);
 });
 
-btn_settings.addEventListener('click', ()=> {
+btn_settings.addEventListener('click', () => {
     open_modal(modal_settings);
 });
 
-btn_add.addEventListener('click', ()=> {
+btn_add.addEventListener('click', () => {
     open_modal(modal_edit);
 });
 
@@ -392,8 +397,8 @@ function close_all_modals() {
     }
 }
 
-modal_close_btn.forEach((c_btn)=> {
-    c_btn.addEventListener('click', ()=> {
+modal_close_btn.forEach((c_btn) => {
+    c_btn.addEventListener('click', () => {
         close_all_modals();
     })
 })
@@ -403,14 +408,14 @@ modal_close_btn.forEach((c_btn)=> {
 //* ANCHOR - Observer
 /////////////////////////////////////
 function observer() {
-    
+
     //* Schaue ob trainin aktiv
-    if(training_running) {
+    if (training_running) {
         bdy.classList.add('active-training');
         btn_finish.classList.add('active-training');
         //TODO - Training diff hochzählen
 
-    }else {
+    } else {
         bdy.classList.remove('active-training');
         btn_finish.classList.remove('active-training');
     }
@@ -421,13 +426,13 @@ function observer() {
 /////////////////////////////////////
 //* ANCHOR - finish training
 /////////////////////////////////////
-btn_finish.addEventListener('click', ()=> {
+btn_finish.addEventListener('click', () => {
     finish_training()
 })
 function finish_training() {
     const decision = window.confirm('Soll das Training beendet werden?');
-    if(decision) {
-        const trainingsdate= new Date(save_Object.training_start)
+    if (decision) {
+        const trainingsdate = new Date(save_Object.training_start)
         const day = trainingsdate.getDate();
         const month = trainingsdate.getMonth() + 1;
         const year = trainingsdate.getFullYear();
@@ -435,15 +440,14 @@ function finish_training() {
 
         const trainingsEnd_timestamp = new Date();
         const duration = minutesDiff(trainingsEnd_timestamp, trainingsdate);
-        
-    
+
+
         //* Trainingsobject erstellen und abspeichern
-           const new_solved_training = new Training(datum, duration, save_Object.current_training);
-           save_Object.trainings.push(new_solved_training)
-           console.log(save_Object);
+        const new_solved_training = new Training(datum, duration, save_Object.current_training);
+        save_Object.trainings.push(new_solved_training)
 
         //* alle sets zurücksetzen
-        for(let i = 0; i < save_Object.exercises.length; i++) {
+        for (let i = 0; i < save_Object.exercises.length; i++) {
             save_Object.exercises[i].solved_sets = 0;
         }
 
@@ -459,6 +463,18 @@ function finish_training() {
 
         // * Save into storage
         save_into_storage();
+
+        //TODO -  replace alert 
+        const exercArr = new_solved_training.exercises;
+        let exerciseInfoArr = '';
+        for(let j = 0; j < exercArr.length; j++) {
+            const newRow = `\n ${exercArr[j].name} - ${exercArr[j].solved_sets} x `
+            exerciseInfoArr = exerciseInfoArr + newRow;
+        }
+        console.log(exercArr);
+        alert(`Training beendet \n Datum: ${datum} \n
+        Zeit: ${duration} \n
+        Übungen: ${exerciseInfoArr}`);
 
         //* reload page
         location.reload();
