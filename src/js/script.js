@@ -22,6 +22,8 @@ const lbl_seatsettings = document.getElementById('lbl_seatsettings');
 const lbl_muscleselect = document.getElementById('lbl_muscleselect');
 const lbl_donesets = document.getElementById('lbl_donesets');
 const btn_trackSport = document.getElementById('btn_trackSport');
+const bdy = document.getElementById('bdy');
+const btn_finish = document.getElementById('btn_finish');
 
 const modal_list = [modal_edit, modal_exercise, modal_settings];
 
@@ -48,6 +50,10 @@ let save_Object = {
 /////////////////////////////////////
 window.onload = ()=> {
     load_local_storage();
+
+    setInterval(() => {
+        observer();
+    }, 1000);
 }
 
 
@@ -63,6 +69,8 @@ function load_local_storage() {
 
             training_running = save_Object.training_is_running;
             training_place_filter = save_Object.training_place_filter;
+
+            console.log('saveobj', save_Object);
 
             setTimeout(() => {
                 //* Render func
@@ -106,11 +114,10 @@ function save_into_storage() {
 //* ANCHOR - Class for training
 /////////////////////////////////////
 class Training {
-    constructor(training_date, set_amount, start, end, exercises) {
+    constructor(training_date, set_amount, duration, exercises) {
         this.training_date = training_date;
         this.set_amount = set_amount;
-        this.start = start;
-        this.end = end;
+        this.duration = duration;
         this.exercises = exercises;
     }
 }
@@ -265,7 +272,7 @@ btn_trackSport.addEventListener('click', ()=> {
         console.log('Training lief noch nicht, läuft jetzt');
         training_running = true;
         //* Training boolean speichern
-        //save_Object.training_is_running = true;
+        save_Object.training_is_running = true;
         //* Training Startzeit ermitteln und speichern
         const training_start_stamp = new Date();
         save_Object.training_start = training_start_stamp;
@@ -397,3 +404,50 @@ modal_close_btn.forEach((c_btn)=> {
         close_all_modals();
     })
 })
+
+
+/////////////////////////////////////
+//* ANCHOR - Observer
+/////////////////////////////////////
+function observer() {
+    
+    //* Schaue ob trainin aktiv
+    if(training_running) {
+        bdy.classList.add('active-training');
+        btn_finish.classList.add('active-training');
+        //TODO - Training diff hochzählen
+
+    }else {
+        bdy.classList.remove('active-training');
+        btn_finish.classList.remove('active-training');
+    }
+
+
+}
+
+/////////////////////////////////////
+//* ANCHOR - finish training
+/////////////////////////////////////
+btn_finish.addEventListener('click', ()=> {
+    finish_training()
+})
+function finish_training() {
+    const decision = window.confirm('Soll das Training beendet werden?');
+    if(decision) {
+        training_running = false;
+        save_Object.training_is_running = false;
+
+        const trainingsdate= new Date(save_Object.training_start)
+        const day = trainingsdate.getDate();
+        const month = trainingsdate.getMonth() + 1;
+        const year = trainingsdate.getFullYear();
+        const datum = `${add_zero(day)}.${add_zero(month)}.${year}`;
+        console.log(datum);
+
+        //const new_solved_training = new Training()
+        
+    
+        //TODO - Trainingsobject erstellen und abspeichern
+    }
+
+}

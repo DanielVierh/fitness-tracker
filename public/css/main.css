@@ -23,6 +23,7 @@ body {
   font-family: sans-serif;
   background-color: rgba(0, 0, 0, 0.874);
   color: white;
+  z-index: 1000;
 }
 body.active-training {
   animation: active-sport-animation 5s ease infinite;
