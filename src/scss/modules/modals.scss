@@ -59,6 +59,8 @@
     }
   }
 
+
+
   .track-button {
     background-color: $color-main;
     padding: 20px 30px;
@@ -72,6 +74,33 @@
     cursor: pointer;
   }
 }
+
+  ///////////////////////////////////////////////
+  .modal-trainints {
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-family: Arial, sans-serif;
+      margin-bottom: 20px;
+    }
+    
+    th,
+    td {
+      text-align: center;
+      padding: 8px;
+    }
+    
+    th {
+      background-color: #4caf50;
+      color: black;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #21686d;
+    }
+  }
+
+///////////////////////////////////////////////
 
 .newExercise {
   display: flex;

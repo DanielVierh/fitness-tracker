@@ -24,8 +24,12 @@ const lbl_donesets = document.getElementById('lbl_donesets');
 const btn_trackSport = document.getElementById('btn_trackSport');
 const bdy = document.getElementById('bdy');
 const btn_finish = document.getElementById('btn_finish');
+const btn_show_trainings = document.getElementById('btn_show_trainings');
+const modal_trainings = document.getElementById('modal_trainings');
+const trainings_wrapper = document.getElementById('trainings_wrapper');
 
-const modal_list = [modal_edit, modal_exercise, modal_settings];
+
+const modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings];
 
 
 //* ANCHOR -  Variablen
@@ -382,6 +386,11 @@ btn_add.addEventListener('click', () => {
     open_modal(modal_edit);
 });
 
+btn_show_trainings.addEventListener('click', ()=> {
+    open_modal(modal_trainings);
+    render_trainings();
+})
+
 btn_home.addEventListener('click', () => {
     close_all_modals();
 });
@@ -481,3 +490,62 @@ function finish_training() {
     }
 
 }
+
+
+/////////////////////////////////////
+//* ANCHOR - Render Trainings
+/////////////////////////////////////
+
+function render_trainings() {
+
+    for(let i = 0; i < save_Object.trainings.length; i++) {
+        const title = save_Object.trainings[i].training_date;
+        const duration = save_Object.trainings[i].duration;
+        const exc = save_Object.trainings[i].exercises;
+        console.log('exc', save_Object.trainings);
+        const tableContainer = createTable(`${title} - ${duration}`, exc);
+        trainings_wrapper.appendChild(tableContainer);
+    }
+
+}
+
+function createTable(title, data) {
+    const table = document.createElement("table");
+    const header = document.createElement("tr");
+    const nameHeaderCell = document.createElement("th");
+    const weightHeaderCell = document.createElement("th");
+    const repsHeaderCell = document.createElement("th");
+    const setsHeaderCell = document.createElement("th");
+    nameHeaderCell.appendChild(document.createTextNode("Name"));
+    weightHeaderCell.appendChild(document.createTextNode("Gewicht"));
+    repsHeaderCell.appendChild(document.createTextNode("Wdh"));
+    setsHeaderCell.appendChild(document.createTextNode("Sätze"));
+    header.appendChild(nameHeaderCell);
+    header.appendChild(weightHeaderCell);
+    header.appendChild(repsHeaderCell);
+    header.appendChild(setsHeaderCell);
+    table.appendChild(header);
+    for (let i = 0; i < data.length; i++) {
+      const row = document.createElement("tr");
+      const nameCell = document.createElement("td");
+      const weightCell = document.createElement("td");
+      const repsCell = document.createElement("td");
+      const setsCell = document.createElement("td");
+      nameCell.appendChild(document.createTextNode(data[i].name));
+      weightCell.appendChild(document.createTextNode(data[i].weight));
+      repsCell.appendChild(document.createTextNode(data[i].repeats));
+      setsCell.appendChild(document.createTextNode(data[i].solved_sets));
+      row.appendChild(nameCell);
+      row.appendChild(weightCell);
+      row.appendChild(repsCell);
+      row.appendChild(setsCell);
+      table.appendChild(row);
+    }
+    const container = document.createElement("div");
+    const heading = document.createElement("h2");
+    heading.appendChild(document.createTextNode(title));
+    container.appendChild(heading);
+    container.appendChild(table);
+    return container;
+  }
+  

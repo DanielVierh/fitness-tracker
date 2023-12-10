@@ -113,9 +113,11 @@ footer .footer-btn {
   display: flex;
   flex-direction: column;
   background-color: transparent;
-  height: 65vh;
+  height: 40vh;
   overflow: scroll;
   padding-bottom: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
 }
 .homepage .exercises .exercise {
   background-color: #2B4A6F;
@@ -127,6 +129,25 @@ footer .footer-btn {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.last-trainings {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+  height: 20vh;
+  overflow: scroll;
+  padding-bottom: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+}
+.last-trainings .secondary-button {
+  background-color: #2B4A6F;
+  padding: 10px 20px;
+  border-radius: 8px;
+  letter-spacing: 1.5px;
 }
 
 .modal {
@@ -195,6 +216,25 @@ footer .footer-btn {
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.modal-trainints table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  margin-bottom: 20px;
+}
+.modal-trainints th,
+.modal-trainints td {
+  text-align: center;
+  padding: 8px;
+}
+.modal-trainints th {
+  background-color: #4caf50;
+  color: black;
+}
+.modal-trainints tr:nth-child(even) {
+  background-color: #21686d;
 }
 
 .newExercise {
