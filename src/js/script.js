@@ -21,6 +21,7 @@ const lbl_number = document.getElementById('lbl_number');
 const lbl_seatsettings = document.getElementById('lbl_seatsettings');
 const lbl_muscleselect = document.getElementById('lbl_muscleselect');
 const lbl_donesets = document.getElementById('lbl_donesets');
+const btn_trackSport = document.getElementById('btn_trackSport');
 
 const modal_list = [modal_edit, modal_exercise, modal_settings];
 
@@ -33,6 +34,7 @@ let selected_Exercise;
 //*  Saveobj
 let save_Object = {
     training_is_running: false,
+    training_start: '',
     exercises: [],
     trainings: [],
     current_training: [],
@@ -79,6 +81,7 @@ function load_local_storage() {
             console.log(error);
             save_Object = {
                 training_is_running: false,
+                training_start: '',
                 exercises: [],
                 trainings: [],
                 current_training: [],
@@ -103,8 +106,12 @@ function save_into_storage() {
 //* ANCHOR - Class for training
 /////////////////////////////////////
 class Training {
-    constructor(training_id = rnd_id(),start_date, set_amount, start, end, exercises) {
-
+    constructor(training_date, set_amount, start, end, exercises) {
+        this.training_date = training_date;
+        this.set_amount = set_amount;
+        this.start = start;
+        this.end = end;
+        this.exercises = exercises;
     }
 }
 /////////////////////////////////////
@@ -251,12 +258,61 @@ function open_exercise() {
 
 
 /////////////////////////////////////
-//* ANCHOR -
+//* ANCHOR - Tracking
 /////////////////////////////////////
-/////////////////////////////////////
-//* ANCHOR -
-/////////////////////////////////////
+btn_trackSport.addEventListener('click', ()=> {
+    if(training_running === false) {
+        console.log('Training lief noch nicht, läuft jetzt');
+        training_running = true;
+        //* Training boolean speichern
+        //save_Object.training_is_running = true;
+        //* Training Startzeit ermitteln und speichern
+        const training_start_time = new Date();
+        
+        //const timestamp = training_start_time.getTime(); 
+        //console.log(minutesDiff(dateTimeValue1, training_start_time));
 
+        //* Übung in Training Array speichern
+        //* Abgleichen ob bereits vorhanden per id match, wenn vorhanden eins hochzählen
+
+        //* wenn nein, in das Array übertragen und eins hochzählen
+
+        // * persistent speichern
+        //save_into_storage();
+
+    }else {
+        console.log('Training lief bereits');
+        //* Übung in Training Array speichern
+        //* Abgleichen ob bereits vorhanden per id match, wenn vorhanden eins hochzählen
+
+        //* wenn nein, in das Array übertragen und eins hochzählen
+
+        // * persistent speichern
+        //save_into_storage();
+    }
+})
+
+
+
+/////////////////////////////////////
+//* ANCHOR - MinutesDiff
+/////////////////////////////////////
+function minutesDiff(dateTimeValue2, dateTimeValue1) {
+   var differenceValue =(dateTimeValue2.getTime() - dateTimeValue1.getTime()) / 1000;
+   differenceValue /= 60;
+   const rawMinuteTime = Math.abs(Math.round(differenceValue))
+   const hour = Math.floor(rawMinuteTime/60);
+   const minutes = Math.floor(rawMinuteTime%60);
+   const time = `${add_zero(hour)}:${add_zero(minutes)}`;
+   return time;
+}
+
+function add_zero(val) {
+    if(val < 10) {
+        val = `0${val}`;
+    }
+    return val;
+}
 
 
 /////////////////////////////////////
