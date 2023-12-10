@@ -114,9 +114,8 @@ function save_into_storage() {
 //* ANCHOR - Class for training
 /////////////////////////////////////
 class Training {
-    constructor(training_date, set_amount, duration, exercises) {
+    constructor(training_date, duration, exercises) {
         this.training_date = training_date;
-        this.set_amount = set_amount;
         this.duration = duration;
         this.exercises = exercises;
     }
@@ -269,14 +268,12 @@ function open_exercise() {
 /////////////////////////////////////
 btn_trackSport.addEventListener('click', ()=> {
     if(training_running === false) {
-        console.log('Training lief noch nicht, läuft jetzt');
         training_running = true;
         //* Training boolean speichern
         save_Object.training_is_running = true;
         //* Training Startzeit ermitteln und speichern
         const training_start_stamp = new Date();
         save_Object.training_start = training_start_stamp;
-        console.log(save_Object);
         //const timestamp = training_start_stamp.getTime(); 
         //console.log(minutesDiff(dateTimeValue1, training_start_stamp));
         //* Set in Training Array speichern
@@ -286,7 +283,6 @@ btn_trackSport.addEventListener('click', ()=> {
         save_into_storage();
 
     }else {
-        console.log('Training lief bereits');
         //* Set in Training Array speichern
         add_solved_set()
 
@@ -300,20 +296,17 @@ function add_solved_set() {
         //* Abgleichen ob bereits vorhanden per id match, 
         //* wenn vorhanden eins hochzählen
         if(check_exercise_in_currentTraining(selected_Exercise)) {
-            console.log('bereits vorh');
-            const currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
-            const new_set_amount = currentSet += 1;
-            console.log('new_set_amount', new_set_amount);
+            let currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
+            let new_set_amount = currentSet += 1;
+            console.log('index', indexOfExercise(selected_Exercise, save_Object.current_training));
             save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets = new_set_amount;
-            console.log('save_Object', save_Object);
             lbl_donesets.innerHTML = `Übungen absolviert: <span>${new_set_amount}</span>`;
         }else {
             //* wenn nein, in das Array übertragen und eins hochzählen
-            console.log('noch nicht vorh');
-            let added_exercise = selected_Exercise;
-            added_exercise.solved_sets = added_exercise.solved_sets += 1;
-            console.log('added_exercise', added_exercise);
-            lbl_donesets.innerHTML = `Übungen absolviert: <span>${added_exercise.solved_sets}</span>`;
+            let cloned_exercise = Object.assign({}, selected_Exercise);
+            cloned_exercise.solved_sets = cloned_exercise.solved_sets += 1;
+            save_Object.current_training.push(cloned_exercise);
+            lbl_donesets.innerHTML = `Übungen absolviert: <span>${cloned_exercise.solved_sets}</span>`;
         }
 }
 
@@ -434,20 +427,41 @@ btn_finish.addEventListener('click', ()=> {
 function finish_training() {
     const decision = window.confirm('Soll das Training beendet werden?');
     if(decision) {
-        training_running = false;
-        save_Object.training_is_running = false;
-
         const trainingsdate= new Date(save_Object.training_start)
         const day = trainingsdate.getDate();
         const month = trainingsdate.getMonth() + 1;
         const year = trainingsdate.getFullYear();
         const datum = `${add_zero(day)}.${add_zero(month)}.${year}`;
-        console.log(datum);
 
-        //const new_solved_training = new Training()
+        const trainingsEnd_timestamp = new Date();
+        const duration = minutesDiff(trainingsEnd_timestamp, trainingsdate);
         
     
-        //TODO - Trainingsobject erstellen und abspeichern
+        //* Trainingsobject erstellen und abspeichern
+           const new_solved_training = new Training(datum, duration, save_Object.current_training);
+           save_Object.trainings.push(new_solved_training)
+           console.log(save_Object);
+
+        //* alle sets zurücksetzen
+        for(let i = 0; i < save_Object.exercises.length; i++) {
+            save_Object.exercises[i].solved_sets = 0;
+        }
+
+        //*Reset current training
+        save_Object.current_training = [];
+
+        //* trainingsstart reset
+        save_Object.training_start = '';
+
+        //* set training is running to false
+        training_running = false;
+        save_Object.training_is_running = false;
+
+        // * Save into storage
+        save_into_storage();
+
+        //* reload page
+        location.reload();
     }
 
 }
