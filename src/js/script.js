@@ -267,31 +267,77 @@ btn_trackSport.addEventListener('click', ()=> {
         //* Training boolean speichern
         //save_Object.training_is_running = true;
         //* Training Startzeit ermitteln und speichern
-        const training_start_time = new Date();
-        
-        //const timestamp = training_start_time.getTime(); 
-        //console.log(minutesDiff(dateTimeValue1, training_start_time));
-
-        //* Übung in Training Array speichern
-        //* Abgleichen ob bereits vorhanden per id match, wenn vorhanden eins hochzählen
-
-        //* wenn nein, in das Array übertragen und eins hochzählen
+        const training_start_stamp = new Date();
+        save_Object.training_start = training_start_stamp;
+        console.log(save_Object);
+        //const timestamp = training_start_stamp.getTime(); 
+        //console.log(minutesDiff(dateTimeValue1, training_start_stamp));
+        //* Set in Training Array speichern
+        add_solved_set();
 
         // * persistent speichern
-        //save_into_storage();
+        save_into_storage();
 
     }else {
         console.log('Training lief bereits');
-        //* Übung in Training Array speichern
-        //* Abgleichen ob bereits vorhanden per id match, wenn vorhanden eins hochzählen
-
-        //* wenn nein, in das Array übertragen und eins hochzählen
+        //* Set in Training Array speichern
+        add_solved_set()
 
         // * persistent speichern
-        //save_into_storage();
+        save_into_storage();
     }
 })
 
+function add_solved_set() {
+        //* Übung in Training Array speichern
+        //* Abgleichen ob bereits vorhanden per id match, 
+        //* wenn vorhanden eins hochzählen
+        if(check_exercise_in_currentTraining(selected_Exercise)) {
+            console.log('bereits vorh');
+            const currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
+            const new_set_amount = currentSet += 1;
+            console.log('new_set_amount', new_set_amount);
+            save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets = new_set_amount;
+            console.log('save_Object', save_Object);
+            lbl_donesets.innerHTML = `Übungen absolviert: <span>${new_set_amount}</span>`;
+        }else {
+            //* wenn nein, in das Array übertragen und eins hochzählen
+            console.log('noch nicht vorh');
+            let added_exercise = selected_Exercise;
+            added_exercise.solved_sets = added_exercise.solved_sets += 1;
+            console.log('added_exercise', added_exercise);
+            lbl_donesets.innerHTML = `Übungen absolviert: <span>${added_exercise.solved_sets}</span>`;
+        }
+}
+
+
+function check_exercise_in_currentTraining(exercise) {
+    const exerciseId = exercise.exercise_id;
+    let is_in_currentTraining = false;
+
+    for(let i = 0; i < save_Object.current_training.length; i++) {
+        if(save_Object.current_training[i].exercise_id === exerciseId) {
+            is_in_currentTraining = true;
+            break;
+        }
+    }
+
+    return is_in_currentTraining;
+}
+
+function indexOfExercise(exercise, arr) {
+    const exerciseId = exercise.exercise_id;
+    let index = -1;
+
+    for(let i = 0; i < arr.length; i++) {
+        if(arr[i].exercise_id === exerciseId) {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
 
 
 /////////////////////////////////////
