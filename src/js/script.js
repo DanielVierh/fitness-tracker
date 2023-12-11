@@ -287,22 +287,26 @@ function open_exercise() {
 /////////////////////////////////////
 btn_trackSport.addEventListener('click', () => {
     if (training_running === false) {
-        training_running = true;
-        //* Training boolean speichern
-        save_Object.training_is_running = true;
-        //* Training Startzeit ermitteln und speichern
-        const training_start_stamp = new Date();
-        save_Object.training_start = training_start_stamp;
-        //const timestamp = training_start_stamp.getTime(); 
-        //console.log(minutesDiff(dateTimeValue1, training_start_stamp));
-        //* Set in Training Array speichern
-        add_solved_set();
 
-        // * persistent speichern
-        save_into_storage();
-
-        //TODO -  replace alert 
-        alert("Ein weiterer Satz wurde hinzugefügt");
+        const decision = window.confirm('Soll ein Training gestartet werden?')
+        if(decision) {
+            training_running = true;
+            //* Training boolean speichern
+            save_Object.training_is_running = true;
+            //* Training Startzeit ermitteln und speichern
+            const training_start_stamp = new Date();
+            save_Object.training_start = training_start_stamp;
+            //const timestamp = training_start_stamp.getTime(); 
+            //console.log(minutesDiff(dateTimeValue1, training_start_stamp));
+            //* Set in Training Array speichern
+            add_solved_set();
+    
+            // * persistent speichern
+            save_into_storage();
+    
+            //TODO -  replace alert 
+            alert("Ein weiterer Satz wurde hinzugefügt");
+        }
 
     } else {
         //* Set in Training Array speichern
