@@ -240,6 +240,7 @@ footer .footer-btn {
 .modal-trainints td {
   text-align: center;
   padding: 8px;
+  border: 1px solid white;
 }
 .modal-trainints th {
   background-color: #4caf50;
