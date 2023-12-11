@@ -573,6 +573,10 @@ function createTable(title, data) {
   }
   
 
+    /////////////////////////////////////
+    //* ANCHOR - Edit Exercise
+    /////////////////////////////////////
+
   function load_exercise_into_edit() {
     inpExercise_Name.value = selected_Exercise.name;
     inpExercise_Weight.value = selected_Exercise.weight;
