@@ -205,6 +205,15 @@ footer .footer-btn {
   color: yellow;
   font-weight: bold;
 }
+.modal-exercise .button-edit {
+  background-color: black;
+  padding: 15px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.654);
+}
 .modal-exercise .track-button {
   background-color: rgb(0, 200, 255);
   padding: 20px 30px;
@@ -218,6 +227,9 @@ footer .footer-btn {
   cursor: pointer;
 }
 
+.modal-trainints {
+  padding-bottom: 50px;
+}
 .modal-trainints table {
   border-collapse: collapse;
   width: 100%;

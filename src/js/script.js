@@ -27,6 +27,15 @@ const btn_finish = document.getElementById('btn_finish');
 const btn_show_trainings = document.getElementById('btn_show_trainings');
 const modal_trainings = document.getElementById('modal_trainings');
 const trainings_wrapper = document.getElementById('trainings_wrapper');
+const btn_edit = document.getElementById('btn_edit');
+let inpExercise_Name = document.getElementById('inpExercise_Name');
+let inpExercise_Weight = document.getElementById('inpExercise_Weight');
+let inpExercise_Sets = document.getElementById('inpExercise_Sets');
+let inpExercise_Repeats = document.getElementById('inpExercise_Repeats');
+let inpExercise_number = document.getElementById('inpExercise_number');
+let inpExercise_seatSettings = document.getElementById('inpExercise_seatSettings');
+let muscle_select = document.getElementById('muscle_select');
+let training_Area = document.getElementById('training_Area');
 
 
 const modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings];
@@ -36,6 +45,7 @@ const modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings]
 let training_running = false;
 let training_place_filter = '';
 let selected_Exercise;
+let is_edit = false;
 
 //*  Saveobj
 let save_Object = {
@@ -199,14 +209,7 @@ function render_exercises() {
 //* ANCHOR - Save new Exercise
 /////////////////////////////////////
 btn_saveExercise.addEventListener('click', () => {
-    let inpExercise_Name = document.getElementById('inpExercise_Name');
-    let inpExercise_Weight = document.getElementById('inpExercise_Weight');
-    let inpExercise_Sets = document.getElementById('inpExercise_Sets');
-    let inpExercise_Repeats = document.getElementById('inpExercise_Repeats');
-    let inpExercise_number = document.getElementById('inpExercise_number');
-    let inpExercise_seatSettings = document.getElementById('inpExercise_seatSettings');
-    let muscle_select = document.getElementById('muscle_select');
-    let training_Area = document.getElementById('training_Area');
+
     if (inpExercise_Name.value === '') {
         return
     }
@@ -232,7 +235,17 @@ btn_saveExercise.addEventListener('click', () => {
         training_Area.value = '-';
     }
 
-    const newExercise = new Exercise(rnd_id(),
+    if(is_edit) {
+        selected_Exercise.name = inpExercise_Name.value;
+        selected_Exercise.weight = inpExercise_Weight.value;
+        selected_Exercise.sets = inpExercise_Sets.value;
+        selected_Exercise.repeats = inpExercise_Repeats.value;
+        selected_Exercise.machineNumber = inpExercise_number.value;
+        selected_Exercise.machine_seat_settings = inpExercise_seatSettings.value;
+        selected_Exercise.musclegroup = muscle_select.value;
+        selected_Exercise.trainingsplace = training_Area.value;
+    }else {
+        const newExercise = new Exercise(rnd_id(),
         inpExercise_Name.value,
         inpExercise_Weight.value,
         inpExercise_Sets.value,
@@ -244,6 +257,8 @@ btn_saveExercise.addEventListener('click', () => {
         0
     );
     save_Object.exercises.push(newExercise);
+    }
+
     save_into_storage();
     location.reload();
 })
@@ -376,6 +391,13 @@ function add_zero(val) {
 
 btn_open_edit.addEventListener('click', () => {
     open_modal(modal_edit);
+    is_edit = false;
+});
+
+btn_edit.addEventListener('click', () => {
+    is_edit = true;
+    open_modal(modal_edit);
+    load_exercise_into_edit();
 });
 
 btn_settings.addEventListener('click', () => {
@@ -384,6 +406,7 @@ btn_settings.addEventListener('click', () => {
 
 btn_add.addEventListener('click', () => {
     open_modal(modal_edit);
+    is_edit = false;
 });
 
 btn_show_trainings.addEventListener('click', ()=> {
@@ -549,3 +572,14 @@ function createTable(title, data) {
     return container;
   }
   
+
+  function load_exercise_into_edit() {
+    inpExercise_Name.value = selected_Exercise.name;
+    inpExercise_Weight.value = selected_Exercise.weight;
+    inpExercise_Sets.value = selected_Exercise.sets;
+    inpExercise_Repeats.value = selected_Exercise.repeats;
+    inpExercise_number.value = selected_Exercise.machineNumber;
+    inpExercise_seatSettings.value = selected_Exercise.machine_seat_settings;
+    muscle_select.value = selected_Exercise.musclegroup;
+    training_Area.value = selected_Exercise.trainingsplace;
+  }
