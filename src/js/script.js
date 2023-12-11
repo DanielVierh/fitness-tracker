@@ -543,14 +543,17 @@ function createTable(title, data) {
     const weightHeaderCell = document.createElement("th");
     const repsHeaderCell = document.createElement("th");
     const setsHeaderCell = document.createElement("th");
+    const muscleHeaderCell = document.createElement("th");
     nameHeaderCell.appendChild(document.createTextNode("Name"));
-    weightHeaderCell.appendChild(document.createTextNode("Gewicht"));
+    weightHeaderCell.appendChild(document.createTextNode("Gew"));
     repsHeaderCell.appendChild(document.createTextNode("Wdh"));
     setsHeaderCell.appendChild(document.createTextNode("Sätze"));
+    muscleHeaderCell.appendChild(document.createTextNode("Muskel"));
     header.appendChild(nameHeaderCell);
     header.appendChild(weightHeaderCell);
     header.appendChild(repsHeaderCell);
     header.appendChild(setsHeaderCell);
+    header.appendChild(muscleHeaderCell);
     table.appendChild(header);
     for (let i = 0; i < data.length; i++) {
       const row = document.createElement("tr");
@@ -558,14 +561,17 @@ function createTable(title, data) {
       const weightCell = document.createElement("td");
       const repsCell = document.createElement("td");
       const setsCell = document.createElement("td");
+      const muscleCell = document.createElement("td");
       nameCell.appendChild(document.createTextNode(data[i].name));
       weightCell.appendChild(document.createTextNode(data[i].weight));
       repsCell.appendChild(document.createTextNode(data[i].repeats));
       setsCell.appendChild(document.createTextNode(data[i].solved_sets));
+      muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
       row.appendChild(nameCell);
       row.appendChild(weightCell);
       row.appendChild(repsCell);
       row.appendChild(setsCell);
+      row.appendChild(muscleCell);
       table.appendChild(row);
     }
     const container = document.createElement("div");
