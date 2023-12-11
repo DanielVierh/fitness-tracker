@@ -27,17 +27,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _js_script_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/script.js */ \"./src/js/script.js\");\n/* harmony import */ var _js_script_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_script_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _js_modals_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/modals.js */ \"./src/js/modals.js\");\n/* harmony import */ var _js_modals_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_modals_js__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _scss_style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./scss/style.scss */ \"./src/scss/style.scss\");\n\n\n\n\n\n//# sourceURL=webpack://project-template/./src/index.js?");
-
-/***/ }),
-
-/***/ "./src/js/modals.js":
-/*!**************************!*\
-  !*** ./src/js/modals.js ***!
-  \**************************/
-/***/ (() => {
-
-eval("// const modal_edit = document.getElementById(\"modal_edit\");\n// const modal_exercise = document.getElementById(\"modal_exercise\");\n// const modal_settings = document.getElementById(\"modal_settings\");\n\n// const btn_home = document.getElementById(\"btn_home\");\n// const btn_open_edit = document.getElementById(\"btn_open_edit\");\n// const btn_settings = document.getElementById(\"btn_settings\");\n\n// const modal_close_btn = document.querySelectorAll('.modal_close_btn');\n\n// const modal_list = [modal_edit, modal_exercise, modal_settings];\n\n\n// btn_open_edit.addEventListener('click', ()=> {\n//     open_modal(modal_edit);\n// });\n\n// btn_settings.addEventListener('click', ()=> {\n//     open_modal(modal_settings);\n// });\n\n// btn_home.addEventListener('click', () => {\n//     close_all_modals();\n// });\n\n// function open_modal(modal) {\n//     close_all_modals();\n//     modal.classList.add('active');\n// }\n\n// function close_all_modals() {\n//     for (let i = 0; i < modal_list.length; i++) {\n//         modal_list[i].classList.remove('active');\n//     }\n// }\n\n// modal_close_btn.forEach((c_btn)=> {\n//     c_btn.addEventListener('click', ()=> {\n//         close_all_modals();\n//     })\n// })\n\n//# sourceURL=webpack://project-template/./src/js/modals.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _js_script_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/script.js */ \"./src/js/script.js\");\n/* harmony import */ var _js_script_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_script_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _scss_style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scss/style.scss */ \"./src/scss/style.scss\");\n\n\n\n\n//# sourceURL=webpack://project-template/./src/index.js?");
 
 /***/ }),
 
