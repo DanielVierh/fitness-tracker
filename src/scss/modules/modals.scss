@@ -37,24 +37,38 @@
 
 .modal-exercise {
   .info-container {
-    padding-left: 10px;
+    padding-left: 50px;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: flex-start;
+    width: 100%;
 
     .exercise-info {
-      margin: 0 15px 15px 0;
+      width: 90%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0;
       text-align: left;
       font-size: 14px;
-      background-color: black;
-      padding: 7px;
       border-radius: 5px;
       letter-spacing: 1.5px;
 
-      span {
+      .half {
+        width: 30%;
+        border: 1px solid white;
+        padding: 10px;
         color: yellow;
         font-weight: bold;
+        font-size: 1rem;
+        letter-spacing: 1.5px;
+
+        &.title {
+          font-weight: bold;
+          color: white;
+          width: 70%;
+        }
       }
     }
   }

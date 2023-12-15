@@ -29,6 +29,7 @@ const modal_trainings = document.getElementById('modal_trainings');
 const trainings_wrapper = document.getElementById('trainings_wrapper');
 const last_training = document.getElementById('last_training');
 const btn_edit = document.getElementById('btn_edit');
+const exercise_table = document.getElementById('exercise_table');
 let inpExercise_Name = document.getElementById('inpExercise_Name');
 let inpExercise_Weight = document.getElementById('inpExercise_Weight');
 let inpExercise_Sets = document.getElementById('inpExercise_Sets');
@@ -84,7 +85,7 @@ function load_local_storage() {
 
             training_running = save_Object.training_is_running;
             training_place_filter = save_Object.training_place_filter;
-            const last = save_Object.trainings.length -1;
+            const last = save_Object.trainings.length - 1;
             last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`
 
             console.log('saveobj', save_Object);
@@ -238,7 +239,7 @@ btn_saveExercise.addEventListener('click', () => {
         training_Area.value = '-';
     }
 
-    if(is_edit) {
+    if (is_edit) {
         selected_Exercise.name = inpExercise_Name.value;
         selected_Exercise.weight = inpExercise_Weight.value;
         selected_Exercise.sets = inpExercise_Sets.value;
@@ -247,19 +248,19 @@ btn_saveExercise.addEventListener('click', () => {
         selected_Exercise.machine_seat_settings = inpExercise_seatSettings.value;
         selected_Exercise.musclegroup = muscle_select.value;
         selected_Exercise.trainingsplace = training_Area.value;
-    }else {
+    } else {
         const newExercise = new Exercise(rnd_id(),
-        inpExercise_Name.value,
-        inpExercise_Weight.value,
-        inpExercise_Sets.value,
-        inpExercise_Repeats.value,
-        inpExercise_number.value,
-        inpExercise_seatSettings.value,
-        muscle_select.value,
-        training_Area.value,
-        0
-    );
-    save_Object.exercises.push(newExercise);
+            inpExercise_Name.value,
+            inpExercise_Weight.value,
+            inpExercise_Sets.value,
+            inpExercise_Repeats.value,
+            inpExercise_number.value,
+            inpExercise_seatSettings.value,
+            muscle_select.value,
+            training_Area.value,
+            0
+        );
+        save_Object.exercises.push(newExercise);
     }
 
     save_into_storage();
@@ -273,16 +274,15 @@ btn_saveExercise.addEventListener('click', () => {
 function open_exercise() {
     open_modal(modal_exercise);
     lbl_trainingsname.innerHTML = selected_Exercise.name;
-    lbl_weight.innerHTML = `Übungsgewicht: <span>${selected_Exercise.weight}</span> Kg`;
-    lbl_sets.innerHTML = `Sätze: <span>${selected_Exercise.sets}</span>`;
-    lbl_repeats.innerHTML = `Wiederholungen: <span>${selected_Exercise.repeats}</span>`;
-    lbl_number.innerHTML = `Gerätenummer: Nr.<span>${selected_Exercise.machineNumber}</span>`;
-    lbl_seatsettings.innerHTML = `Geräteeinstellungen: <span>${selected_Exercise.machine_seat_settings}</span>`;
-    lbl_muscleselect.innerHTML = `Muskelgruppe: <span>${selected_Exercise.musclegroup}</span>`;
-    lbl_donesets.innerHTML = `Übungen absolviert: <span>${selected_Exercise.solved_sets}</span>`;
+    lbl_weight.innerHTML = `${selected_Exercise.weight} Kg`;
+    lbl_sets.innerHTML = `${selected_Exercise.sets}`;
+    lbl_repeats.innerHTML = `${selected_Exercise.repeats}`;
+    lbl_number.innerHTML = `Nr.${selected_Exercise.machineNumber}`;
+    lbl_seatsettings.innerHTML = `${selected_Exercise.machine_seat_settings}`;
+    lbl_muscleselect.innerHTML = `${selected_Exercise.musclegroup}`;
+    lbl_donesets.innerHTML = `${selected_Exercise.solved_sets}`;
+
 }
-
-
 
 
 /////////////////////////////////////
@@ -292,7 +292,7 @@ btn_trackSport.addEventListener('click', () => {
     if (training_running === false) {
 
         const decision = window.confirm('Soll ein Training gestartet werden?')
-        if(decision) {
+        if (decision) {
             training_running = true;
             //* Training boolean speichern
             save_Object.training_is_running = true;
@@ -303,10 +303,10 @@ btn_trackSport.addEventListener('click', () => {
             //console.log(minutesDiff(dateTimeValue1, training_start_stamp));
             //* Set in Training Array speichern
             add_solved_set();
-    
+
             // * persistent speichern
             save_into_storage();
-    
+
             //TODO -  replace alert 
             alert("Ein weiterer Satz wurde hinzugefügt");
         }
@@ -416,7 +416,7 @@ btn_add.addEventListener('click', () => {
     is_edit = false;
 });
 
-btn_show_trainings.addEventListener('click', ()=> {
+btn_show_trainings.addEventListener('click', () => {
     open_modal(modal_trainings);
     render_trainings();
 })
@@ -506,7 +506,7 @@ function finish_training() {
         //TODO -  replace alert 
         const exercArr = new_solved_training.exercises;
         let exerciseInfoArr = '';
-        for(let j = 0; j < exercArr.length; j++) {
+        for (let j = 0; j < exercArr.length; j++) {
             const newRow = `\n ${exercArr[j].name} - ${exercArr[j].solved_sets} x `
             exerciseInfoArr = exerciseInfoArr + newRow;
         }
@@ -528,8 +528,7 @@ function finish_training() {
 
 function render_trainings() {
     const trainingamount = save_Object.trainings.length - 1;
-    for(let i = trainingamount; i > -1; i--) {
-        console.log(i);
+    for (let i = trainingamount; i > -1; i--) {
         const title = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
@@ -559,23 +558,23 @@ function createTable(title, data) {
     header.appendChild(muscleHeaderCell);
     table.appendChild(header);
     for (let i = 0; i < data.length; i++) {
-      const row = document.createElement("tr");
-      const nameCell = document.createElement("td");
-      const weightCell = document.createElement("td");
-      const repsCell = document.createElement("td");
-      const setsCell = document.createElement("td");
-      const muscleCell = document.createElement("td");
-      nameCell.appendChild(document.createTextNode(data[i].name));
-      weightCell.appendChild(document.createTextNode(data[i].weight));
-      repsCell.appendChild(document.createTextNode(data[i].repeats));
-      setsCell.appendChild(document.createTextNode(data[i].solved_sets));
-      muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
-      row.appendChild(nameCell);
-      row.appendChild(weightCell);
-      row.appendChild(repsCell);
-      row.appendChild(setsCell);
-      row.appendChild(muscleCell);
-      table.appendChild(row);
+        const row = document.createElement("tr");
+        const nameCell = document.createElement("td");
+        const weightCell = document.createElement("td");
+        const repsCell = document.createElement("td");
+        const setsCell = document.createElement("td");
+        const muscleCell = document.createElement("td");
+        nameCell.appendChild(document.createTextNode(data[i].name));
+        weightCell.appendChild(document.createTextNode(data[i].weight));
+        repsCell.appendChild(document.createTextNode(data[i].repeats));
+        setsCell.appendChild(document.createTextNode(data[i].solved_sets));
+        muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
+        row.appendChild(nameCell);
+        row.appendChild(weightCell);
+        row.appendChild(repsCell);
+        row.appendChild(setsCell);
+        row.appendChild(muscleCell);
+        table.appendChild(row);
     }
     const container = document.createElement("div");
     const heading = document.createElement("h2");
@@ -583,14 +582,13 @@ function createTable(title, data) {
     container.appendChild(heading);
     container.appendChild(table);
     return container;
-  }
-  
+}
 
-    /////////////////////////////////////
-    //* ANCHOR - Edit Exercise
-    /////////////////////////////////////
 
-  function load_exercise_into_edit() {
+/////////////////////////////////////
+//* ANCHOR - Edit Exercise
+/////////////////////////////////////
+function load_exercise_into_edit() {
     inpExercise_Name.value = selected_Exercise.name;
     inpExercise_Weight.value = selected_Exercise.weight;
     inpExercise_Sets.value = selected_Exercise.sets;
@@ -599,4 +597,4 @@ function createTable(title, data) {
     inpExercise_seatSettings.value = selected_Exercise.machine_seat_settings;
     muscle_select.value = selected_Exercise.musclegroup;
     training_Area.value = selected_Exercise.trainingsplace;
-  }
+}
