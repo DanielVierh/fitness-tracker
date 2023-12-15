@@ -285,16 +285,27 @@ function open_exercise() {
     lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
     
     const trainingamount = save_Object.trainings.length - 1;
+    exercise_table.innerHTML = '';
+
     for (let i = trainingamount; i > -1; i--) {
         const title = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
+        let only_ecercise;
+        let is_in = false;
        
+
         for (let j = 0; j < exc.length; j++) {
-            if(exc[j].exerciseId === selected_Exercise.exerciseId) {
-                const tableContainer = createTable(`${title} - ${duration}`, exc);
-                exercise_table.appendChild(tableContainer);
+            is_in = false;
+            if(exc[j].exercise_id === selected_Exercise.exercise_id) {
+                is_in = true;
+                only_ecercise = exc[j];
+                break;
             }
+        }
+        if(is_in === true) {
+            const tableContainer = createTable(`${title} - ${duration}`, only_ecercise, true);
+            exercise_table.appendChild(tableContainer);
         }
     }
 
@@ -544,6 +555,7 @@ function finish_training() {
 
 function render_trainings() {
     const trainingamount = save_Object.trainings.length - 1;
+    trainings_wrapper.innerHTML = '';
     for (let i = trainingamount; i > -1; i--) {
         const title = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
@@ -554,7 +566,7 @@ function render_trainings() {
 
 }
 
-function createTable(title, data) {
+function createTable(title, data, only_exercise) {
     const table = document.createElement("table");
     const header = document.createElement("tr");
     const nameHeaderCell = document.createElement("th");
@@ -585,6 +597,25 @@ function createTable(title, data) {
         repsCell.appendChild(document.createTextNode(data[i].repeats));
         setsCell.appendChild(document.createTextNode(data[i].solved_sets));
         muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
+        row.appendChild(nameCell);
+        row.appendChild(weightCell);
+        row.appendChild(repsCell);
+        row.appendChild(setsCell);
+        row.appendChild(muscleCell);
+        table.appendChild(row);
+    }
+    if(only_exercise) {
+        const row = document.createElement("tr");
+        const nameCell = document.createElement("td");
+        const weightCell = document.createElement("td");
+        const repsCell = document.createElement("td");
+        const setsCell = document.createElement("td");
+        const muscleCell = document.createElement("td");
+        nameCell.appendChild(document.createTextNode(data.name));
+        weightCell.appendChild(document.createTextNode(data.weight));
+        repsCell.appendChild(document.createTextNode(data.repeats));
+        setsCell.appendChild(document.createTextNode(data.solved_sets));
+        muscleCell.appendChild(document.createTextNode(data.musclegroup));
         row.appendChild(nameCell);
         row.appendChild(weightCell);
         row.appendChild(repsCell);
