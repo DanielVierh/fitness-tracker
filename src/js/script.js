@@ -526,8 +526,9 @@ function finish_training() {
 /////////////////////////////////////
 
 function render_trainings() {
-
-    for(let i = 0; i < save_Object.trainings.length; i++) {
+    const trainingamount = save_Object.trainings.length - 1;
+    for(let i = trainingamount; i > -1; i--) {
+        console.log(i);
         const title = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
