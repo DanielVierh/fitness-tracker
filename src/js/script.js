@@ -283,6 +283,20 @@ function open_exercise() {
     lbl_muscleselect.innerHTML = `${selected_Exercise.musclegroup}`;
     lbl_donesets.innerHTML = `${selected_Exercise.solved_sets}`;
     lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
+    
+    const trainingamount = save_Object.trainings.length - 1;
+    for (let i = trainingamount; i > -1; i--) {
+        const title = save_Object.trainings[i].training_date;
+        const duration = save_Object.trainings[i].duration;
+        const exc = save_Object.trainings[i].exercises;
+       
+        for (let j = 0; j < exc.length; j++) {
+            if(exc[j].exerciseId === selected_Exercise.exerciseId) {
+                const tableContainer = createTable(`${title} - ${duration}`, exc);
+                exercise_table.appendChild(tableContainer);
+            }
+        }
+    }
 
 }
 

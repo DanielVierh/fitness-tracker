@@ -99,6 +99,29 @@ footer .footer-btn {
     border: 8px solid #748BA7;
   }
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid white;
+}
+
+th {
+  background-color: #4caf50;
+  color: black;
+}
+
+tr:nth-child(even) {
+  background-color: #21686d;
+}
+
 .homepage {
   text-align: center;
   z-index: 1;
@@ -246,25 +269,6 @@ footer .footer-btn {
 
 .modal-trainints {
   padding-bottom: 50px;
-}
-.modal-trainints table {
-  border-collapse: collapse;
-  width: 100%;
-  font-family: Arial, sans-serif;
-  margin-bottom: 20px;
-}
-.modal-trainints th,
-.modal-trainints td {
-  text-align: center;
-  padding: 8px;
-  border: 1px solid white;
-}
-.modal-trainints th {
-  background-color: #4caf50;
-  color: black;
-}
-.modal-trainints tr:nth-child(even) {
-  background-color: #21686d;
 }
 
 .newExercise {
