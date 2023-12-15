@@ -27,6 +27,7 @@ const btn_finish = document.getElementById('btn_finish');
 const btn_show_trainings = document.getElementById('btn_show_trainings');
 const modal_trainings = document.getElementById('modal_trainings');
 const trainings_wrapper = document.getElementById('trainings_wrapper');
+const last_training = document.getElementById('last_training');
 const btn_edit = document.getElementById('btn_edit');
 let inpExercise_Name = document.getElementById('inpExercise_Name');
 let inpExercise_Weight = document.getElementById('inpExercise_Weight');
@@ -83,6 +84,7 @@ function load_local_storage() {
 
             training_running = save_Object.training_is_running;
             training_place_filter = save_Object.training_place_filter;
+            last_training.innerHTML = `${save_Object.trainings[0].training_date} -- ${save_Object.trainings[0].duration}`
 
             console.log('saveobj', save_Object);
 
@@ -529,7 +531,6 @@ function render_trainings() {
         const title = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
-        console.log('exc', save_Object.trainings);
         const tableContainer = createTable(`${title} - ${duration}`, exc);
         trainings_wrapper.appendChild(tableContainer);
     }
