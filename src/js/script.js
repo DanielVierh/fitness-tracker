@@ -22,6 +22,7 @@ const lbl_seatsettings = document.getElementById('lbl_seatsettings');
 const lbl_muscleselect = document.getElementById('lbl_muscleselect');
 const lbl_donesets = document.getElementById('lbl_donesets');
 const btn_trackSport = document.getElementById('btn_trackSport');
+const lbl_trainingsarea = document.getElementById('lbl_trainingsarea');
 const bdy = document.getElementById('bdy');
 const btn_finish = document.getElementById('btn_finish');
 const btn_show_trainings = document.getElementById('btn_show_trainings');
@@ -281,6 +282,7 @@ function open_exercise() {
     lbl_seatsettings.innerHTML = `${selected_Exercise.machine_seat_settings}`;
     lbl_muscleselect.innerHTML = `${selected_Exercise.musclegroup}`;
     lbl_donesets.innerHTML = `${selected_Exercise.solved_sets}`;
+    lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
 
 }
 
