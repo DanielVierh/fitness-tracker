@@ -84,7 +84,8 @@ function load_local_storage() {
 
             training_running = save_Object.training_is_running;
             training_place_filter = save_Object.training_place_filter;
-            last_training.innerHTML = `${save_Object.trainings[0].training_date} -- ${save_Object.trainings[0].duration}`
+            const last = save_Object.trainings.length -1;
+            last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`
 
             console.log('saveobj', save_Object);
 
