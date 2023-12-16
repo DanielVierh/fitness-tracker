@@ -201,7 +201,6 @@ function render_exercises() {
         exercisebtn.id = save_Object.exercises[i].exercise_id;
         exercisebtn.addEventListener('click', () => {
             selected_Exercise = save_Object.exercises[i];
-            console.log('selected_Exercise', selected_Exercise);
             open_exercise();
         })
 
@@ -281,7 +280,11 @@ function open_exercise() {
     lbl_number.innerHTML = `Nr.${selected_Exercise.machineNumber}`;
     lbl_seatsettings.innerHTML = `${selected_Exercise.machine_seat_settings}`;
     lbl_muscleselect.innerHTML = `${selected_Exercise.musclegroup}`;
-    lbl_donesets.innerHTML = `${selected_Exercise.solved_sets}`;
+    lbl_donesets.innerHTML = `0`;
+    try {
+        const currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
+        lbl_donesets.innerHTML = `${currentSet}`;
+    } catch (error) {}
     lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
     
     const trainingamount = save_Object.trainings.length - 1;
@@ -326,8 +329,6 @@ btn_trackSport.addEventListener('click', () => {
             //* Training Startzeit ermitteln und speichern
             const training_start_stamp = new Date();
             save_Object.training_start = training_start_stamp;
-            //const timestamp = training_start_stamp.getTime(); 
-            //console.log(minutesDiff(dateTimeValue1, training_start_stamp));
             //* Set in Training Array speichern
             add_solved_set();
 
@@ -358,13 +359,13 @@ function add_solved_set() {
         let currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
         let new_set_amount = currentSet += 1;
         save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets = new_set_amount;
-        lbl_donesets.innerHTML = `Übungen absolviert: <span>${new_set_amount}</span>`;
+        lbl_donesets.innerHTML = `${new_set_amount}`;
     } else {
         //* wenn nein, in das Array übertragen und eins hochzählen
         let cloned_exercise = Object.assign({}, selected_Exercise);
         cloned_exercise.solved_sets = cloned_exercise.solved_sets += 1;
         save_Object.current_training.push(cloned_exercise);
-        lbl_donesets.innerHTML = `Übungen absolviert: <span>${cloned_exercise.solved_sets}</span>`;
+        lbl_donesets.innerHTML = `${cloned_exercise.solved_sets}`;
     }
 }
 
