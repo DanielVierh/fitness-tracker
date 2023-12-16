@@ -197,7 +197,17 @@ function render_exercises() {
     for (let i = 0; i < save_Object.exercises.length; i++) {
         let exercisebtn = document.createElement('div');
         exercisebtn.classList.add('exercise');
-        exercisebtn.innerHTML = save_Object.exercises[i].name;
+        let exerciseName = save_Object.exercises[i].name;
+        try {
+            const currentSet = save_Object.current_training[`${indexOfExercise(save_Object.exercises[i], save_Object.current_training)}`].solved_sets;
+            exerciseName = `${save_Object.exercises[i].name} (${currentSet}/${save_Object.exercises[i].sets})`;
+            if(currentSet >= save_Object.exercises[i].sets) {
+                exercisebtn.classList.add('solved');
+            }else {
+                exercisebtn.classList.add('half-solved');
+            }
+        } catch (error) {}
+        exercisebtn.innerHTML = exerciseName;
         exercisebtn.id = save_Object.exercises[i].exercise_id;
         exercisebtn.addEventListener('click', () => {
             selected_Exercise = save_Object.exercises[i];
@@ -337,6 +347,7 @@ btn_trackSport.addEventListener('click', () => {
 
             //TODO -  replace alert 
             alert("Ein weiterer Satz wurde hinzugefügt");
+            location.reload();
         }
 
     } else {
@@ -348,6 +359,7 @@ btn_trackSport.addEventListener('click', () => {
 
         //TODO -  replace alert 
         alert("Ein weiterer Satz wurde hinzugefügt");
+        location.reload();
     }
 })
 

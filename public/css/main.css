@@ -153,6 +153,13 @@ tr:nth-child(even) {
   justify-content: center;
   align-items: center;
 }
+.homepage .exercises .exercise.half-solved {
+  background-color: yellow;
+  color: black;
+}
+.homepage .exercises .exercise.solved {
+  background-color: green;
+}
 
 .last-trainings {
   margin-top: 20px;

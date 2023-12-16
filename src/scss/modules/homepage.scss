@@ -31,6 +31,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
+            &.half-solved {
+                background-color: yellow;
+                color: black;
+            }
+
+            &.solved {
+                background-color: green;
+            }
         }
     }
 
