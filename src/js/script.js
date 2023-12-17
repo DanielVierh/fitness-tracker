@@ -553,14 +553,13 @@ function finish_training() {
         // * Save into storage
         save_into_storage();
 
-        //TODO -  replace alert 
         const exercArr = new_solved_training.exercises;
         let exerciseInfoArr = '';
         for (let j = 0; j < exercArr.length; j++) {
             const newRow = `\n ${exercArr[j].name} - ${exercArr[j].solved_sets} x `
             exerciseInfoArr = exerciseInfoArr + newRow;
         }
-        console.log(exercArr);
+        //TODO -  replace alert 
         alert(`Training beendet \n Datum: ${datum} \n
         Zeit: ${duration} \n
         Übungen: ${exerciseInfoArr}`);

@@ -20,9 +20,11 @@
         padding-bottom: 50px;
         border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 8px;
+        background: linear-gradient(to left, $color-primary-0, transparent);
 
         .exercise {
-            background-color: $color-primary-0;
+            background: linear-gradient(to right, $color-primary-0, transparent);
+            border: 1px solid rgba(255, 255, 255, 0.151);
             color: white;
             font-weight: bold;
             letter-spacing: 2px;
@@ -31,6 +33,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: 0 0 6px $color-main;
 
             &.half-solved {
                 background-color: yellow;
@@ -56,9 +59,11 @@
     padding-bottom: 50px;
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 8px;
+    box-shadow: 0 0 6px $color-main;
+    background: linear-gradient(to bottom, $color-primary-4, transparent);
 
     .secondary-button {
-        background-color: $color-primary-0;
+        background-color: $color-secondary-2-1;
         padding: 10px 20px;
         border-radius: 8px;
         letter-spacing: 1.5px;

@@ -141,9 +141,11 @@ tr:nth-child(even) {
   padding-bottom: 50px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
+  background: linear-gradient(to left, #2B4A6F, transparent);
 }
 .homepage .exercises .exercise {
-  background-color: #2B4A6F;
+  background: linear-gradient(to right, #2B4A6F, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.151);
   color: white;
   font-weight: bold;
   letter-spacing: 2px;
@@ -152,6 +154,7 @@ tr:nth-child(even) {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 6px rgb(0, 200, 255);
 }
 .homepage .exercises .exercise.half-solved {
   background-color: yellow;
@@ -172,9 +175,11 @@ tr:nth-child(even) {
   padding-bottom: 50px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
+  box-shadow: 0 0 6px rgb(0, 200, 255);
+  background: linear-gradient(to bottom, #051C38, transparent);
 }
 .last-trainings .secondary-button {
-  background-color: #2B4A6F;
+  background-color: #135a23;
   padding: 10px 20px;
   border-radius: 8px;
   letter-spacing: 1.5px;
