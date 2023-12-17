@@ -41,7 +41,7 @@ let muscle_select = document.getElementById('muscle_select');
 let training_Area = document.getElementById('training_Area');
 
 
-const modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings];
+
 
 
 //* ANCHOR -  Variablen
@@ -172,6 +172,26 @@ class Exercise {
 }
 
 /////////////////////////////////////
+//* ANCHOR - Class for Modal
+/////////////////////////////////////
+
+class Modal{
+
+    static modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings];
+
+    static open_modal(modal) {
+        this.close_all_modals();
+        modal.classList.add('active');
+    }
+
+    static close_all_modals() {
+        for (let i = 0; i < this.modal_list.length; i++) {
+            this.modal_list[i].classList.remove('active');
+        }
+    }
+}
+
+/////////////////////////////////////
 //* ANCHOR - Random ID Creator
 /////////////////////////////////////
 function rnd_id() {
@@ -282,7 +302,7 @@ btn_saveExercise.addEventListener('click', () => {
 //* ANCHOR - open Exercise
 /////////////////////////////////////
 function open_exercise() {
-    open_modal(modal_exercise);
+    Modal.open_modal(modal_exercise);
     lbl_trainingsname.innerHTML = selected_Exercise.name;
     lbl_weight.innerHTML = `${selected_Exercise.weight} Kg`;
     lbl_sets.innerHTML = `${selected_Exercise.sets}`;
@@ -437,48 +457,38 @@ function add_zero(val) {
 /////////////////////////////////////
 
 btn_open_edit.addEventListener('click', () => {
-    open_modal(modal_edit);
+    Modal.open_modal(modal_edit);
     is_edit = false;
 });
 
 btn_edit.addEventListener('click', () => {
     is_edit = true;
-    open_modal(modal_edit);
+    Modal.open_modal(modal_edit);
     load_exercise_into_edit();
 });
 
 btn_settings.addEventListener('click', () => {
-    open_modal(modal_settings);
+    Modal.open_modal(modal_settings);
 });
 
 btn_add.addEventListener('click', () => {
-    open_modal(modal_edit);
+    Modal.open_modal(modal_edit);
     is_edit = false;
 });
 
 btn_show_trainings.addEventListener('click', () => {
-    open_modal(modal_trainings);
+    // open_modal(modal_trainings);
+    Modal.open_modal(modal_trainings);
     render_trainings();
 })
 
 btn_home.addEventListener('click', () => {
-    close_all_modals();
+    Modal.close_all_modals();
 });
-
-function open_modal(modal) {
-    close_all_modals();
-    modal.classList.add('active');
-}
-
-function close_all_modals() {
-    for (let i = 0; i < modal_list.length; i++) {
-        modal_list[i].classList.remove('active');
-    }
-}
 
 modal_close_btn.forEach((c_btn) => {
     c_btn.addEventListener('click', () => {
-        close_all_modals();
+        Modal.close_all_modals();
     })
 })
 
