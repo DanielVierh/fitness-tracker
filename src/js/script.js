@@ -86,8 +86,10 @@ function load_local_storage() {
 
             training_running = save_Object.training_is_running;
             training_place_filter = save_Object.training_place_filter;
-            const last = save_Object.trainings.length - 1;
-            last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`
+            try {
+                const last = save_Object.trainings.length - 1;
+                last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`;
+            } catch (error) {}
 
             console.log('saveobj', save_Object);
 
@@ -157,12 +159,12 @@ class Exercise {
     }
 
     show_exercise_in_console() {
-        console.log(`ID=${this.exercise_id} 
-        Name = ${this.name} \n 
-        Gewicht = ${this.weight} \n 
-        Sätze = ${this.sets} \n 
-        Wdh = ${this.repeats} \n 
-        Nummer = ${this.machineNumber} \n 
+        console.log(`ID=${this.exercise_id}
+        Name = ${this.name} \n
+        Gewicht = ${this.weight} \n
+        Sätze = ${this.sets} \n
+        Wdh = ${this.repeats} \n
+        Nummer = ${this.machineNumber} \n
         Geräteeinstellungen = ${this.machine_seat_settings} \n
         Muskelgruppe = ${this.musclegroup} \n
         Trainingsort = ${this.trainingsplace} \n
@@ -316,7 +318,7 @@ function open_exercise() {
         lbl_donesets.innerHTML = `${currentSet}`;
     } catch (error) {}
     lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
-    
+
     const trainingamount = save_Object.trainings.length - 1;
     exercise_table.innerHTML = '';
 
@@ -326,7 +328,7 @@ function open_exercise() {
         const exc = save_Object.trainings[i].exercises;
         let only_ecercise;
         let is_in = false;
-       
+
 
         for (let j = 0; j < exc.length; j++) {
             is_in = false;
@@ -365,7 +367,7 @@ btn_trackSport.addEventListener('click', () => {
             // * persistent speichern
             save_into_storage();
 
-            //TODO -  replace alert 
+            //TODO -  replace alert
             alert("Ein weiterer Satz wurde hinzugefügt");
             location.reload();
         }
@@ -377,7 +379,7 @@ btn_trackSport.addEventListener('click', () => {
         // * persistent speichern
         save_into_storage();
 
-        //TODO -  replace alert 
+        //TODO -  replace alert
         alert("Ein weiterer Satz wurde hinzugefügt");
         location.reload();
     }
@@ -385,7 +387,7 @@ btn_trackSport.addEventListener('click', () => {
 
 function add_solved_set() {
     //* Übung in Training Array speichern
-    //* Abgleichen ob bereits vorhanden per id match, 
+    //* Abgleichen ob bereits vorhanden per id match,
     //* wenn vorhanden eins hochzählen
     if (check_exercise_in_currentTraining(selected_Exercise)) {
         let currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
@@ -559,7 +561,7 @@ function finish_training() {
             const newRow = `\n ${exercArr[j].name} - ${exercArr[j].solved_sets} x `
             exerciseInfoArr = exerciseInfoArr + newRow;
         }
-        //TODO -  replace alert 
+        //TODO -  replace alert
         alert(`Training beendet \n Datum: ${datum} \n
         Zeit: ${duration} \n
         Übungen: ${exerciseInfoArr}`);
