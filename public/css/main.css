@@ -104,6 +104,8 @@ table {
   width: 100%;
   font-family: Arial, sans-serif;
   margin-bottom: 20px;
+  background: radial-gradient(#2B4A6F, #143153);
+  box-shadow: 0 0 10px rgb(0, 200, 255);
 }
 
 th,
@@ -191,7 +193,7 @@ tr:nth-child(even) {
 .modal.active {
   display: block;
   position: fixed;
-  background-color: #143153;
+  background: linear-gradient(to right, #2B4A6F, #051C38);
   left: 0;
   top: 0;
   bottom: 0;
@@ -223,6 +225,13 @@ tr:nth-child(even) {
 .modal-exercise {
   padding-bottom: 50px;
 }
+.modal-exercise #lbl_trainingsname {
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 15px black;
+  margin: 50px auto;
+}
 .modal-exercise .info-container {
   display: flex;
   flex-direction: column;
@@ -240,10 +249,12 @@ tr:nth-child(even) {
   font-size: 14px;
   border-radius: 5px;
   letter-spacing: 1.5px;
+  background: radial-gradient(#4B688B, #051C38);
+  box-shadow: 0 0 10px rgb(0, 200, 255);
 }
 .modal-exercise .info-container .exercise-info .half {
   width: 40%;
-  border: 1px solid white;
+  border: 1px solid rgba(255, 255, 255, 0.284);
   padding: 10px;
   color: yellow;
   font-weight: bold;
@@ -254,6 +265,7 @@ tr:nth-child(even) {
   font-weight: bold;
   color: white;
   width: 60%;
+  text-align: right;
 }
 .modal-exercise .button-edit {
   background-color: black;

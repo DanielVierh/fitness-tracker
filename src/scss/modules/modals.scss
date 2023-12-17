@@ -4,7 +4,7 @@
   &.active {
     display: block;
     position: fixed;
-    background-color: $color-primary-3;
+    background: linear-gradient(to right, $color-primary-0, $color-primary-4);
     left: 0;
     top: 0;
     bottom: 0;
@@ -37,6 +37,15 @@
 
 .modal-exercise {
   padding-bottom: 50px;
+
+  #lbl_trainingsname {
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 15px black;
+    margin: 50px auto;
+  }
+
   .info-container {
     display: flex;
     flex-direction: column;
@@ -54,10 +63,12 @@
       font-size: 14px;
       border-radius: 5px;
       letter-spacing: 1.5px;
+      background: radial-gradient($color-primary-2, $color-primary-4);
+      box-shadow: 0 0 10px $color-main;
 
       .half {
         width: 40%;
-        border: 1px solid white;
+        border: 1px solid rgba(255, 255, 255, 0.284);
         padding: 10px;
         color: yellow;
         font-weight: bold;
@@ -68,6 +79,7 @@
           font-weight: bold;
           color: white;
           width: 60%;
+          text-align: right;
         }
       }
     }

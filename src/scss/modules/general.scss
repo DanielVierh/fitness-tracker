@@ -109,6 +109,8 @@ table {
     width: 100%;
     font-family: Arial, sans-serif;
     margin-bottom: 20px;
+    background: radial-gradient($color-primary-0, $color-primary-3);
+    box-shadow: 0 0 10px $color-main;
   }
   
   th,
