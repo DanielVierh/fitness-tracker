@@ -132,7 +132,7 @@
   width: 100%;
 
   form {
-    background-color: $color-primary-1;
+    background: linear-gradient(to bottom, $color-primary-3, $color-primary-4);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -141,6 +141,8 @@
     padding: 15px 70px;
     border-radius: 15px;
     width: 100%;
+    box-shadow: 0 0 10px $color-primary-2;
+    border: 1px solid rgba(255, 255, 255, 0.222);
 
     input {
       margin-bottom: 10px;
@@ -163,7 +165,7 @@
 
     .submitButton {
       margin: 40px auto;
-      background-color: $color-main;
+      background-color: $color-primary-2;
       width: 100px;
       height: 40px;
       border-radius: 10px;

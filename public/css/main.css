@@ -305,7 +305,7 @@ tr:nth-child(even) {
   width: 100%;
 }
 .newExercise form {
-  background-color: #748BA7;
+  background: linear-gradient(to bottom, #143153, #051C38);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -314,6 +314,8 @@ tr:nth-child(even) {
   padding: 15px 70px;
   border-radius: 15px;
   width: 100%;
+  box-shadow: 0 0 10px #4B688B;
+  border: 1px solid rgba(255, 255, 255, 0.222);
 }
 .newExercise form input {
   margin-bottom: 10px;
@@ -334,7 +336,7 @@ tr:nth-child(even) {
 }
 .newExercise form .submitButton {
   margin: 40px auto;
-  background-color: rgb(0, 200, 255);
+  background-color: #4B688B;
   width: 100px;
   height: 40px;
   border-radius: 10px;
