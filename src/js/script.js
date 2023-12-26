@@ -31,6 +31,8 @@ const trainings_wrapper = document.getElementById('trainings_wrapper');
 const last_training = document.getElementById('last_training');
 const btn_edit = document.getElementById('btn_edit');
 const exercise_table = document.getElementById('exercise_table');
+const lbl_exerciseRepeats = document.getElementById('lbl_exerciseRepeats');
+const lbl_exerciseSets = document.getElementById('lbl_exerciseSets');
 let inpExercise_Name = document.getElementById('inpExercise_Name');
 let inpExercise_Weight = document.getElementById('inpExercise_Weight');
 let inpExercise_Sets = document.getElementById('inpExercise_Sets');
@@ -510,9 +512,16 @@ function observer() {
         bdy.classList.remove('active-training');
         btn_finish.classList.remove('active-training');
     }
-
-
 }
+
+//* Slider
+
+inpExercise_Repeats.addEventListener('input', ()=> {
+    lbl_exerciseRepeats.innerHTML = inpExercise_Repeats.value;
+});
+inpExercise_Sets.addEventListener('input', ()=> {
+    lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
+});
 
 /////////////////////////////////////
 //* ANCHOR - finish training
@@ -668,4 +677,6 @@ function load_exercise_into_edit() {
     inpExercise_seatSettings.value = selected_Exercise.machine_seat_settings;
     muscle_select.value = selected_Exercise.musclegroup;
     training_Area.value = selected_Exercise.trainingsplace;
+    lbl_exerciseRepeats.innerHTML = inpExercise_Repeats.value;
+    lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
 }

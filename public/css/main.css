@@ -326,6 +326,20 @@ tr:nth-child(even) {
   letter-spacing: 2px;
   font-weight: bold;
 }
+.newExercise form .range-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: -30px 0 0 0;
+  padding: 0;
+}
+.newExercise form .range-wrapper .value-label {
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-top: 7px;
+  text-decoration: underline;
+}
 .newExercise form div {
   display: flex;
   justify-content: center;

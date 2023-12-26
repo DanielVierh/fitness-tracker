@@ -19,16 +19,24 @@
     </section>
 
 
-    <!-- Modal for new Exercise -->
-    <div class="modal-edit modal" id="modal_edit">
+<!-- !ANCHOR - Modal for new Exercise  -->
+       <div class="modal-edit modal" id="modal_edit">
         <div class="modal_close_btn">X</div>
         <h2>Übung erfassen</h2>
         <section class="newExercise">
             <form>
                 <input type="text" id="inpExercise_Name" placeholder="Übungsbezeichnung">
                 <input type="number" id="inpExercise_Weight" placeholder="Trainingsgewicht">
-                <input type="number" id="inpExercise_Sets" placeholder="Anzahl Sätze">
-                <input type="number" id="inpExercise_Repeats" placeholder="Anzahl Wiederholungen">
+                <p class="lbl">Anzahl Sätze</p>
+                <div class="range-wrapper">
+                    <input type="range" min="1" max="10" value="3" id="inpExercise_Sets"/>
+                    <p class="value-label" id="lbl_exerciseSets">3</p>
+                </div>
+                <p class="lbl">Anzahl Wiederholungen</p>
+                <div class="range-wrapper">
+                    <input type="range" min="1" max="50" value="10" id="inpExercise_Repeats"/>
+                    <p class="value-label" id="lbl_exerciseRepeats">10</p>
+                </div>
                 <input type="text" id="inpExercise_number" placeholder="Gerätenummer">
                 <input type="text" id="inpExercise_seatSettings" placeholder="Sitzeinstellungen">
                 <div>
@@ -48,6 +56,7 @@
                         <option value="Waden">Waden</option>
                         <option value="Beine">Beine</option>
                         <option value="Ganzkörper">Ganzkörper</option>
+                        <option value="Arme">Arme</option>
                     </select>
                 </div>
                 <div>
