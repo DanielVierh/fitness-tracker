@@ -326,12 +326,21 @@ tr:nth-child(even) {
   letter-spacing: 2px;
   font-weight: bold;
 }
+.newExercise form .lbl {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 0;
+  font-size: 12px;
+  color: white;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
 .newExercise form .range-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  margin: -30px 0 0 0;
+  margin: -15px 0 0 0;
   padding: 0;
 }
 .newExercise form .range-wrapper .value-label {
@@ -349,7 +358,7 @@ tr:nth-child(even) {
   width: 100%;
 }
 .newExercise form .submitButton {
-  margin: 40px auto;
+  margin: 20px auto;
   background-color: #4B688B;
   width: 100px;
   height: 40px;

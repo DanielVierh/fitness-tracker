@@ -25,7 +25,9 @@
         <h2>Übung erfassen</h2>
         <section class="newExercise">
             <form>
+                <p class="lbl">Übungsbezeichnung</p>
                 <input type="text" id="inpExercise_Name" placeholder="Übungsbezeichnung">
+                <p class="lbl">Trainingsgewicht</p>
                 <input type="number" id="inpExercise_Weight" placeholder="Trainingsgewicht">
                 <p class="lbl">Anzahl Sätze</p>
                 <div class="range-wrapper">
@@ -37,10 +39,12 @@
                     <input type="range" min="1" max="50" value="10" id="inpExercise_Repeats"/>
                     <p class="value-label" id="lbl_exerciseRepeats">10</p>
                 </div>
+                <p class="lbl">Gerätenummer (Fitti)</p>
                 <input type="text" id="inpExercise_number" placeholder="Gerätenummer">
+                <p class="lbl">Sitzeinstellungen (Fitti)</p>
                 <input type="text" id="inpExercise_seatSettings" placeholder="Sitzeinstellungen">
                 <div>
-                    <label>Muskelgruppe:</label>
+                    <label class="lbl">Muskelgruppe:</label>
                     <select name="muscleGroup" id="muscle_select">
                         <option value="">--auswählen-</option>
                         <option value="Nacken">Nacken</option>
@@ -60,7 +64,7 @@
                     </select>
                 </div>
                 <div>
-                    <label>Trainingsort:</label>
+                    <label class="lbl">Trainingsort:</label>
                     <select name="trainingArea" id="training_Area">
                         <option value="">--auswählen-</option>
                         <option value="Fitnessstudio">Fitnessstudio</option>
