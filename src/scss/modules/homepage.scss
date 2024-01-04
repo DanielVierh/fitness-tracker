@@ -69,3 +69,77 @@
         letter-spacing: 1.5px;
     }
 }
+
+.chart {
+    margin: 40px auto 80px auto;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 0 6px $color-main;
+    min-height: 400px;
+    overflow-x: scroll;
+    position: relative;
+
+    .chart__col {
+        position: absolute;
+        bottom: 0;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: bold;
+        background-color: $color-main;
+        color: black;
+        padding: 4px;
+        height: 10px;
+        width: 18px;
+    }
+
+    #col_1 {
+        left: 2%;
+        height: 200px;
+    }
+
+    #col_2 {
+        left: 10%;
+        height: 100px;
+    }
+
+    #col_3 {
+        left: 18%;
+        height: 350px;
+    }
+    #col_4 {
+        left: 26%;
+        height: 200px;
+    }
+    #col_5 {
+        left: 34%;
+    }
+    #col_6 {
+        left: 42%;
+        height: 400px;
+    }
+    #col_7 {
+        left: 50%;
+        height: 200px;
+    }
+    #col_8 {
+        left: 58%;
+        height: 300px;
+    }
+    #col_9 {
+        left: 66%;
+        height: 250px;
+    }
+    #col_10 {
+        left: 74%;
+        height: 200px;
+    }
+    #col_11 {
+        left: 82%;
+        height: 150px;
+    }
+    #col_12 {
+        left: 90%;
+        
+    }
+}
