@@ -85,9 +85,19 @@ function load_local_storage() {
             save_Object = JSON.parse(
                 localStorage.getItem('stored_fitness_saveobj'),
             );
+            
+            try {
+                training_running = save_Object.training_is_running;
+            } catch (error) {
+                console.log(error);
+            }
 
-            training_running = save_Object.training_is_running;
-            training_place_filter = save_Object.training_place_filter;
+            try {
+                training_place_filter = save_Object.training_place_filter;
+            } catch (error) {
+                console.log(error);
+            }
+           
             try {
                 const last = save_Object.trainings.length - 1;
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`;
@@ -101,10 +111,7 @@ function load_local_storage() {
             }, 500);
 
             try {
-                weeklylist = save_Object.saved_weekly_list;
-                if (weeklylist === undefined) {
-                    weeklylist = [];
-                }
+                fill_chart();
             } catch (error) {
                 console.log(error);
             }
@@ -122,6 +129,14 @@ function load_local_storage() {
     }
 }
 
+//########################################
+//* ANCHOR - Render Chart
+//########################################
+function fill_chart() {
+    const current_time_stamp = new Date();
+    const current_Year = current_time_stamp.getFullYear();
+    console.log('year', current_Year);
+}
 
 //########################################
 //* ANCHOR - Save to local Storage
@@ -217,28 +232,33 @@ function rnd_id() {
 /////////////////////////////////////
 
 function render_exercises() {
-
-    for (let i = 0; i < save_Object.exercises.length; i++) {
-        let exercisebtn = document.createElement('div');
-        exercisebtn.classList.add('exercise');
-        let exerciseName = save_Object.exercises[i].name;
-        try {
-            const currentSet = save_Object.current_training[`${indexOfExercise(save_Object.exercises[i], save_Object.current_training)}`].solved_sets;
-            exerciseName = `${save_Object.exercises[i].name} (${currentSet}/${save_Object.exercises[i].sets})`;
-            if(currentSet >= save_Object.exercises[i].sets) {
-                exercisebtn.classList.add('solved');
-            }else {
-                exercisebtn.classList.add('half-solved');
+    try {
+        for (let i = 0; i < save_Object.exercises.length; i++) {
+            let exercisebtn = document.createElement('div');
+            exercisebtn.classList.add('exercise');
+            let exerciseName = save_Object.exercises[i].name;
+            try {
+                const currentSet = save_Object.current_training[`${indexOfExercise(save_Object.exercises[i], save_Object.current_training)}`].solved_sets;
+                exerciseName = `${save_Object.exercises[i].name} (${currentSet}/${save_Object.exercises[i].sets})`;
+                if(currentSet >= save_Object.exercises[i].sets) {
+                    exercisebtn.classList.add('solved');
+                }else {
+                    exercisebtn.classList.add('half-solved');
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {}
-        exercisebtn.innerHTML = exerciseName;
-        exercisebtn.id = save_Object.exercises[i].exercise_id;
-        exercisebtn.addEventListener('click', () => {
-            selected_Exercise = save_Object.exercises[i];
-            open_exercise();
-        })
-
-        exercise_container.appendChild(exercisebtn);
+            exercisebtn.innerHTML = exerciseName;
+            exercisebtn.id = save_Object.exercises[i].exercise_id;
+            exercisebtn.addEventListener('click', () => {
+                selected_Exercise = save_Object.exercises[i];
+                open_exercise();
+            })
+    
+            exercise_container.appendChild(exercisebtn);
+        }
+    } catch (error) {
+        console.log(error);
     }
 
 }
