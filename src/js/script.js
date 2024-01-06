@@ -214,15 +214,14 @@ function fill_chart() {
     const month_arr = [jan, feb, mrz, apr, mai, jun, jul, aug, sep, okt, nov, dez];
 
     //* find max val;
-
     let max_per_month = 0;
-
     month_arr.forEach((month)=> {
         if(month > max_per_month) {
             max_per_month = month;
         }
     })
 
+    //* Render Col
     // max = 100% aka 350px
     let left = 2;
     month_arr.forEach((month, index)=> {
