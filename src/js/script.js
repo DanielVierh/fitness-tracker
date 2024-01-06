@@ -111,7 +111,7 @@ function load_local_storage() {
         try {
             const last = save_Object.trainings.length - 1;
             last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`;
-        } catch (error) { 
+        } catch (error) {
             console.log('last_training', error);
         }
 
@@ -125,9 +125,9 @@ function load_local_storage() {
         } catch (error) {
             console.log(error);
         }
-       
+
     }
-    if(save_Object === null) {
+    if (save_Object === null) {
         save_Object = {
             training_is_running: false,
             training_start: '',
@@ -166,7 +166,7 @@ function fill_chart() {
         const solved_year = splitVal(solved_Date, '.', 2);
         const solved_month = splitVal(solved_Date, '.', 1);
 
-        if(solved_year == current_Year) {
+        if (solved_year == current_Year) {
             switch (solved_month) {
                 case '01':
                     jan++;
@@ -204,7 +204,7 @@ function fill_chart() {
                 case '12':
                     dez++;
                     break;
-            
+
                 default:
                     break;
             }
@@ -215,8 +215,8 @@ function fill_chart() {
 
     //* find max val;
     let max_per_month = 0;
-    month_arr.forEach((month)=> {
-        if(month > max_per_month) {
+    month_arr.forEach((month) => {
+        if (month > max_per_month) {
             max_per_month = month;
         }
     })
@@ -224,7 +224,7 @@ function fill_chart() {
     //* Render Col
     // max = 100% aka 350px
     let left = 2;
-    month_arr.forEach((month, index)=> {
+    month_arr.forEach((month, index) => {
         const value_in_pixel = ((month * 350) / max_per_month);
         const col = `chart_col_${index + 1}`;
         document.getElementById(col).style.height = `${value_in_pixel}px`;
@@ -232,7 +232,7 @@ function fill_chart() {
         document.getElementById(col).innerHTML = document.getElementById(col).innerHTML + `</br> ${month}`;
         left = left += 8;
     })
-    
+
 }
 
 //########################################
