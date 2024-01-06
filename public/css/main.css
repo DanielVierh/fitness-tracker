@@ -212,6 +212,42 @@ tr:nth-child(even) {
   align-items: flex-start;
   text-align: center;
 }
+.chart .chart #col_1 {
+  left: 2%;
+}
+.chart .chart #col_2 {
+  left: 10%;
+}
+.chart .chart #col_3 {
+  left: 18%;
+}
+.chart .chart #col_4 {
+  left: 26%;
+}
+.chart .chart #col_5 {
+  left: 34%;
+}
+.chart .chart #col_6 {
+  left: 42%;
+}
+.chart .chart #col_7 {
+  left: 50%;
+}
+.chart .chart #col_8 {
+  left: 58%;
+}
+.chart .chart #col_9 {
+  left: 66%;
+}
+.chart .chart #col_10 {
+  left: 74%;
+}
+.chart .chart #col_11 {
+  left: 82%;
+}
+.chart .chart #col_12 {
+  left: 90%;
+}
 
 .modal {
   display: none;
