@@ -173,7 +173,6 @@ tr:nth-child(even) {
   align-items: center;
   background-color: transparent;
   height: 20vh;
-  overflow: scroll;
   padding-bottom: 50px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
@@ -193,7 +192,7 @@ tr:nth-child(even) {
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
   box-shadow: 0 0 6px rgb(0, 200, 255);
-  min-height: 400px;
+  height: 400px;
   overflow-x: scroll;
   position: relative;
 }
@@ -206,54 +205,12 @@ tr:nth-child(even) {
   background-color: rgb(0, 200, 255);
   color: black;
   padding: 4px;
-  height: 10px;
+  min-height: 10px;
   width: 18px;
-}
-.chart #col_1 {
-  left: 2%;
-  height: 200px;
-}
-.chart #col_2 {
-  left: 10%;
-  height: 100px;
-}
-.chart #col_3 {
-  left: 18%;
-  height: 350px;
-}
-.chart #col_4 {
-  left: 26%;
-  height: 200px;
-}
-.chart #col_5 {
-  left: 34%;
-}
-.chart #col_6 {
-  left: 42%;
-  height: 400px;
-}
-.chart #col_7 {
-  left: 50%;
-  height: 200px;
-}
-.chart #col_8 {
-  left: 58%;
-  height: 300px;
-}
-.chart #col_9 {
-  left: 66%;
-  height: 250px;
-}
-.chart #col_10 {
-  left: 74%;
-  height: 200px;
-}
-.chart #col_11 {
-  left: 82%;
-  height: 150px;
-}
-.chart #col_12 {
-  left: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: center;
 }
 
 .modal {

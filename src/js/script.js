@@ -82,41 +82,9 @@ window.onload = () => {
 function load_local_storage() {
     if (localStorage.getItem('stored_fitness_saveobj') != '') {
         try {
-            save_Object = JSON.parse(
-                localStorage.getItem('stored_fitness_saveobj'),
-            );
-            
-            try {
-                training_running = save_Object.training_is_running;
-            } catch (error) {
-                console.log(error);
-            }
-
-            try {
-                training_place_filter = save_Object.training_place_filter;
-            } catch (error) {
-                console.log(error);
-            }
-           
-            try {
-                const last = save_Object.trainings.length - 1;
-                last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`;
-            } catch (error) {}
-
-            console.log('saveobj', save_Object);
-
-            setTimeout(() => {
-                //* Render func
-                render_exercises();
-            }, 500);
-
-            try {
-                fill_chart();
-            } catch (error) {
-                console.log(error);
-            }
+            save_Object = JSON.parse(localStorage.getItem('stored_fitness_saveobj'));
         } catch (error) {
-            console.log(error);
+            console.log('Main Error', error);
             save_Object = {
                 training_is_running: false,
                 training_start: '',
@@ -125,8 +93,53 @@ function load_local_storage() {
                 current_training: [],
                 training_place_filter: '',
             };
+            save_into_storage();
         }
+
+        try {
+            training_running = save_Object.training_is_running;
+        } catch (error) {
+            console.log('training_running', error);
+        }
+
+        try {
+            training_place_filter = save_Object.training_place_filter;
+        } catch (error) {
+            console.log('training_place_filter', error);
+        }
+
+        try {
+            const last = save_Object.trainings.length - 1;
+            last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`;
+        } catch (error) { 
+            console.log('last_training', error);
+        }
+
+        setTimeout(() => {
+            //* Render func
+            render_exercises();
+        }, 500);
+
+        try {
+            fill_chart();
+        } catch (error) {
+            console.log(error);
+        }
+       
     }
+    if(save_Object === null) {
+        save_Object = {
+            training_is_running: false,
+            training_start: '',
+            exercises: [],
+            trainings: [],
+            current_training: [],
+            training_place_filter: '',
+        };
+        save_into_storage();
+        console.log('was null');
+    }
+    console.log('saveobj', save_Object);
 }
 
 //########################################
@@ -135,7 +148,102 @@ function load_local_storage() {
 function fill_chart() {
     const current_time_stamp = new Date();
     const current_Year = current_time_stamp.getFullYear();
-    console.log('year', current_Year);
+    let jan = 0;
+    let feb = 0;
+    let mrz = 0;
+    let apr = 0;
+    let mai = 0;
+    let jun = 0;
+    let jul = 0;
+    let aug = 0;
+    let sep = 0;
+    let okt = 0;
+    let nov = 0;
+    let dez = 0;
+
+    for (let i = 0; i < save_Object.trainings.length; i++) {
+        const solved_Date = save_Object.trainings[i].training_date;
+        const solved_year = splitVal(solved_Date, '.', 2);
+        const solved_month = splitVal(solved_Date, '.', 1);
+
+        if(solved_year == current_Year) {
+            switch (solved_month) {
+                case '01':
+                    jan++;
+                    break;
+                case '02':
+                    feb++;
+                    break;
+                case '03':
+                    mrz++;
+                    break;
+                case '04':
+                    apr++;
+                    break;
+                case '05':
+                    mai++;
+                    break;
+                case '06':
+                    jun++;
+                    break;
+                case '07':
+                    jul++;
+                    break;
+                case '08':
+                    aug++;
+                    break;
+                case '09':
+                    sep++;
+                    break;
+                case '10':
+                    okt++;
+                    break;
+                case '11':
+                    nov++;
+                    break;
+                case '12':
+                    dez++;
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+    }
+
+    const month_arr = [jan, feb, mrz, apr, mai, jun, jul, aug, sep, okt, nov, dez];
+
+    //* find max val;
+
+    let max_per_month = 0;
+
+    month_arr.forEach((month)=> {
+        if(month > max_per_month) {
+            max_per_month = month;
+        }
+    })
+
+    // max = 100% aka 350px
+    let left = 2;
+    month_arr.forEach((month, index)=> {
+        const value_in_pixel = ((month * 350) / max_per_month);
+        const col = `chart_col_${index + 1}`;
+        document.getElementById(col).style.height = `${value_in_pixel}px`;
+        document.getElementById(col).style.left = `${left}%`;
+        document.getElementById(col).innerHTML = document.getElementById(col).innerHTML + `</br> ${month}`;
+        left = left += 8;
+    })
+    
+}
+
+//########################################
+//* ANCHOR - Split Function
+//########################################
+
+function splitVal(val, marker, pos) {
+    const elem = val.split(marker);
+    const retVal = elem[pos];
+    return retVal;
 }
 
 //########################################
@@ -194,7 +302,7 @@ class Exercise {
 //* ANCHOR - Class for Modal
 /////////////////////////////////////
 
-class Modal{
+class Modal {
 
     static modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings];
 
@@ -240,9 +348,9 @@ function render_exercises() {
             try {
                 const currentSet = save_Object.current_training[`${indexOfExercise(save_Object.exercises[i], save_Object.current_training)}`].solved_sets;
                 exerciseName = `${save_Object.exercises[i].name} (${currentSet}/${save_Object.exercises[i].sets})`;
-                if(currentSet >= save_Object.exercises[i].sets) {
+                if (currentSet >= save_Object.exercises[i].sets) {
                     exercisebtn.classList.add('solved');
-                }else {
+                } else {
                     exercisebtn.classList.add('half-solved');
                 }
             } catch (error) {
@@ -254,7 +362,7 @@ function render_exercises() {
                 selected_Exercise = save_Object.exercises[i];
                 open_exercise();
             })
-    
+
             exercise_container.appendChild(exercisebtn);
         }
     } catch (error) {
@@ -338,7 +446,7 @@ function open_exercise() {
     try {
         const currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
         lbl_donesets.innerHTML = `${currentSet}`;
-    } catch (error) {}
+    } catch (error) { }
     lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
 
     const trainingamount = save_Object.trainings.length - 1;
@@ -354,13 +462,13 @@ function open_exercise() {
 
         for (let j = 0; j < exc.length; j++) {
             is_in = false;
-            if(exc[j].exercise_id === selected_Exercise.exercise_id) {
+            if (exc[j].exercise_id === selected_Exercise.exercise_id) {
                 is_in = true;
                 only_ecercise = exc[j];
                 break;
             }
         }
-        if(is_in === true) {
+        if (is_in === true) {
             const tableContainer = createTable(`${title} - ${duration}`, only_ecercise, true);
             exercise_table.appendChild(tableContainer);
         }
@@ -536,10 +644,10 @@ function observer() {
 
 //* Slider
 
-inpExercise_Repeats.addEventListener('input', ()=> {
+inpExercise_Repeats.addEventListener('input', () => {
     lbl_exerciseRepeats.innerHTML = inpExercise_Repeats.value;
 });
-inpExercise_Sets.addEventListener('input', ()=> {
+inpExercise_Sets.addEventListener('input', () => {
     lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
 });
 
@@ -657,7 +765,7 @@ function createTable(title, data, only_exercise) {
         row.appendChild(muscleCell);
         table.appendChild(row);
     }
-    if(only_exercise) {
+    if (only_exercise) {
         const row = document.createElement("tr");
         const nameCell = document.createElement("td");
         const weightCell = document.createElement("td");
