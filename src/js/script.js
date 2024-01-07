@@ -148,6 +148,8 @@ function load_local_storage() {
 function fill_chart() {
     const current_time_stamp = new Date();
     const current_Year = current_time_stamp.getFullYear();
+    const training_counter = document.getElementById('training_counter');
+
     let jan = 0;
     let feb = 0;
     let mrz = 0;
@@ -161,6 +163,7 @@ function fill_chart() {
     let nov = 0;
     let dez = 0;
     let last_day = '';
+    let sum = 0;
 
     for (let i = 0; i < save_Object.trainings.length; i++) {
         const solved_Date = save_Object.trainings[i].training_date;
@@ -171,6 +174,8 @@ function fill_chart() {
 
         if (solved_year == current_Year && day_Month !== last_day) {
             last_day = day_Month;
+            sum ++;
+
             switch (solved_month) {
                 case '01':
                     jan++;
@@ -237,6 +242,7 @@ function fill_chart() {
         left = left += 8;
     })
 
+    training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstage`;
 }
 
 //########################################
