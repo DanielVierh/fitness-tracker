@@ -359,7 +359,7 @@ function prepare_render_exercise() {
         if(exercise.trainingsplace === 'Heimtraining') {
             home_array.push(exercise);
         }
-        if(exercise.trainingsplace === 'Kombo') {
+        if(exercise.trainingsplace === 'Kombo' || exercise.trainingsplace === '') {
             combo_array.push(exercise);
         }
         if(exercise.trainingsplace === 'Fitnessstudio') {
