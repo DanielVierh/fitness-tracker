@@ -145,6 +145,11 @@ tr:nth-child(even) {
   border-radius: 8px;
   background: linear-gradient(to left, #2B4A6F, transparent);
 }
+.homepage .exercises .exercise-place-label {
+  color: rgb(0, 200, 255);
+  font-size: 16px;
+  text-shadow: 0 3px 10px black;
+}
 .homepage .exercises .exercise {
   background: linear-gradient(to right, #2B4A6F, transparent);
   border: 1px solid rgba(255, 255, 255, 0.151);

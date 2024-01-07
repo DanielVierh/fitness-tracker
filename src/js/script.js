@@ -117,7 +117,8 @@ function load_local_storage() {
 
         setTimeout(() => {
             //* Render func
-            render_exercises();
+            //render_exercises();
+            prepare_render_exercise();
         }, 500);
 
         try {
@@ -348,16 +349,46 @@ function rnd_id() {
 //* ANCHOR - Render exercises
 /////////////////////////////////////
 
-function render_exercises() {
+function prepare_render_exercise() {
+    let home_array = [];
+    let fitti_array = [];
+    let combo_array = [];
+    const srcArray = save_Object.exercises;
+    
+    srcArray.forEach((exercise) => {
+        if(exercise.trainingsplace === 'Heimtraining') {
+            home_array.push(exercise);
+        }
+        if(exercise.trainingsplace === 'Kombo') {
+            combo_array.push(exercise);
+        }
+        if(exercise.trainingsplace === 'Fitnessstudio') {
+            fitti_array.push(exercise);
+        }
+    });
+
+    render_exercises(home_array,'Heimtraining');
+    render_exercises(combo_array, '');
+    render_exercises(fitti_array,'Fitnessstudio');
+}
+
+function render_exercises(exerc_array, label) {
     try {
-        for (let i = 0; i < save_Object.exercises.length; i++) {
+        if(label.length > 1) {
+            let exercise_place_label = document.createElement('h3');
+            exercise_place_label.innerHTML = label;
+            exercise_place_label.classList.add('exercise-place-label')
+            exercise_container.appendChild(exercise_place_label);
+        }
+
+        for (let i = 0; i < exerc_array.length; i++) {
             let exercisebtn = document.createElement('div');
             exercisebtn.classList.add('exercise');
-            let exerciseName = save_Object.exercises[i].name;
+            let exerciseName = exerc_array[i].name;
             try {
-                const currentSet = save_Object.current_training[`${indexOfExercise(save_Object.exercises[i], save_Object.current_training)}`].solved_sets;
-                exerciseName = `${save_Object.exercises[i].name} (${currentSet}/${save_Object.exercises[i].sets})`;
-                if (currentSet >= save_Object.exercises[i].sets) {
+                const currentSet = save_Object.current_training[`${indexOfExercise(exerc_array[i], save_Object.current_training)}`].solved_sets;
+                exerciseName = `${exerc_array[i].name} (${currentSet}/${exerc_array[i].sets})`;
+                if (currentSet >= exerc_array[i].sets) {
                     exercisebtn.classList.add('solved');
                 } else {
                     exercisebtn.classList.add('half-solved');
@@ -366,9 +397,9 @@ function render_exercises() {
                 console.log(error);
             }
             exercisebtn.innerHTML = exerciseName;
-            exercisebtn.id = save_Object.exercises[i].exercise_id;
+            exercisebtn.id = exerc_array[i].exercise_id;
             exercisebtn.addEventListener('click', () => {
-                selected_Exercise = save_Object.exercises[i];
+                selected_Exercise = exerc_array[i];
                 open_exercise();
             })
 

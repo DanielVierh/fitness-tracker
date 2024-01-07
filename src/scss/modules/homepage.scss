@@ -22,6 +22,12 @@
         border-radius: 8px;
         background: linear-gradient(to left, $color-primary-0, transparent);
 
+        .exercise-place-label {
+          color: $color-main;
+          font-size: 16px;
+          text-shadow: 0 3px 10px black;
+        }
+
         .exercise {
             background: linear-gradient(to right, $color-primary-0, transparent);
             border: 1px solid rgba(255, 255, 255, 0.151);
