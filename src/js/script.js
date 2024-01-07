@@ -160,13 +160,17 @@ function fill_chart() {
     let okt = 0;
     let nov = 0;
     let dez = 0;
+    let last_day = '';
 
     for (let i = 0; i < save_Object.trainings.length; i++) {
         const solved_Date = save_Object.trainings[i].training_date;
         const solved_year = splitVal(solved_Date, '.', 2);
         const solved_month = splitVal(solved_Date, '.', 1);
+        const solved_day = splitVal(solved_Date, '.', 0);
+        const day_Month = solved_day + solved_month;
 
-        if (solved_year == current_Year) {
+        if (solved_year == current_Year && day_Month !== last_day) {
+            last_day = day_Month;
             switch (solved_month) {
                 case '01':
                     jan++;
