@@ -11,7 +11,6 @@ const modal_exercise = document.getElementById("modal_exercise");
 const modal_settings = document.getElementById("modal_settings");
 const btn_home = document.getElementById("btn_home");
 const btn_open_edit = document.getElementById("btn_open_edit");
-const btn_settings = document.getElementById("btn_settings");
 const modal_close_btn = document.querySelectorAll('.modal_close_btn');
 const lbl_trainingsname = document.getElementById('lbl_trainingsname');
 const lbl_weight = document.getElementById('lbl_weight');
@@ -33,6 +32,7 @@ const btn_edit = document.getElementById('btn_edit');
 const exercise_table = document.getElementById('exercise_table');
 const lbl_exerciseRepeats = document.getElementById('lbl_exerciseRepeats');
 const lbl_exerciseSets = document.getElementById('lbl_exerciseSets');
+const btn_gotoSolvedTrainings = document.getElementById('btn_gotoSolvedTrainings');
 let inpExercise_Name = document.getElementById('inpExercise_Name');
 let inpExercise_Weight = document.getElementById('inpExercise_Weight');
 let inpExercise_Sets = document.getElementById('inpExercise_Sets');
@@ -117,7 +117,6 @@ function load_local_storage() {
 
         setTimeout(() => {
             //* Render func
-            //render_exercises();
             prepare_render_exercise();
         }, 500);
 
@@ -639,9 +638,6 @@ btn_edit.addEventListener('click', () => {
     load_exercise_into_edit();
 });
 
-btn_settings.addEventListener('click', () => {
-    Modal.open_modal(modal_settings);
-});
 
 btn_add.addEventListener('click', () => {
     Modal.open_modal(modal_edit);
@@ -649,7 +645,11 @@ btn_add.addEventListener('click', () => {
 });
 
 btn_show_trainings.addEventListener('click', () => {
-    // open_modal(modal_trainings);
+    Modal.open_modal(modal_trainings);
+    render_trainings();
+})
+
+btn_gotoSolvedTrainings.addEventListener('click', ()=> {
     Modal.open_modal(modal_trainings);
     render_trainings();
 })
