@@ -775,7 +775,7 @@ function createTable(title, data, only_exercise) {
     const repsHeaderCell = document.createElement("th");
     const setsHeaderCell = document.createElement("th");
     const muscleHeaderCell = document.createElement("th");
-    nameHeaderCell.appendChild(document.createTextNode("Name"));
+    nameHeaderCell.appendChild(document.createTextNode("Übung"));
     weightHeaderCell.appendChild(document.createTextNode("Gew"));
     repsHeaderCell.appendChild(document.createTextNode("Wdh"));
     setsHeaderCell.appendChild(document.createTextNode("Sätze"));
