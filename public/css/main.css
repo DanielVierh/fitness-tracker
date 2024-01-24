@@ -146,7 +146,7 @@ tr:nth-child(even) {
   background: linear-gradient(to left, #2B4A6F, transparent);
 }
 .homepage .exercises .exercise-place-label {
-  color: rgb(0, 200, 255);
+  color: yellow;
   font-size: 16px;
   text-shadow: 0 3px 10px black;
 }
