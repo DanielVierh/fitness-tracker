@@ -792,6 +792,8 @@ function identify_trainingsplace(training) {
         return 'Fitti';
     }else if(heimtraining > fitnessstudio || heimtraining > otherTrainingsplace) {
         return 'Home';
+    }else {
+        return 'Kombo'
     }
 }
 
