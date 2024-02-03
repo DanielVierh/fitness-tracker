@@ -293,7 +293,7 @@ class Exercise {
     }
 
     show_exercise_in_console() {
-        console.log(`ID=${this.exercise_id}
+        console.log(`%c ID=${this.exercise_id}
         Name = ${this.name} \n
         Gewicht = ${this.weight} \n
         Sätze = ${this.sets} \n
@@ -302,7 +302,7 @@ class Exercise {
         Geräteeinstellungen = ${this.machine_seat_settings} \n
         Muskelgruppe = ${this.musclegroup} \n
         Trainingsort = ${this.trainingsplace} \n
-        SolvedSets = ${this.solved_sets}`);
+        SolvedSets = ${this.solved_sets}`, 'color: green;');
     }
 
 }
@@ -658,6 +658,7 @@ btn_show_trainings.addEventListener('click', () => {
 btn_gotoSolvedTrainings.addEventListener('click', ()=> {
     Modal.open_modal(modal_trainings);
     render_trainings();
+    console.log('%c Feffe', `color: green; font-weight: bold; font-size: 20px;`);
 })
 
 btn_home.addEventListener('click', () => {
@@ -767,10 +768,31 @@ function render_trainings() {
         const title = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
-        const tableContainer = createTable(`${title} - ${duration}`, exc);
+        const traintingsplace = identify_trainingsplace(exc);
+        const tableContainer = createTable(`${title} - ${duration} - ${traintingsplace}`, exc);
         trainings_wrapper.appendChild(tableContainer);
     }
+}
 
+function identify_trainingsplace(training) {
+    let fitnessstudio = 0;
+    let otherTrainingsplace = 0;
+    let heimtraining = 0;
+
+    for(let i = 0; i < training.length; i++) {
+        if(training[i].trainingsplace === 'Fitnessstudio') {
+            fitnessstudio++
+        }else if(training[i].trainingsplace === 'Heimtraining') {
+            heimtraining++;
+        }else {
+            otherTrainingsplace++; 
+        }
+    }
+    if(fitnessstudio >= otherTrainingsplace) {
+        return 'Fitti';
+    }else if(heimtraining > fitnessstudio || heimtraining > otherTrainingsplace) {
+        return 'Home';
+    }
 }
 
 function createTable(title, data, only_exercise) {
