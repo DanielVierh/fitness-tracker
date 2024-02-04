@@ -353,7 +353,7 @@ function prepare_render_exercise() {
     let fitti_array = [];
     let combo_array = [];
     const srcArray = save_Object.exercises;
-    
+
     srcArray.forEach((exercise) => {
         if(exercise.trainingsplace === 'Heimtraining') {
             home_array.push(exercise);
@@ -774,6 +774,11 @@ function render_trainings() {
     }
 }
 
+
+/////////////////////////////////////
+//* ANCHOR - Identify Trainingsplace
+//TODO - Show other Trainingsplace
+/////////////////////////////////////
 function identify_trainingsplace(training) {
     let fitnessstudio = 0;
     let otherTrainingsplace = 0;
@@ -785,7 +790,7 @@ function identify_trainingsplace(training) {
         }else if(training[i].trainingsplace === 'Heimtraining') {
             heimtraining++;
         }else {
-            otherTrainingsplace++; 
+            otherTrainingsplace++;
         }
     }
     if(fitnessstudio >= otherTrainingsplace) {
