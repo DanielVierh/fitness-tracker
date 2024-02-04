@@ -191,6 +191,25 @@ tr:nth-child(even) {
   letter-spacing: 1.5px;
 }
 
+.statistic-headline {
+  width: 100%;
+  text-align: center;
+  margin: 30px auto 0 auto;
+}
+
+.select-year {
+  margin: 15px auto -20px 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 40px;
+  background-color: black;
+  color: rgb(0, 200, 255);
+  border-radius: 10px;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .chart {
   margin: 40px auto 80px auto;
   padding: 10px;

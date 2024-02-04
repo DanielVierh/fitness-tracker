@@ -143,6 +143,16 @@ function load_local_storage() {
     console.log('saveobj', save_Object);
 }
 
+
+//########################################
+//* ANCHOR - Show selected Trainingsyear
+//########################################
+change_StatisticYear.addEventListener('change', ()=> {
+    const selected_year = change_StatisticYear.value;
+    fill_chart(selected_year);
+});
+
+
 //########################################
 //* ANCHOR - Render Chart
 //########################################
@@ -154,7 +164,11 @@ function fill_chart(selct_year) {
     if(selct_year !== undefined) {
         current_time_stamp = new Date(`01.01.${selct_year}`);
         current_Year = current_time_stamp.getFullYear();
+        alert(`current_time_stamp ${current_time_stamp}`);
+        alert(`current_Year: ${current_Year}`)
     }
+
+
 
     let jan = 0;
     let feb = 0;
@@ -889,9 +903,3 @@ function load_exercise_into_edit() {
     lbl_exerciseRepeats.innerHTML = inpExercise_Repeats.value;
     lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
 }
-
-
-change_StatisticYear.addEventListener('change', ()=> {
-    const selected_year = change_StatisticYear.value;
-    fill_chart(selected_year);
-})
