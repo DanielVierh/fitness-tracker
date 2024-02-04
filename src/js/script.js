@@ -242,7 +242,7 @@ function fill_chart() {
         left = left += 8;
     })
 
-    training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstage`;
+    training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstage im Jahr ${current_Year}`;
 }
 
 //########################################
