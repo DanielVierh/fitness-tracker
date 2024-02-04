@@ -33,6 +33,7 @@ const exercise_table = document.getElementById('exercise_table');
 const lbl_exerciseRepeats = document.getElementById('lbl_exerciseRepeats');
 const lbl_exerciseSets = document.getElementById('lbl_exerciseSets');
 const btn_gotoSolvedTrainings = document.getElementById('btn_gotoSolvedTrainings');
+const change_StatisticYear = document.getElementById('statisticYear_select');
 let inpExercise_Name = document.getElementById('inpExercise_Name');
 let inpExercise_Weight = document.getElementById('inpExercise_Weight');
 let inpExercise_Sets = document.getElementById('inpExercise_Sets');
@@ -145,10 +146,15 @@ function load_local_storage() {
 //########################################
 //* ANCHOR - Render Chart
 //########################################
-function fill_chart() {
-    const current_time_stamp = new Date();
-    const current_Year = current_time_stamp.getFullYear();
+function fill_chart(selct_year) {
+    let current_time_stamp = new Date();
+    let current_Year = current_time_stamp.getFullYear();
     const training_counter = document.getElementById('training_counter');
+
+    if(selct_year !== undefined) {
+        current_time_stamp = new Date(`01.01.${selct_year}`);
+        current_Year = current_time_stamp.getFullYear();
+    }
 
     let jan = 0;
     let feb = 0;
@@ -883,3 +889,9 @@ function load_exercise_into_edit() {
     lbl_exerciseRepeats.innerHTML = inpExercise_Repeats.value;
     lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
 }
+
+
+change_StatisticYear.addEventListener('change', ()=> {
+    const selected_year = change_StatisticYear.value;
+    fill_chart(selected_year);
+})
