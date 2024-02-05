@@ -162,7 +162,7 @@ function fill_chart(selct_year) {
     const training_counter = document.getElementById('training_counter');
 
     if(selct_year !== undefined) {
-        current_time_stamp = new Date(`01.01.${selct_year}`);
+        current_time_stamp = new Date(`${selct_year}-01-01`);
         current_Year = current_time_stamp.getFullYear();
         alert(`current_time_stamp ${current_time_stamp}`);
         alert(`current_Year: ${current_Year}`)
