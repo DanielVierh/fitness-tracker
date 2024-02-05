@@ -146,6 +146,8 @@ function load_local_storage() {
 
 //########################################
 //* ANCHOR - Show selected Trainingsyear
+//TODO - Add dynamic years, wich contains real trainingdata and not just 2023 and 2024
+//TODO - The years are currently hard coded in html
 //########################################
 change_StatisticYear.addEventListener('change', ()=> {
     const selected_year = change_StatisticYear.value;
