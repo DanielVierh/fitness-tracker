@@ -164,8 +164,6 @@ function fill_chart(selct_year) {
     if(selct_year !== undefined) {
         current_time_stamp = new Date(`${selct_year}-01-01`);
         current_Year = current_time_stamp.getFullYear();
-        alert(`current_time_stamp ${current_time_stamp}`);
-        alert(`current_Year: ${current_Year}`)
     }
 
 
@@ -241,6 +239,7 @@ function fill_chart(selct_year) {
     }
 
     const month_arr = [jan, feb, mrz, apr, mai, jun, jul, aug, sep, okt, nov, dez];
+    const month_Descr_arr = ['Jan', 'Feb', 'Mrz', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
 
     //* find max val;
     let max_per_month = 0;
@@ -258,7 +257,7 @@ function fill_chart(selct_year) {
         const col = `chart_col_${index + 1}`;
         document.getElementById(col).style.height = `${value_in_pixel}px`;
         document.getElementById(col).style.left = `${left}%`;
-        document.getElementById(col).innerHTML = document.getElementById(col).innerHTML + `</br> ${month}`;
+        document.getElementById(col).innerHTML = month_Descr_arr[index] + `</br> ${month}`;
         left = left += 8;
     })
 
