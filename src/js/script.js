@@ -111,7 +111,21 @@ function load_local_storage() {
 
         try {
             const last = save_Object.trainings.length - 1;
-            last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration}`;
+           
+            const today = new Date();
+            const last_trainingsdate_Raw = save_Object.trainings[last].training_date
+            const lastTrainingDay = splitVal(last_trainingsdate_Raw, '.', 0);
+            const lastTrainingMonth = splitVal(last_trainingsdate_Raw, '.', 1);
+            const lastTrainingYear = splitVal(last_trainingsdate_Raw, '.', 2);
+            const lastTrainingDate = new Date(`${lastTrainingYear}-${lastTrainingMonth}-${lastTrainingDay}`)
+            const time_to_last_training = daysDiff(today, lastTrainingDate);
+           
+            if(time_to_last_training > 1) {
+                last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tag(en)`;
+            }else {
+                last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tag`;
+            }
+           
         } catch (error) {
             console.log('last_training', error);
         }
@@ -647,6 +661,12 @@ function add_zero(val) {
         val = `0${val}`;
     }
     return val;
+}
+
+function daysDiff(dateTimeValue2, dateTimeValue1) {
+    var differenceValue = (dateTimeValue2.getTime() - dateTimeValue1.getTime()) / (1000 * 60 * 60 * 24);
+    const days = Math.floor(Math.abs(differenceValue));
+    return days;
 }
 
 
