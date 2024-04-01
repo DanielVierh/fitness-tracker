@@ -834,13 +834,17 @@ function identify_trainingsplace(training) {
             otherTrainingsplace++;
         }
     }
-    if(fitnessstudio >= otherTrainingsplace) {
+    if(fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
         return 'Fitti';
-    }else if(heimtraining > fitnessstudio || heimtraining > otherTrainingsplace) {
+    } 
+
+    if(otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
+        return 'Sonstiges';
+    } 
+
+    if(heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
         return 'Home';
-    }else {
-        return 'Kombo'
-    }
+    } 
 }
 
 function createTable(title, data, only_exercise) {
