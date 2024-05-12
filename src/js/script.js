@@ -42,7 +42,7 @@ let inpExercise_number = document.getElementById('inpExercise_number');
 let inpExercise_seatSettings = document.getElementById('inpExercise_seatSettings');
 let muscle_select = document.getElementById('muscle_select');
 let training_Area = document.getElementById('training_Area');
-
+const active_training_sect = document.getElementById('active_training_sect');
 
 
 
@@ -111,7 +111,7 @@ function load_local_storage() {
 
         try {
             const last = save_Object.trainings.length - 1;
-           
+
             const today = new Date();
             const last_trainingsdate_Raw = save_Object.trainings[last].training_date
             const lastTrainingDay = splitVal(last_trainingsdate_Raw, '.', 0);
@@ -119,13 +119,13 @@ function load_local_storage() {
             const lastTrainingYear = splitVal(last_trainingsdate_Raw, '.', 2);
             const lastTrainingDate = new Date(`${lastTrainingYear}-${lastTrainingMonth}-${lastTrainingDay}`)
             const time_to_last_training = daysDiff(today, lastTrainingDate);
-           
-            if(time_to_last_training > 1) {
+
+            if (time_to_last_training > 1) {
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tag(en)`;
-            }else {
+            } else {
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tag`;
             }
-           
+
         } catch (error) {
             console.log('last_training', error);
         }
@@ -163,7 +163,7 @@ function load_local_storage() {
 //TODO - Add dynamic years, wich contains real trainingdata and not just 2023 and 2024
 //TODO - The years are currently hard coded in html
 //########################################
-change_StatisticYear.addEventListener('change', ()=> {
+change_StatisticYear.addEventListener('change', () => {
     const selected_year = change_StatisticYear.value;
     fill_chart(selected_year);
 });
@@ -177,7 +177,7 @@ function fill_chart(selct_year) {
     let current_Year = current_time_stamp.getFullYear();
     const training_counter = document.getElementById('training_counter');
 
-    if(selct_year !== undefined) {
+    if (selct_year !== undefined) {
         current_time_stamp = new Date(`${selct_year}-01-01`);
         current_Year = current_time_stamp.getFullYear();
     }
@@ -208,7 +208,7 @@ function fill_chart(selct_year) {
 
         if (solved_year == current_Year && day_Month !== last_day) {
             last_day = day_Month;
-            sum ++;
+            sum++;
 
             switch (solved_month) {
                 case '01':
@@ -390,25 +390,25 @@ function prepare_render_exercise() {
     const srcArray = save_Object.exercises;
 
     srcArray.forEach((exercise) => {
-        if(exercise.trainingsplace === 'Heimtraining') {
+        if (exercise.trainingsplace === 'Heimtraining') {
             home_array.push(exercise);
         }
-        if(exercise.trainingsplace === 'Kombo' || exercise.trainingsplace === '') {
+        if (exercise.trainingsplace === 'Kombo' || exercise.trainingsplace === '') {
             combo_array.push(exercise);
         }
-        if(exercise.trainingsplace === 'Fitnessstudio') {
+        if (exercise.trainingsplace === 'Fitnessstudio') {
             fitti_array.push(exercise);
         }
     });
 
-    render_exercises(home_array,'Heimtraining');
+    render_exercises(home_array, 'Heimtraining');
     render_exercises(combo_array, '');
-    render_exercises(fitti_array,'Fitnessstudio');
+    render_exercises(fitti_array, 'Fitnessstudio');
 }
 
 function render_exercises(exerc_array, label) {
     try {
-        if(label.length > 1) {
+        if (label.length > 1) {
             let exercise_place_label = document.createElement('h3');
             exercise_place_label.innerHTML = label;
             exercise_place_label.classList.add('exercise-place-label')
@@ -420,8 +420,8 @@ function render_exercises(exerc_array, label) {
             exercisebtn.classList.add('exercise');
             let exerciseName = exerc_array[i].name;
             console.log('exerc_array', exerc_array);
-            if(exerc_array[i].trainingsplace == "Fitnessstudio") {
-                exerciseName = `Nr.${exerc_array[i].machineNumber} - ` +  exerc_array[i].name;
+            if (exerc_array[i].trainingsplace == "Fitnessstudio") {
+                exerciseName = `Nr.${exerc_array[i].machineNumber} - ` + exerc_array[i].name;
             }
             try {
                 const currentSet = save_Object.current_training[`${indexOfExercise(exerc_array[i], save_Object.current_training)}`].solved_sets;
@@ -696,7 +696,7 @@ btn_show_trainings.addEventListener('click', () => {
     render_trainings();
 })
 
-btn_gotoSolvedTrainings.addEventListener('click', ()=> {
+btn_gotoSolvedTrainings.addEventListener('click', () => {
     Modal.open_modal(modal_trainings);
     render_trainings();
     console.log('%c Feffe', `color: green; font-weight: bold; font-size: 20px;`);
@@ -722,13 +722,48 @@ function observer() {
     if (training_running) {
         bdy.classList.add('active-training');
         btn_finish.classList.add('active-training');
-        //TODO - Training diff hochzählen
+        //* Show Active Training section
+        active_training_sect.classList.add('active');
+        //* Update Time Label
+        const trainingsdate = new Date(save_Object.training_start)
+        const trainingsEnd_timestamp = new Date();
+        const duration = minutesDiff(trainingsEnd_timestamp, trainingsdate);
+        document.getElementById('lbl_time').innerHTML = `Zeit: ${duration}`;
+        //*Update solved sets
+        document.getElementById('lbl_sets').innerHTML = `Absolvierte Sätze: ${sum_of_sets()}`
+        //*Update moved Weight     
+        document.getElementById('lbl_weight').innerHTML = `Bewegtes Gewicht: ${sum_of_weight()} Kg`
+
 
     } else {
         bdy.classList.remove('active-training');
         btn_finish.classList.remove('active-training');
     }
 }
+
+function sum_of_sets() {
+    let solvedSets = 0;
+    for(let i = 0; i < save_Object.current_training.length; i++) {
+        solvedSets = solvedSets += save_Object.current_training[i].solved_sets;
+    }
+    return solvedSets;
+}
+
+function sum_of_weight() {
+    let weight = 0;
+
+    for(let i = 0; i < save_Object.current_training.length; i++) {
+        const solvedSets = save_Object.current_training[i].solved_sets;
+        weight = weight += (save_Object.current_training[i].weight * solvedSets * save_Object.current_training[i].repeats);
+    }
+    weight = numberWithCommas(weight);
+    return weight;
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 
 //* Slider
 
@@ -825,26 +860,26 @@ function identify_trainingsplace(training) {
     let otherTrainingsplace = 0;
     let heimtraining = 0;
 
-    for(let i = 0; i < training.length; i++) {
-        if(training[i].trainingsplace === 'Fitnessstudio') {
+    for (let i = 0; i < training.length; i++) {
+        if (training[i].trainingsplace === 'Fitnessstudio') {
             fitnessstudio++
-        }else if(training[i].trainingsplace === 'Heimtraining') {
+        } else if (training[i].trainingsplace === 'Heimtraining') {
             heimtraining++;
-        }else {
+        } else {
             otherTrainingsplace++;
         }
     }
-    if(fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
+    if (fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
         return 'Fitti';
-    } 
+    }
 
-    if(otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
+    if (otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
         return 'Sonstiges';
-    } 
+    }
 
-    if(heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
+    if (heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
         return 'Home';
-    } 
+    }
 }
 
 function createTable(title, data, only_exercise) {

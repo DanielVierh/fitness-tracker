@@ -1,78 +1,79 @@
 @import "../variables.scss";
+
 .homepage {
-    text-align: center;
-    z-index: 1;
+  text-align: center;
+  z-index: 1;
 
-    h1 {
-        color: $color-main;
-        font-size: 7vw;
-        text-shadow: 0 0 5px $color-main;
-        letter-spacing: 3px;
+  h1 {
+    color: $color-main;
+    font-size: 7vw;
+    text-shadow: 0 0 5px $color-main;
+    letter-spacing: 3px;
+  }
+
+
+  .exercises {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    height: 40vh;
+    overflow: scroll;
+    padding-bottom: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    background: linear-gradient(to left, $color-primary-0, transparent);
+
+    .exercise-place-label {
+      color: yellow;
+      font-size: 16px;
+      text-shadow: 0 3px 10px black;
     }
 
+    .exercise {
+      background: linear-gradient(to right, $color-primary-0, transparent);
+      border: 1px solid rgba(255, 255, 255, 0.151);
+      color: white;
+      font-weight: bold;
+      letter-spacing: 2px;
+      min-height: 40px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 6px $color-main;
 
-    .exercises {
-        display: flex;
-        flex-direction: column;
-        background-color: transparent;
-        height: 40vh;
-        overflow: scroll;
-        padding-bottom: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        border-radius: 8px;
-        background: linear-gradient(to left, $color-primary-0, transparent);
+      &.half-solved {
+        background-color: yellow;
+        color: black;
+      }
 
-        .exercise-place-label {
-          color: yellow;
-          font-size: 16px;
-          text-shadow: 0 3px 10px black;
-        }
-
-        .exercise {
-            background: linear-gradient(to right, $color-primary-0, transparent);
-            border: 1px solid rgba(255, 255, 255, 0.151);
-            color: white;
-            font-weight: bold;
-            letter-spacing: 2px;
-            min-height: 40px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 6px $color-main;
-
-            &.half-solved {
-                background-color: yellow;
-                color: black;
-            }
-
-            &.solved {
-                background-color: green;
-            }
-        }
+      &.solved {
+        background-color: green;
+      }
     }
+  }
 
 }
 
 .last-trainings {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: transparent;
-    height: 20vh;
-    padding-bottom: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
-    box-shadow: 0 0 6px $color-main;
-    background: linear-gradient(to bottom, $color-primary-4, transparent);
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+  height: 20vh;
+  padding-bottom: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 0 6px $color-main;
+  background: linear-gradient(to bottom, $color-primary-4, transparent);
 
-    .secondary-button {
-        background-color: $color-secondary-2-1;
-        padding: 10px 20px;
-        border-radius: 8px;
-        letter-spacing: 1.5px;
-    }
+  .secondary-button {
+    background-color: $color-secondary-2-1;
+    padding: 10px 20px;
+    border-radius: 8px;
+    letter-spacing: 1.5px;
+  }
 }
 
 .statistic-headline {
@@ -96,73 +97,119 @@
 }
 
 .chart {
-    margin: 40px auto 80px auto;
-    padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
-    box-shadow: 0 0 6px $color-main;
-    height: 400px;
-    overflow-x: scroll;
-    position: relative;
+  margin: 40px auto 80px auto;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 0 6px $color-main;
+  height: 400px;
+  overflow-x: scroll;
+  position: relative;
 
-    .chart__col {
-        position: absolute;
-        bottom: 0;
-        border-radius: 5px;
-        font-size: 10px;
-        font-weight: bold;
-        background-color: $color-main;
-        color: black;
-        padding: 4px;
-        min-height: 10px;
-        width: 18px;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        text-align: center;
+  .chart__col {
+    position: absolute;
+    bottom: 0;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: bold;
+    background-color: $color-main;
+    color: black;
+    padding: 4px;
+    min-height: 10px;
+    width: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: center;
+  }
+
+  .chart #col_1 {
+    left: 2%;
+  }
+
+  .chart #col_2 {
+    left: 10%;
+  }
+
+  .chart #col_3 {
+    left: 18%;
+  }
+
+  .chart #col_4 {
+    left: 26%;
+  }
+
+  .chart #col_5 {
+    left: 34%;
+  }
+
+  .chart #col_6 {
+    left: 42%;
+  }
+
+  .chart #col_7 {
+    left: 50%;
+  }
+
+  .chart #col_8 {
+    left: 58%;
+  }
+
+  .chart #col_9 {
+    left: 66%;
+  }
+
+  .chart #col_10 {
+    left: 74%;
+  }
+
+  .chart #col_11 {
+    left: 82%;
+  }
+
+  .chart #col_12 {
+    left: 90%;
+  }
+
+  .training-sum-number {
+    color: yellow;
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
+
+}
+
+.active-training-sect {
+
+  display: none;
+
+  &.active {
+    display: block;
+    background-color: lightblue;
+    color: black;
+    border-radius: 8px;
+    padding: 10px;
+
+    h3 {
+      font-size: 1.8rem;
+      margin: 10px;
     }
 
-    .chart #col_1 {
-        left: 2%;
-      }
-      .chart #col_2 {
-        left: 10%;
-      }
-      .chart #col_3 {
-        left: 18%;
-      }
-      .chart #col_4 {
-        left: 26%;
-      }
-      .chart #col_5 {
-        left: 34%;
-      }
-      .chart #col_6 {
-        left: 42%;
-      }
-      .chart #col_7 {
-        left: 50%;
-      }
-      .chart #col_8 {
-        left: 58%;
-      }
-      .chart #col_9 {
-        left: 66%;
-      }
-      .chart #col_10 {
-        left: 74%;
-      }
-      .chart #col_11 {
-        left: 82%;
-      }
-      .chart #col_12 {
-        left: 90%;
-      }
+    .info-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      font-weight: bold;
+      letter-spacing: 2px;
 
-      .training-sum-number {
-        color: yellow;
-        font-weight: bold;
+      p {
+        margin: 0;
         font-size: 1.3rem;
       }
+
+    }
+  }
+
 
 }
