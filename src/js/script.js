@@ -730,9 +730,9 @@ function observer() {
         const duration = minutesDiff(trainingsEnd_timestamp, trainingsdate);
         document.getElementById('lbl_time').innerHTML = `Zeit: ${duration}`;
         //*Update solved sets
-        document.getElementById('lbl_sets').innerHTML = `Absolvierte Sätze: ${sum_of_sets()}`
+        document.getElementById('lbl_overview_sets').innerHTML = `Absolvierte Sätze: ${sum_of_sets()}`
         //*Update moved Weight     
-        document.getElementById('lbl_weight').innerHTML = `Bewegtes Gewicht: ${sum_of_weight()} Kg`
+        document.getElementById('lbl_overview_weight').innerHTML = `Bewegtes Gewicht: ${sum_of_weight()} Kg`
 
 
     } else {
