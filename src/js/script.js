@@ -841,12 +841,26 @@ function render_trainings() {
     const trainingamount = save_Object.trainings.length - 1;
     trainings_wrapper.innerHTML = '';
     for (let i = trainingamount; i > -1; i--) {
-        const title = save_Object.trainings[i].training_date;
+        const trainingsdate = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
         const traintingsplace = identify_trainingsplace(exc);
-        const tableContainer = createTable(`${title} - ${duration} - ${traintingsplace}`, exc);
+        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace}`, exc);
         trainings_wrapper.appendChild(tableContainer);
+        let lbl_time_to_last_training = document.createElement('p');
+
+        try {
+            if((i - 1) !== -1) {
+                const last_training = save_Object.trainings[i - 1].training_date;
+                const duration_to_last_training = time_between_dates(trainingsdate, last_training);
+                lbl_time_to_last_training.innerHTML = `${duration_to_last_training} seit dem letzten Training`;
+                trainings_wrapper.appendChild(lbl_time_to_last_training);
+            } 
+        } catch (error) {
+            console.log(error);
+            
+        }
+    
     }
 }
 
@@ -962,4 +976,29 @@ function load_exercise_into_edit() {
     training_Area.value = selected_Exercise.trainingsplace;
     lbl_exerciseRepeats.innerHTML = inpExercise_Repeats.value;
     lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
+}
+
+
+function time_between_dates(newer_date, older_date) {
+    try {
+        // Die Daten müssen im Format "DD.MM.YYYY" sein
+        const newerDay = splitVal(newer_date, '.', 0);
+        const newerMonth = splitVal(newer_date, '.', 1);
+        const newerYear = splitVal(newer_date, '.', 2);
+        const newerDateObject = new Date(`${newerYear}-${newerMonth}-${newerDay}`);
+
+        const olderDay = splitVal(older_date, '.', 0);
+        const olderMonth = splitVal(older_date, '.', 1);
+        const olderYear = splitVal(older_date, '.', 2);
+        const olderDateObject = new Date(`${olderYear}-${olderMonth}-${olderDay}`);
+
+        // Berechnung der Differenz in Tagen
+        const time_difference_in_days = daysDiff(newerDateObject, olderDateObject);
+
+        // Ergebnis ausgeben oder weiterverarbeiten
+        return time_difference_in_days;
+
+    } catch (error) {
+        console.log('time_between_dates', error);
+    }
 }
