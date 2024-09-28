@@ -853,7 +853,7 @@ function render_trainings() {
             if((i - 1) !== -1) {
                 const last_training = save_Object.trainings[i - 1].training_date;
                 const duration_to_last_training = time_between_dates(trainingsdate, last_training);
-                lbl_time_to_last_training.innerHTML = `${duration_to_last_training} seit dem letzten Training`;
+                lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tag(e) seit dem letzten Training`;
                 trainings_wrapper.appendChild(lbl_time_to_last_training);
             } 
         } catch (error) {
