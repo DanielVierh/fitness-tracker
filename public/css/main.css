@@ -321,6 +321,7 @@ tr:nth-child(even) {
   flex-direction: column;
   align-items: center;
   overflow-y: scroll;
+  padding: 50px 10px;
 }
 .modal .modal_close_btn {
   position: fixed;

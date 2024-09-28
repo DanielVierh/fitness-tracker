@@ -732,7 +732,7 @@ function observer() {
         //*Update solved sets
         document.getElementById('lbl_overview_sets').innerHTML = `Absolvierte Sätze: ${sum_of_sets()}`
         //*Update moved Weight     
-        document.getElementById('lbl_overview_weight').innerHTML = `Bewegtes Gewicht: ${sum_of_weight()} Kg`
+        document.getElementById('lbl_overview_weight').innerHTML = `Bewegtes Gewicht: ${sum_of_weight(save_Object.current_training)} Kg`
 
 
     } else {
@@ -741,6 +741,7 @@ function observer() {
     }
 }
 
+//* ANCHOR - Sum of Sets
 function sum_of_sets() {
     let solvedSets = 0;
     for(let i = 0; i < save_Object.current_training.length; i++) {
@@ -749,12 +750,15 @@ function sum_of_sets() {
     return solvedSets;
 }
 
-function sum_of_weight() {
+//* ANCHOR - Sum of sets
+function sum_of_weight(training) {
+    console.log('training', training);
+    
     let weight = 0;
 
-    for(let i = 0; i < save_Object.current_training.length; i++) {
-        const solvedSets = save_Object.current_training[i].solved_sets;
-        weight = weight += (save_Object.current_training[i].weight * solvedSets * save_Object.current_training[i].repeats);
+    for(let i = 0; i < training.length; i++) {
+        const solvedSets = training[i].solved_sets;
+        weight = weight += (training[i].weight * solvedSets * training[i].repeats);
     }
     weight = numberWithCommas(weight);
     return weight;
@@ -845,7 +849,10 @@ function render_trainings() {
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
         const traintingsplace = identify_trainingsplace(exc);
-        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace}`, exc);
+        const training_weight_sum = sum_of_weight(save_Object.trainings[i].exercises);
+        console.log('training_weight_sum', training_weight_sum);
+        
+        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} - Trainingsgewicht: ${training_weight_sum} Kg bewegt`, exc);
         trainings_wrapper.appendChild(tableContainer);
         let lbl_time_to_last_training = document.createElement('p');
 
@@ -954,7 +961,7 @@ function createTable(title, data, only_exercise) {
         table.appendChild(row);
     }
     const container = document.createElement("div");
-    const heading = document.createElement("h2");
+    const heading = document.createElement("h3");
     heading.appendChild(document.createTextNode(title));
     container.appendChild(heading);
     container.appendChild(table);
