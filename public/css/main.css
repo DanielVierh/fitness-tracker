@@ -498,3 +498,7 @@ tr:nth-child(even) {
   color: yellow;
   font-size: 1.5rem;
 }
+
+.between-trainings {
+  margin: 70px 0;
+}
