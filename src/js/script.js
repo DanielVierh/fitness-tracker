@@ -844,15 +844,20 @@ function finish_training() {
 function render_trainings() {
     const trainingamount = save_Object.trainings.length - 1;
     trainings_wrapper.innerHTML = '';
+    let max_weight_sum = {
+        amount: 0,
+        index: -1
+    }
     for (let i = trainingamount; i > -1; i--) {
         const trainingsdate = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
         const traintingsplace = identify_trainingsplace(exc);
         const training_weight_sum = sum_of_weight(save_Object.trainings[i].exercises);
-        console.log('training_weight_sum', training_weight_sum);
+        let trainings_weight_label = '';
+        training_weight_sum > 0 ? trainings_weight_label = ` - Trainingsgewicht: ${training_weight_sum} Kg bewegt` : trainings_weight_label = '';
         
-        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} - Trainingsgewicht: ${training_weight_sum} Kg bewegt`, exc);
+        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc);
         trainings_wrapper.appendChild(tableContainer);
         let lbl_time_to_last_training = document.createElement('p');
 
