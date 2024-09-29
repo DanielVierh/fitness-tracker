@@ -492,3 +492,9 @@ tr:nth-child(even) {
   height: 25px;
   border-radius: 8px;
 }
+
+.max-weight-label {
+  padding: 20px 30px;
+  color: yellow;
+  font-size: 1.5rem;
+}

@@ -846,17 +846,24 @@ function render_trainings() {
     trainings_wrapper.innerHTML = '';
     let max_weight_sum = {
         amount: 0,
-        index: -1
+        date: ''
     }
     for (let i = trainingamount; i > -1; i--) {
         const trainingsdate = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
         const traintingsplace = identify_trainingsplace(exc);
+        //* Trainings weight
         const training_weight_sum = sum_of_weight(save_Object.trainings[i].exercises);
         let trainings_weight_label = '';
         training_weight_sum > 0 ? trainings_weight_label = ` - Trainingsgewicht: ${training_weight_sum} Kg bewegt` : trainings_weight_label = '';
         
+        //*emmit max weight sum
+        if(training_weight_sum > max_weight_sum.amount) {
+            max_weight_sum.amount = training_weight_sum;
+            max_weight_sum.date = trainingsdate;
+        }
+
         const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc);
         trainings_wrapper.appendChild(tableContainer);
         let lbl_time_to_last_training = document.createElement('p');
@@ -872,7 +879,11 @@ function render_trainings() {
             console.log(error);
             
         }
-    
+    }
+
+    const max_weight_label = document.getElementById('max_weight_label');
+    if(max_weight_sum.amount > 0) {
+        max_weight_label.innerHTML = `Maximal bewegtes Gewicht: <br> ${max_weight_sum.amount} Kg am ${max_weight_sum.date}`
     }
 }
 
