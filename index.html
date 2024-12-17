@@ -168,7 +168,14 @@
         <div class="chart__col" id="chart_col_12">Dez</div>
     </section>
 
-    <div class="modal-settings modal" id="modal_settings"></div>
+    <div class="modal-settings modal" id="modal_settings">
+        <div id="saveJsonBtn" class="backup-button">Backup erstellen</div>
+        <h4>Backup importieren</h4>
+        <input type="file" id="uploadJsonBtn" accept=".json" />
+        <div id="btn_importBackup" class="backup-button success" style="display: none;">Backup einspielen</div>
+        <br><br>
+        <div class="status-label" id="status"></div>
+    </div>
 
 
     <div class="modal-trainints modal" id="modal_trainings">
@@ -197,6 +204,11 @@
                     d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
             </svg>
         </div>
+        <div class="footer-btn" id="btn_settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sliders" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z"/>
+              </svg>
+        </div>
         <div class="footer-btn" id="btn_gotoSolvedTrainings">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-clipboard2-data-fill" viewBox="0 0 16 16">
@@ -208,7 +220,7 @@
         </div>
     </footer>
 
-    <script src="public/javascript/main.js"></script>
+    <script type="module" src="public/javascript/main.js"></script>
 </body>
 
 </html>

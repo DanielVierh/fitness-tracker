@@ -502,3 +502,17 @@ tr:nth-child(even) {
 .between-trainings {
   margin: 70px 0;
 }
+
+.modal-settings .backup-button {
+  background-color: lightgreen;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 50px;
+}
+.modal-settings .status-label {
+  text-align: center;
+  letter-spacing: 2px;
+}

@@ -1,3 +1,6 @@
+import { backup } from './backup.js';
+
+
 /////////////////////////////////////
 // * Variablen
 /////////////////////////////////////
@@ -10,6 +13,7 @@ const modal_edit = document.getElementById("modal_edit");
 const modal_exercise = document.getElementById("modal_exercise");
 const modal_settings = document.getElementById("modal_settings");
 const btn_home = document.getElementById("btn_home");
+const btn_settings = document.getElementById("btn_settings");
 const btn_open_edit = document.getElementById("btn_open_edit");
 const modal_close_btn = document.querySelectorAll('.modal_close_btn');
 const lbl_trainingsname = document.getElementById('lbl_trainingsname');
@@ -84,6 +88,7 @@ function load_local_storage() {
     if (localStorage.getItem('stored_fitness_saveobj') != '') {
         try {
             save_Object = JSON.parse(localStorage.getItem('stored_fitness_saveobj'));
+            backup(save_Object);
         } catch (error) {
             console.log('Main Error', error);
             save_Object = {
@@ -94,6 +99,7 @@ function load_local_storage() {
                 current_training: [],
                 training_place_filter: '',
             };
+            backup(save_Object);
             save_into_storage();
         }
 
@@ -704,6 +710,10 @@ btn_gotoSolvedTrainings.addEventListener('click', () => {
 
 btn_home.addEventListener('click', () => {
     Modal.close_all_modals();
+});
+
+btn_settings.addEventListener('click', () => {
+    Modal.open_modal(modal_settings);
 });
 
 modal_close_btn.forEach((c_btn) => {
