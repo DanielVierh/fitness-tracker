@@ -50,14 +50,17 @@ const active_training_sect = document.getElementById('active_training_sect');
 
 
 
-
+/////////////////////////////////////
 //* ANCHOR -  Variablen
+/////////////////////////////////////
 let training_running = false;
 let training_place_filter = '';
 let selected_Exercise;
 let is_edit = false;
 
+/////////////////////////////////////
 //*  Saveobj
+/////////////////////////////////////
 let save_Object = {
     training_is_running: false,
     training_start: '',
@@ -81,9 +84,9 @@ window.onload = () => {
 }
 
 
-//########################################
+/////////////////////////////////////
 //* ANCHOR - Load Local Storage
-//########################################
+/////////////////////////////////////
 function load_local_storage() {
     if (localStorage.getItem('stored_fitness_saveobj') != '') {
         try {
@@ -164,16 +167,18 @@ function load_local_storage() {
 }
 
 
-//########################################
+/////////////////////////////////////
 //* ANCHOR - Show selected Trainingsyear
 //TODO - The years are currently hard coded in html
-//########################################
+/////////////////////////////////////
 change_StatisticYear.addEventListener('change', () => {
     const selected_year = change_StatisticYear.value;
     fill_chart(selected_year);
 });
 
-// Add dynamic years, wich contains real trainingdata and not just 2023 and 2024
+/////////////////////////////////////
+//* Add dynamic years, wich contains real trainingdata and not just 2023 and 2024
+/////////////////////////////////////
 function add_years_to_select() {
     
     const current_time_stamp = new Date();
@@ -204,9 +209,9 @@ function add_years_to_select() {
 }
 
 
-//########################################
+/////////////////////////////////////
 //* ANCHOR - Render Chart
-//########################################
+/////////////////////////////////////
 function fill_chart(selct_year) {
     let current_time_stamp = new Date();
     let current_Year = current_time_stamp.getFullYear();
@@ -315,9 +320,9 @@ function fill_chart(selct_year) {
     training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstag(e) im Jahr ${current_Year}`;
 }
 
-//########################################
+/////////////////////////////////////
 //* ANCHOR - Split Function
-//########################################
+/////////////////////////////////////
 
 function splitVal(val, marker, pos) {
     const elem = val.split(marker);
@@ -325,9 +330,9 @@ function splitVal(val, marker, pos) {
     return retVal;
 }
 
-//########################################
+/////////////////////////////////////
 //* ANCHOR - Save to local Storage
-//########################################
+/////////////////////////////////////
 function save_into_storage() {
     localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
 }
@@ -440,6 +445,10 @@ function prepare_render_exercise() {
     render_exercises(combo_array, '');
     render_exercises(fitti_array, 'Fitnessstudio');
 }
+
+/////////////////////////////////////
+//* ANCHOR - Render exercises
+/////////////////////////////////////
 
 function render_exercises(exerc_array, label) {
     try {
@@ -630,6 +639,10 @@ btn_trackSport.addEventListener('click', () => {
     }
 })
 
+/////////////////////////////////////
+//* ANCHOR - Add Solved Set
+/////////////////////////////////////
+
 function add_solved_set() {
     //* Übung in Training Array speichern
     //* Abgleichen ob bereits vorhanden per id match,
@@ -648,6 +661,9 @@ function add_solved_set() {
     }
 }
 
+/////////////////////////////////////
+//* ANCHOR - check Exercise in current Training
+/////////////////////////////////////
 
 function check_exercise_in_currentTraining(exercise) {
     const exerciseId = exercise.exercise_id;
@@ -662,6 +678,10 @@ function check_exercise_in_currentTraining(exercise) {
 
     return is_in_currentTraining;
 }
+
+/////////////////////////////////////
+//* ANCHOR - Index of Exercise
+/////////////////////////////////////
 
 function indexOfExercise(exercise, arr) {
     const exerciseId = exercise.exercise_id;
@@ -691,6 +711,9 @@ function minutesDiff(dateTimeValue2, dateTimeValue1) {
     return time;
 }
 
+/////////////////////////////////////
+//* ANCHOR - Add Zero
+/////////////////////////////////////
 function add_zero(val) {
     if (val < 10) {
         val = `0${val}`;
@@ -698,6 +721,9 @@ function add_zero(val) {
     return val;
 }
 
+/////////////////////////////////////
+//* ANCHOR - Time between Dates
+/////////////////////////////////////
 function daysDiff(dateTimeValue2, dateTimeValue1) {
     var differenceValue = (dateTimeValue2.getTime() - dateTimeValue1.getTime()) / (1000 * 60 * 60 * 24);
     const days = Math.floor(Math.abs(differenceValue));
@@ -971,6 +997,9 @@ function identify_trainingsplace(training) {
     }
 }
 
+/////////////////////////////////////
+//* ANCHOR - Create Table
+/////////////////////////////////////
 function createTable(title, data, only_exercise) {
     const table = document.createElement("table");
     const header = document.createElement("tr");
@@ -1053,6 +1082,9 @@ function load_exercise_into_edit() {
     lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
 }
 
+/////////////////////////////////////
+//* ANCHOR - Time between Dates
+/////////////////////////////////////
 
 function time_between_dates(newer_date, older_date) {
     try {
