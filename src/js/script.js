@@ -74,7 +74,7 @@ let save_Object = {
 /////////////////////////////////////
 window.onload = () => {
     load_local_storage();
-
+    add_years_to_select();
     setInterval(() => {
         observer();
     }, 1000);
@@ -166,13 +166,42 @@ function load_local_storage() {
 
 //########################################
 //* ANCHOR - Show selected Trainingsyear
-//TODO - Add dynamic years, wich contains real trainingdata and not just 2023 and 2024
 //TODO - The years are currently hard coded in html
 //########################################
 change_StatisticYear.addEventListener('change', () => {
     const selected_year = change_StatisticYear.value;
     fill_chart(selected_year);
 });
+
+// Add dynamic years, wich contains real trainingdata and not just 2023 and 2024
+function add_years_to_select() {
+    
+    const current_time_stamp = new Date();
+    const current_Year = current_time_stamp.getFullYear();
+    const select = document.getElementById('statisticYear_select'); 
+    let oldest_year = current_Year;
+    let latest_year = current_Year;
+    try {
+        save_Object.trainings.forEach((training) => {
+            const year = splitVal(training.training_date, '.', 2);
+            if(year < oldest_year) {
+                oldest_year = year;
+            }
+        })
+    }catch(error) {
+        console.log('Error', error);
+    }
+    select.innerHTML = '';
+    for(let i = oldest_year; i <= current_Year; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.innerHTML = i;
+        latest_year = i
+        select.appendChild(option);
+    }
+    change_StatisticYear.value = latest_year;
+    fill_chart(latest_year);
+}
 
 
 //########################################
