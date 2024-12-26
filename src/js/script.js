@@ -47,6 +47,7 @@ let inpExercise_seatSettings = document.getElementById('inpExercise_seatSettings
 let muscle_select = document.getElementById('muscle_select');
 let training_Area = document.getElementById('training_Area');
 const active_training_sect = document.getElementById('active_training_sect');
+const statistics_table = document.getElementById('statistics_table');
 
 
 
@@ -161,7 +162,6 @@ function load_local_storage() {
             training_place_filter: '',
         };
         save_into_storage();
-        console.log('was null');
     }
     console.log('saveobj', save_Object);
 }
@@ -180,24 +180,24 @@ change_StatisticYear.addEventListener('change', () => {
 //* Add dynamic years, wich contains real trainingdata and not just 2023 and 2024
 /////////////////////////////////////
 function add_years_to_select() {
-    
+
     const current_time_stamp = new Date();
     const current_Year = current_time_stamp.getFullYear();
-    const select = document.getElementById('statisticYear_select'); 
+    const select = document.getElementById('statisticYear_select');
     let oldest_year = current_Year;
     let latest_year = current_Year;
     try {
         save_Object.trainings.forEach((training) => {
             const year = splitVal(training.training_date, '.', 2);
-            if(year < oldest_year) {
+            if (year < oldest_year) {
                 oldest_year = year;
             }
         })
-    }catch(error) {
+    } catch (error) {
         console.log('Error', error);
     }
     select.innerHTML = '';
-    for(let i = oldest_year; i <= current_Year; i++) {
+    for (let i = oldest_year; i <= current_Year; i++) {
         const option = document.createElement('option');
         option.value = i;
         option.innerHTML = i;
@@ -463,7 +463,6 @@ function render_exercises(exerc_array, label) {
             let exercisebtn = document.createElement('div');
             exercisebtn.classList.add('exercise');
             let exerciseName = exerc_array[i].name;
-            console.log('exerc_array', exerc_array);
             if (exerc_array[i].trainingsplace == "Fitnessstudio") {
                 exerciseName = `Nr.${exerc_array[i].machineNumber} - ` + exerc_array[i].name;
             }
@@ -760,6 +759,7 @@ btn_show_trainings.addEventListener('click', () => {
 btn_gotoSolvedTrainings.addEventListener('click', () => {
     Modal.open_modal(modal_trainings);
     render_trainings();
+    statistic();
     console.log('%c Feffe', `color: green; font-weight: bold; font-size: 20px;`);
 })
 
@@ -809,7 +809,7 @@ function observer() {
 //* ANCHOR - Sum of Sets
 function sum_of_sets() {
     let solvedSets = 0;
-    for(let i = 0; i < save_Object.current_training.length; i++) {
+    for (let i = 0; i < save_Object.current_training.length; i++) {
         solvedSets = solvedSets += save_Object.current_training[i].solved_sets;
     }
     return solvedSets;
@@ -817,10 +817,10 @@ function sum_of_sets() {
 
 //* ANCHOR - Sum of sets
 function sum_of_weight(training) {
-    
+
     let weight = 0;
 
-    for(let i = 0; i < training.length; i++) {
+    for (let i = 0; i < training.length; i++) {
         const solvedSets = training[i].solved_sets;
         weight = weight += (training[i].weight * solvedSets * training[i].repeats);
     }
@@ -927,10 +927,9 @@ function render_trainings() {
         const training_weight_sum = sum_of_weight(save_Object.trainings[i].exercises).weightWithCommas;
         let trainings_weight_label = '';
         training_weight_sum > 0 ? trainings_weight_label = ` - Trainingsgewicht: ${training_weight_sum} Kg bewegt` : trainings_weight_label = '';
-        console.log('parseInt(training_weight_sum)', parseInt(training_weight_sum));
-        
+
         //*emmit max weight sum
-        if(training_weight_sum_Int > max_weight_sum.amount) {
+        if (training_weight_sum_Int > max_weight_sum.amount) {
             max_weight_sum.amount = training_weight_sum_Int;
             max_weight_sum.amount_with_comma = training_weight_sum;
             max_weight_sum.date = trainingsdate;
@@ -942,25 +941,25 @@ function render_trainings() {
         lbl_time_to_last_training.classList.add('between-trainings')
 
         try {
-            if((i - 1) !== -1) {
+            if ((i - 1) !== -1) {
                 const last_training = save_Object.trainings[i - 1].training_date;
                 const duration_to_last_training = time_between_dates(trainingsdate, last_training);
-                if(duration_to_last_training > 1) {
+                if (duration_to_last_training > 1) {
                     lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tage seit dem letzten Training`;
                     trainings_wrapper.appendChild(lbl_time_to_last_training);
-                }else if(duration_to_last_training === 1) {
+                } else if (duration_to_last_training === 1) {
                     lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tag seit dem letzten Training`;
                     trainings_wrapper.appendChild(lbl_time_to_last_training);
                 }
-            } 
+            }
         } catch (error) {
             console.log(error);
-            
+
         }
     }
 
     const max_weight_label = document.getElementById('max_weight_label');
-    if(max_weight_sum.amount > 0) {
+    if (max_weight_sum.amount > 0) {
         max_weight_label.innerHTML = `Maximal bewegtes Gewicht: <br> ${max_weight_sum.amount_with_comma} Kg am ${max_weight_sum.date}`
     }
 }
@@ -971,6 +970,8 @@ function render_trainings() {
 //TODO - Show other Trainingsplace
 /////////////////////////////////////
 function identify_trainingsplace(training) {
+    console.log('training.', training);
+
     let fitnessstudio = 0;
     let otherTrainingsplace = 0;
     let heimtraining = 0;
@@ -1108,4 +1109,114 @@ function time_between_dates(newer_date, older_date) {
     } catch (error) {
         console.log('time_between_dates', error);
     }
+}
+
+
+
+/////////////////////////////////////
+//* ANCHOR - Statistic
+/////////////////////////////////////
+function statistic() {
+    const trainingsByYear = {};
+
+    // Gruppiere Trainings nach Jahr
+    save_Object.trainings.forEach((training) => {
+        const year = splitVal(training.training_date, '.', 2);
+        if (!trainingsByYear[year]) {
+            trainingsByYear[year] = [];
+        }
+        trainingsByYear[year].push(training);
+    });
+
+    statistics_table.innerHTML = '';
+    let headline = document.createElement('h3');
+    headline.innerHTML = 'Statistik für alle Jahre';
+    statistics_table.appendChild(headline);
+
+    // Sortiere die Jahre in absteigender Reihenfolge
+    const sortedYears = Object.keys(trainingsByYear).sort((a, b) => b - a);
+
+    sortedYears.forEach((year) => {
+        let fitti_trainings = 0;
+        let home_trainings = 0;
+        let total_trainings = 0;
+
+        const trainingsByDate = {};
+
+        // Gruppiere Trainings nach Datum
+        trainingsByYear[year].forEach((training) => {
+            const date = training.training_date;
+            if (!trainingsByDate[date]) {
+                trainingsByDate[date] = [];
+            }
+            trainingsByDate[date].push(training);
+        });
+
+        Object.keys(trainingsByDate).forEach((date) => {
+            const trainings = trainingsByDate[date];
+            let maxExercisesTraining = trainings[0];
+
+            // Finde das Training mit den meisten Übungen
+            trainings.forEach((training) => {
+                if (training.exercises.length > maxExercisesTraining.exercises.length) {
+                    maxExercisesTraining = training;
+                }
+            });
+
+            total_trainings++;
+
+            const trainingsplace = identify_trainingsplace(maxExercisesTraining.exercises);
+
+            if (trainingsplace === 'Fitti') {
+                fitti_trainings++;
+            } else if (trainingsplace === 'Home') {
+                home_trainings++;
+            }
+        });
+
+        // Create table for each year
+        const table = document.createElement("table");
+        const header = document.createElement("tr");
+        const placeHeaderCell = document.createElement("th");
+        const countHeaderCell = document.createElement("th");
+        placeHeaderCell.appendChild(document.createTextNode("Trainingsort"));
+        countHeaderCell.appendChild(document.createTextNode("Anzahl"));
+        header.appendChild(placeHeaderCell);
+        header.appendChild(countHeaderCell);
+        table.appendChild(header);
+
+        // Add rows
+        const fittiRow = document.createElement("tr");
+        const fittiPlaceCell = document.createElement("td");
+        const fittiCountCell = document.createElement("td");
+        fittiPlaceCell.appendChild(document.createTextNode("Fitnessstudio"));
+        fittiCountCell.appendChild(document.createTextNode(fitti_trainings));
+        fittiRow.appendChild(fittiPlaceCell);
+        fittiRow.appendChild(fittiCountCell);
+        table.appendChild(fittiRow);
+
+        const homeRow = document.createElement("tr");
+        const homePlaceCell = document.createElement("td");
+        const homeCountCell = document.createElement("td");
+        homePlaceCell.appendChild(document.createTextNode("Heimtraining"));
+        homeCountCell.appendChild(document.createTextNode(home_trainings));
+        homeRow.appendChild(homePlaceCell);
+        homeRow.appendChild(homeCountCell);
+        table.appendChild(homeRow);
+
+        const totalRow = document.createElement("tr");
+        const totalPlaceCell = document.createElement("td");
+        const totalCountCell = document.createElement("td");
+        totalPlaceCell.appendChild(document.createTextNode("Gesamt"));
+        totalCountCell.appendChild(document.createTextNode(total_trainings));
+        totalRow.appendChild(totalPlaceCell);
+        totalRow.appendChild(totalCountCell);
+        table.appendChild(totalRow);
+
+        // Append table to statistics_table div
+        let yearHeadline = document.createElement('h4');
+        yearHeadline.innerHTML = `Statistik für das Jahr ${year}`;
+        statistics_table.appendChild(yearHeadline);
+        statistics_table.appendChild(table);
+    });
 }
