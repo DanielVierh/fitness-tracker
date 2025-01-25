@@ -512,6 +512,7 @@ tr:nth-child(even) {
   font-weight: bold;
   letter-spacing: 2px;
   margin-bottom: 50px;
+  cursor: pointer;
 }
 .modal-settings .status-label {
   text-align: center;
