@@ -1,6 +1,7 @@
 import { backup } from './backup.js';
+import { restTimer } from './rest_timer.js';
 
-
+restTimer();
 /////////////////////////////////////
 // * Variablen
 /////////////////////////////////////
