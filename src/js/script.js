@@ -647,10 +647,12 @@ function daysDiff(dateTimeValue2, dateTimeValue1) {
 btn_open_edit.addEventListener('click', () => {
     Modal.open_modal(modal_edit);
     is_edit = false;
+    btn_delete_exercise.classList.remove('active');
 });
 
 btn_edit.addEventListener('click', () => {
     is_edit = true;
+    btn_delete_exercise.classList.add('active');
     Modal.open_modal(modal_edit);
     load_exercise_into_edit();
 });
@@ -659,6 +661,7 @@ btn_edit.addEventListener('click', () => {
 btn_add.addEventListener('click', () => {
     Modal.open_modal(modal_edit);
     is_edit = false;
+    btn_delete_exercise.classList.remove('active');
 });
 
 btn_show_trainings.addEventListener('click', () => {

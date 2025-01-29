@@ -539,6 +539,9 @@ tr:nth-child(even) {
 }
 
 .button-delete {
+  display: none;
+}
+.button-delete.active {
   background-color: darkred;
   display: flex;
   justify-content: center;
