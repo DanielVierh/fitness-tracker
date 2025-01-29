@@ -28,7 +28,7 @@ export function rnd_id() {
 /////////////////////////////////////
 //* ANCHOR - Add Zero
 /////////////////////////////////////
-function add_zero(val) {
+export function add_zero(val) {
     if (val < 10) {
         val = `0${val}`;
     }
