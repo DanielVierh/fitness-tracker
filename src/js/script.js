@@ -5,6 +5,7 @@ import { rnd_id } from './functions.js';
 import { add_zero } from './functions.js';
 import { Exercise } from './Classes/Exercise.js';
 import { Training } from './Classes/Training.js';
+import { Modal } from './Classes/Modal.js';
 
 
 restTimer();
@@ -335,27 +336,6 @@ function fill_chart(selct_year) {
 /////////////////////////////////////
 function save_into_storage() {
     localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
-}
-
-
-/////////////////////////////////////
-//* ANCHOR - Class for Modal
-/////////////////////////////////////
-
-class Modal {
-
-    static modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings];
-
-    static open_modal(modal) {
-        this.close_all_modals();
-        modal.classList.add('active');
-    }
-
-    static close_all_modals() {
-        for (let i = 0; i < this.modal_list.length; i++) {
-            this.modal_list[i].classList.remove('active');
-        }
-    }
 }
 
 
