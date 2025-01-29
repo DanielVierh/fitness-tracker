@@ -277,6 +277,7 @@ tr:nth-child(even) {
   justify-content: center;
   align-items: flex-start;
   text-align: center;
+  cursor: pointer;
 }
 .chart .chart #col_1 {
   left: 2%;
