@@ -41,6 +41,7 @@
       justify-content: center;
       align-items: center;
       box-shadow: 0 0 6px $color-main;
+      cursor: pointer;
 
       &.half-solved {
         background-color: yellow;
@@ -73,6 +74,7 @@
     padding: 10px 20px;
     border-radius: 8px;
     letter-spacing: 1.5px;
+    cursor: pointer;
   }
 }
 

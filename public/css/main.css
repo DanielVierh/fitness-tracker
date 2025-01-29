@@ -202,6 +202,7 @@ tr:nth-child(even) {
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 6px rgb(0, 200, 255);
+  cursor: pointer;
 }
 .homepage .exercises .exercise.half-solved {
   background-color: yellow;
@@ -229,6 +230,7 @@ tr:nth-child(even) {
   padding: 10px 20px;
   border-radius: 8px;
   letter-spacing: 1.5px;
+  cursor: pointer;
 }
 
 .statistic-headline {
