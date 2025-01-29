@@ -1,5 +1,9 @@
 import { backup } from './backup.js';
 import { restTimer } from './rest_timer.js';
+import { splitVal } from './functions.js';
+import { rnd_id } from './functions.js';
+import { add_zero } from './functions.js';
+
 
 restTimer();
 /////////////////////////////////////
@@ -324,16 +328,6 @@ function fill_chart(selct_year) {
 }
 
 /////////////////////////////////////
-//* ANCHOR - Split Function
-/////////////////////////////////////
-
-function splitVal(val, marker, pos) {
-    const elem = val.split(marker);
-    const retVal = elem[pos];
-    return retVal;
-}
-
-/////////////////////////////////////
 //* ANCHOR - Save to local Storage
 /////////////////////////////////////
 function save_into_storage() {
@@ -403,22 +397,6 @@ class Modal {
             this.modal_list[i].classList.remove('active');
         }
     }
-}
-
-/////////////////////////////////////
-//* ANCHOR - Random ID Creator
-/////////////////////////////////////
-function rnd_id() {
-    const rndStuff = [
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-        'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '$', '?', '1', '2', '3', '4', '8', '7',
-        '6', '5', '9', '0', '#',
-    ];
-    let key = '';
-    for (let i = 1; i <= 16; i++) {
-        key += rndStuff[parseInt(Math.random() * rndStuff.length)];
-    }
-    return key;
 }
 
 
@@ -711,16 +689,6 @@ function minutesDiff(dateTimeValue2, dateTimeValue1) {
     const minutes = Math.floor(rawMinuteTime % 60);
     const time = `${add_zero(hour)}:${add_zero(minutes)}`;
     return time;
-}
-
-/////////////////////////////////////
-//* ANCHOR - Add Zero
-/////////////////////////////////////
-function add_zero(val) {
-    if (val < 10) {
-        val = `0${val}`;
-    }
-    return val;
 }
 
 /////////////////////////////////////
