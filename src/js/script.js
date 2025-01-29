@@ -55,6 +55,7 @@ let muscle_select = document.getElementById('muscle_select');
 let training_Area = document.getElementById('training_Area');
 const active_training_sect = document.getElementById('active_training_sect');
 const statistics_table = document.getElementById('statistics_table');
+const btn_delete_exercise = document.getElementById('btn_delete_exercise');
 
 
 
@@ -1148,3 +1149,17 @@ function statistic() {
         statistics_table.appendChild(table);
     });
 }
+
+/////////////////////////////////////
+//* ANCHOR - Delete Exercise
+/////////////////////////////////////
+
+btn_delete_exercise.addEventListener('click', () => {
+    const decision = window.confirm('Soll die Übung gelöscht werden?');
+    if (decision) {
+        save_Object.exercises.splice(indexOfExercise(selected_Exercise, save_Object.exercises), 1);
+        save_into_storage();
+        location.reload();
+    }
+});
+
