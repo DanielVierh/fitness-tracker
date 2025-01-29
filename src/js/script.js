@@ -941,7 +941,6 @@ function render_trainings() {
 //TODO - Show other Trainingsplace
 /////////////////////////////////////
 function identify_trainingsplace(training) {
-    console.log('training.', training);
 
     let fitnessstudio = 0;
     let otherTrainingsplace = 0;
