@@ -136,7 +136,7 @@ function load_local_storage() {
             const time_to_last_training = daysDiff(today, lastTrainingDate);
 
             if (time_to_last_training > 1) {
-                last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tag(en)`;
+                last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tagen`;
             } else if(time_to_last_training === 0) {
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt: heute`;
             }else {
