@@ -34,3 +34,25 @@ export function add_zero(val) {
     }
     return val;
 }
+
+/////////////////////////////////////
+//* ANCHOR - MinutesDiff
+/////////////////////////////////////
+export function minutesDiff(dateTimeValue2, dateTimeValue1) {
+    let differenceValue = (dateTimeValue2.getTime() - dateTimeValue1.getTime()) / 1000;
+    differenceValue /= 60;
+    const rawMinuteTime = Math.abs(Math.round(differenceValue))
+    const hour = Math.floor(rawMinuteTime / 60);
+    const minutes = Math.floor(rawMinuteTime % 60);
+    const time = `${add_zero(hour)}:${add_zero(minutes)}`;
+    return time;
+}
+
+/////////////////////////////////////
+//* ANCHOR - Time between Dates
+/////////////////////////////////////
+export function daysDiff(dateTimeValue2, dateTimeValue1) {
+    let differenceValue = (dateTimeValue2.getTime() - dateTimeValue1.getTime()) / (1000 * 60 * 60 * 24);
+    const days = Math.floor(Math.abs(differenceValue));
+    return days;
+}

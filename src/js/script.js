@@ -3,6 +3,8 @@ import { restTimer } from './rest_timer.js';
 import { splitVal } from './functions.js';
 import { rnd_id } from './functions.js';
 import { add_zero } from './functions.js';
+import { minutesDiff } from './functions.js';
+import { daysDiff } from './functions.js';
 import { Exercise } from './Classes/Exercise.js';
 import { Training } from './Classes/Training.js';
 import { Modal } from './Classes/Modal.js';
@@ -615,30 +617,6 @@ function indexOfExercise(exercise, arr) {
 
     return index;
 }
-
-
-/////////////////////////////////////
-//* ANCHOR - MinutesDiff
-/////////////////////////////////////
-function minutesDiff(dateTimeValue2, dateTimeValue1) {
-    var differenceValue = (dateTimeValue2.getTime() - dateTimeValue1.getTime()) / 1000;
-    differenceValue /= 60;
-    const rawMinuteTime = Math.abs(Math.round(differenceValue))
-    const hour = Math.floor(rawMinuteTime / 60);
-    const minutes = Math.floor(rawMinuteTime % 60);
-    const time = `${add_zero(hour)}:${add_zero(minutes)}`;
-    return time;
-}
-
-/////////////////////////////////////
-//* ANCHOR - Time between Dates
-/////////////////////////////////////
-function daysDiff(dateTimeValue2, dateTimeValue1) {
-    var differenceValue = (dateTimeValue2.getTime() - dateTimeValue1.getTime()) / (1000 * 60 * 60 * 24);
-    const days = Math.floor(Math.abs(differenceValue));
-    return days;
-}
-
 
 /////////////////////////////////////
 //* ANCHOR - Modals
