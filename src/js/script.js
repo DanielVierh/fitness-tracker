@@ -8,6 +8,7 @@ import { daysDiff } from './functions.js';
 import { Exercise } from './Classes/Exercise.js';
 import { Training } from './Classes/Training.js';
 import { Modal } from './Classes/Modal.js';
+import { Message } from './Classes/Message.js';
 
 
 restTimer();
@@ -69,6 +70,7 @@ let training_running = false;
 let training_place_filter = '';
 let selected_Exercise;
 let is_edit = false;
+let currentTrainingObj = undefined; // for active training
 
 /////////////////////////////////////
 //*  Saveobj
@@ -543,6 +545,12 @@ btn_trackSport.addEventListener('click', () => {
             save_into_storage();
 
             //TODO -  replace alert
+            // Modal.close_all_modals();
+            // setTimeout(() => {
+            //     const message = new Message('Ein neues Training wurde gestartet.', 'success', 5000);
+            //     message.showMessage();
+            // }, 500);
+
             alert("Ein weiterer Satz wurde hinzugefügt");
             location.reload();
         }
@@ -758,6 +766,7 @@ function finish_training() {
 
         //* Trainingsobject erstellen und abspeichern
         const new_solved_training = new Training(datum, duration, save_Object.current_training);
+        
         save_Object.trainings.push(new_solved_training)
 
         //* alle sets zurücksetzen

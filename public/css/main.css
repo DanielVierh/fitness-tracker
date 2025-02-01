@@ -164,6 +164,38 @@ tr:nth-child(even) {
   background-color: #346569;
 }
 
+.message {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85%;
+  min-height: 20vh;
+  background-color: #AA3939;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  padding: 13px 25px;
+  border: 1px solid white;
+  letter-spacing: 3px;
+  font-size: 2rem;
+  text-align: center;
+}
+.message.info {
+  background-color: #2599eb;
+}
+.message.error {
+  background-color: #ff0000;
+}
+.message.success {
+  background-color: #087408;
+}
+.message.warning {
+  background-color: #ff7700;
+}
+
 .homepage {
   text-align: center;
   z-index: 1;

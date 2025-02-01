@@ -170,4 +170,38 @@ table {
     background-color: #346569;
   }
 
+.message {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    min-height: 20vh;
+    background-color: $color-secondary-1-0;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    padding: 13px 25px;
+    border: 1px solid white;
+    letter-spacing: 3px;
+    font-size: 2rem;
+    text-align: center;
 
+    &.info {
+        background-color: #2599eb;
+    }
+
+    &.error {
+        background-color: #ff0000;
+    }
+
+    &.success {
+        background-color: #087408;
+    }
+
+    &.warning {
+        background-color: #ff7700;
+    }
+}

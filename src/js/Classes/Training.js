@@ -7,4 +7,16 @@ export class Training {
         this.duration = duration;
         this.exercises = exercises;
     }
+
+    showSets() {
+        let sets = 0;
+        this.exercises.forEach(exercise => {
+            sets += exercise.sets;
+        });
+        return sets;
+    }
+
+    showExerciseAmount() {
+        return this.exercises.length;
+    }
 }
