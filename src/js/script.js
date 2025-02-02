@@ -5,6 +5,7 @@ import { rnd_id } from './functions.js';
 import { add_zero } from './functions.js';
 import { minutesDiff } from './functions.js';
 import { daysDiff } from './functions.js';
+import { calendar } from './calendar.js';
 import { Exercise } from './Classes/Exercise.js';
 import { Training } from './Classes/Training.js';
 import { Modal } from './Classes/Modal.js';
@@ -60,7 +61,8 @@ let training_Area = document.getElementById('training_Area');
 const active_training_sect = document.getElementById('active_training_sect');
 const statistics_table = document.getElementById('statistics_table');
 const btn_delete_exercise = document.getElementById('btn_delete_exercise');
-
+const btn_open_calendar = document.getElementById('btn_open_calendar');
+const modal_calendar = document.getElementById('modal_calendar');
 
 
 /////////////////////////////////////
@@ -648,6 +650,11 @@ btn_add.addEventListener('click', () => {
     Modal.open_modal(modal_edit);
     is_edit = false;
     btn_delete_exercise.classList.remove('active');
+});
+
+btn_open_calendar.addEventListener('click', ()=> {
+    Modal.open_modal(modal_calendar);
+    calendar(save_Object);
 });
 
 btn_show_trainings.addEventListener('click', () => {

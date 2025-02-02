@@ -45,6 +45,7 @@
     letter-spacing: 1.5px;
     text-shadow: 0 0 15px black;
     margin: 50px auto;
+    text-align: center;
   }
 
   .info-container {
@@ -259,5 +260,46 @@
   .status-label {
    text-align: center;
    letter-spacing: 2px;
+  }
+}
+
+
+.modal-calendar {
+
+  .calendar {
+    width: 95%;
+    margin: 0 auto;
+    background-color: black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    max-width: 400px;
+
+    .calendar-day {
+      width: 40px;
+      height: 40px;
+      background-color: rgb(33, 33, 33);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      gap: 8px 0;
+      text-decoration: underline;
+      border-radius: 5px;
+
+      .calendar-training-day {
+        width: 8px;
+        height: 8px;
+        background-color: aqua;
+        box-shadow: 0 0 10px aqua;
+        border-radius: 50%;
+      }
+    }
   }
 }

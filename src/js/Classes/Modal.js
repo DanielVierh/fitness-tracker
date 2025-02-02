@@ -4,7 +4,7 @@
 
 export class Modal {
 
-    static modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings];
+    static modal_list = [modal_edit, modal_exercise, modal_settings, modal_trainings, modal_calendar];
 
     static open_modal(modal) {
         this.close_all_modals();

@@ -196,6 +196,18 @@ tr:nth-child(even) {
   background-color: #ff7700;
 }
 
+.button-calendar-trigger {
+  background-color: rgb(64, 64, 64);
+  padding: 11px;
+  border-radius: 5px;
+  float: right;
+  margin-right: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
 .homepage {
   text-align: center;
   z-index: 1;
@@ -425,6 +437,7 @@ tr:nth-child(even) {
   letter-spacing: 1.5px;
   text-shadow: 0 0 15px black;
   margin: 50px auto;
+  text-align: center;
 }
 .modal-exercise .info-container {
   display: flex;
@@ -612,4 +625,39 @@ tr:nth-child(even) {
 .modal-settings .status-label {
   text-align: center;
   letter-spacing: 2px;
+}
+
+.modal-calendar .calendar {
+  width: 95%;
+  margin: 0 auto;
+  background-color: black;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 10px;
+  max-width: 400px;
+}
+.modal-calendar .calendar .calendar-day {
+  width: 40px;
+  height: 40px;
+  background-color: rgb(33, 33, 33);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  gap: 8px 0;
+  text-decoration: underline;
+  border-radius: 5px;
+}
+.modal-calendar .calendar .calendar-day .calendar-training-day {
+  width: 8px;
+  height: 8px;
+  background-color: aqua;
+  box-shadow: 0 0 10px aqua;
+  border-radius: 50%;
 }

@@ -158,11 +158,11 @@
 
     <!-- * Statistik Chart -->
 
-    <h2 class="statistic-headline">Statistik</h2>
-    <select name="statisticYear" id="statisticYear_select" class="select-year">
-        <option value="2024">2024</option>
-        <option value="2023">2023</option>
-    </select>
+    <h2 class="statistic-headline">Statistik <span id="btn_open_calendar" class="button-calendar-trigger"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+      </svg></span></h2>
+    <select name="statisticYear" id="statisticYear_select" class="select-year"></select>
     <section class="chart">
         <div id="training_counter"></div>
         <div class="chart__col" id="chart_col_1">Jan</div>
@@ -186,6 +186,12 @@
         <div id="btn_importBackup" class="backup-button success" style="display: none;">Backup einspielen</div>
         <br><br>
         <div class="status-label" id="status"></div>
+    </div>
+
+    <div class="modal-calendar modal" id="modal_calendar">
+        <div class="modal_close_btn">X</div>
+        <h2>Kalender</h2>
+        <div id="calendar" class="calendar"></div>
     </div>
 
 
