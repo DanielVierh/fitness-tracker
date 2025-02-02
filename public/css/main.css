@@ -631,13 +631,20 @@ tr:nth-child(even) {
   width: 95%;
   margin: 0 auto;
   background-color: black;
+  padding: 10px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+.modal-calendar .calendar .month-wrapper {
+  padding: 10px;
+  background-color: rgb(16, 16, 16);
+  margin-bottom: 70px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 5px;
-  padding: 10px;
-  max-width: 400px;
 }
 .modal-calendar .calendar .calendar-day {
   width: 40px;
