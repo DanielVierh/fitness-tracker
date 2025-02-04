@@ -2,7 +2,9 @@ import { add_zero } from "./functions.js";
 
 export function calendar(save_obj, _calendar_year) {
   const calendar = document.getElementById("calendar");
+  const calendar_top = document.getElementById("calendar_top");
   calendar.innerHTML = '';
+  //* check and set year
   const today = new Date();
   let ref_year = undefined;
   const this_year = today.getFullYear();
@@ -11,7 +13,7 @@ export function calendar(save_obj, _calendar_year) {
   }else {
     ref_year = _calendar_year
   }
-
+  //* Create year label
   let year_label = document.createElement('h2');
   year_label.innerHTML = ref_year;
   year_label.classList.add('calendar-year-label')
@@ -88,5 +90,7 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
     calendar.appendChild(month_title);
     month.appendChild(calendar_day);
     calendar.appendChild(month);
+    
+    document.getElementById('calendar_top').scrollIntoView();
   }
 }
