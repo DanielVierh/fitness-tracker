@@ -286,6 +286,8 @@
         margin-left: 50%;
         transform: translateX(-50%);
         color: aqua;
+        text-shadow: 0 0 30px aqua, 0 10px 30px rgba(0, 255, 255, 0.915);
+        transition: all 400ms ease-in-out;
     }
 
     .month-wrapper {
