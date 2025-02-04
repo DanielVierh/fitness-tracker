@@ -56,6 +56,7 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
         let training_day = document.createElement("div");
         training_day.classList.add("calendar-training-day");
         calendar_day.appendChild(training_day);
+        calendar_day.classList.add('sport-day')
         break;
       }
     }

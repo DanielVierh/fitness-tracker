@@ -661,10 +661,13 @@ tr:nth-child(even) {
   text-decoration: underline;
   border-radius: 5px;
 }
+.modal-calendar .calendar .calendar-day.sport-day {
+  background-color: #17514d;
+}
 .modal-calendar .calendar .calendar-day .calendar-training-day {
   width: 8px;
   height: 8px;
   background-color: aqua;
-  box-shadow: 0 0 10px aqua;
+  box-shadow: 0 0 15px white;
   border-radius: 50%;
 }
