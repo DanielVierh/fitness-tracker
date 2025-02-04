@@ -672,5 +672,5 @@ tr:nth-child(even) {
   border-radius: 50%;
 }
 .modal-calendar .calendar .calendar-day.current-day {
-  background-color: blue;
+  background-color: rgb(12, 76, 125);
 }
