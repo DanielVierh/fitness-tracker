@@ -1,9 +1,23 @@
 import { add_zero } from "./functions.js";
 
-export function calendar(save_obj) {
-  console.log("calendar: ", save_obj);
+export function calendar(save_obj, _calendar_year) {
   const calendar = document.getElementById("calendar");
-  draw_calendar(calendar, save_obj, 2025);
+  calendar.innerHTML = '';
+  const today = new Date();
+  let ref_year = undefined;
+  const this_year = today.getFullYear();
+  if(_calendar_year === undefined) {
+     ref_year = this_year;
+  }else {
+    ref_year = _calendar_year
+  }
+
+  let year_label = document.createElement('h2');
+  year_label.innerHTML = ref_year;
+  year_label.classList.add('calendar-year-label')
+  calendar.appendChild(year_label);
+
+  draw_calendar(calendar, save_obj, ref_year);
 }
 
 //* Function to render every Month
@@ -46,9 +60,13 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
   //* Loop for days
   for (let i = 1; i <= max_day; i++) {
     let calendar_day = document.createElement("div");
-    calendar_day.innerHTML = `${i}`;
+    // calendar_day.innerHTML = `${i}`;
     calendar_day.classList.add("calendar-day");
     const current_day = `${add_zero(i)}.${add_zero(month_index)}.${ref_year}`;
+    const date = new Date(ref_year, month_index - 1, i);
+    const days = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+    const weekday = days[date.getDay()];
+    calendar_day.innerHTML = `${add_zero(i)} <br> ${weekday}`;
 
     if(current_day === today_date) {
       calendar_day.classList.add('current-day')

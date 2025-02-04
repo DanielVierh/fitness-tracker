@@ -73,7 +73,7 @@ let training_place_filter = '';
 let selected_Exercise;
 let is_edit = false;
 let currentTrainingObj = undefined; // for active training
-
+let calendar_year = undefined;
 /////////////////////////////////////
 //*  Saveobj
 /////////////////////////////////////
@@ -191,6 +191,9 @@ function load_local_storage() {
 change_StatisticYear.addEventListener('change', () => {
     const selected_year = change_StatisticYear.value;
     fill_chart(selected_year);
+
+    //* Set Data-attr for calendar
+    calendar_year = selected_year;
 });
 
 /////////////////////////////////////
@@ -654,7 +657,7 @@ btn_add.addEventListener('click', () => {
 
 btn_open_calendar.addEventListener('click', ()=> {
     Modal.open_modal(modal_calendar);
-    calendar(save_Object);
+    calendar(save_Object, calendar_year);
 });
 
 btn_show_trainings.addEventListener('click', () => {
