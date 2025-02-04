@@ -312,6 +312,10 @@
         box-shadow: 0 0 15px white;
         border-radius: 50%;
       }
+
+      &.current-day {
+        background-color: blue;
+      }
     }
   }
 }

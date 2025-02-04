@@ -40,6 +40,8 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
   month.classList.add("month-wrapper");
   let month_title = document.createElement("h3");
   month_title.innerHTML = months[month_index - 1];
+  const today = new Date();
+  const today_date = `${add_zero(today.getDate())}.${add_zero(today.getMonth() + 1)}.${today.getFullYear()}`;
 
   //* Loop for days
   for (let i = 1; i <= max_day; i++) {
@@ -47,6 +49,10 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
     calendar_day.innerHTML = `${i}`;
     calendar_day.classList.add("calendar-day");
     const current_day = `${add_zero(i)}.${add_zero(month_index)}.${ref_year}`;
+
+    if(current_day === today_date) {
+      calendar_day.classList.add('current-day')
+    }
 
     //* Loop to Match Training Days and nark them
     for (let j = 0; j < save_obj.trainings.length; j++) {

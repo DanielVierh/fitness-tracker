@@ -671,3 +671,6 @@ tr:nth-child(even) {
   box-shadow: 0 0 15px white;
   border-radius: 50%;
 }
+.modal-calendar .calendar .calendar-day.current-day {
+  background-color: blue;
+}
