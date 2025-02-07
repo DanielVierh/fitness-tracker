@@ -5,6 +5,7 @@ import { rnd_id } from './functions.js';
 import { add_zero } from './functions.js';
 import { minutesDiff } from './functions.js';
 import { daysDiff } from './functions.js';
+import { numberWithCommas } from './functions.js';
 import { calendar } from './calendar.js';
 import { Exercise } from './Classes/Exercise.js';
 import { Training } from './Classes/Training.js';
@@ -505,7 +506,7 @@ function open_exercise() {
     exercise_table.innerHTML = '';
 
     for (let i = trainingamount; i > -1; i--) {
-        const title = save_Object.trainings[i].training_date;
+        const trainings_date = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
         let only_ecercise;
@@ -521,7 +522,7 @@ function open_exercise() {
             }
         }
         if (is_in === true) {
-            const tableContainer = createTable(`${title} - ${duration}`, only_ecercise, true);
+            const tableContainer = createTable(`${trainings_date} - ${duration}`, only_ecercise, true);
             exercise_table.appendChild(tableContainer);
         }
     }
@@ -739,10 +740,6 @@ function sum_of_weight(training) {
         weight: weight,
         weightWithCommas: weightWithCommas
     };
-}
-
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 

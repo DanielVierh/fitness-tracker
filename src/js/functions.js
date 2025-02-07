@@ -56,3 +56,10 @@ export function daysDiff(dateTimeValue2, dateTimeValue1) {
     const days = Math.floor(Math.abs(differenceValue));
     return days;
 }
+
+/////////////////////////////////////
+//* ANCHOR - Return number with point, if over 999
+/////////////////////////////////////
+export function numberWithCommas(val) {
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
