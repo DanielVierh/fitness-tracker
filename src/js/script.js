@@ -154,6 +154,20 @@ function load_local_storage() {
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tag`;
             }
 
+            //* Colorize day diff to last training
+            if(time_to_last_training >= 7) {
+                last_training.style.color = 'red'
+            }else if(time_to_last_training >= 5) {
+                last_training.style.color = 'orange'
+            }else if(time_to_last_training >= 3) {
+                last_training.style.color = 'yellow'
+            }else if(time_to_last_training >= 0) {
+                last_training.style.color = 'green'
+            }
+            
+           
+
+
         } catch (error) {
             console.log('last_training', error);
         }
