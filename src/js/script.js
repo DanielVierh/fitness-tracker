@@ -510,12 +510,14 @@ function open_exercise() {
     lbl_seatsettings.innerHTML = `${selected_Exercise.machine_seat_settings}`;
     lbl_muscleselect.innerHTML = `${selected_Exercise.musclegroup}`;
     lbl_donesets.innerHTML = `0`;
+    let is_never_trained = true; //* to show if the exercise has not been performed before
+
     try {
         const currentSet = save_Object.current_training[`${indexOfExercise(selected_Exercise, save_Object.current_training)}`].solved_sets;
         lbl_donesets.innerHTML = `${currentSet}`;
     } catch (error) { }
-    lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
 
+    lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
     const trainingamount = save_Object.trainings.length - 1;
     exercise_table.innerHTML = '';
     let last_training_date = null;
@@ -533,6 +535,7 @@ function open_exercise() {
             is_in = false;
             if (exc[j].exercise_id === selected_Exercise.exercise_id) {
                 is_in = true;
+                is_never_trained = false;
                 only_ecercise = exc[j];
                 break;
             }
@@ -563,7 +566,14 @@ function open_exercise() {
             last_training_date = trainings_date;
         }
     }
-
+    
+    //* show if the exercise has not been performed before
+    if(is_never_trained) {
+        let lbl = document.createElement('div');
+        lbl.innerHTML = 'Noch keine Übung absolviert';
+        lbl.style.color = 'yellow'
+        exercise_table.appendChild(lbl)
+    }
 }
 
 
