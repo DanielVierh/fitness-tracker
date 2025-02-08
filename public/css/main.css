@@ -164,38 +164,6 @@ tr:nth-child(even) {
   background-color: #346569;
 }
 
-.message {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 85%;
-  min-height: 20vh;
-  background-color: #AA3939;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 15px;
-  padding: 13px 25px;
-  border: 1px solid white;
-  letter-spacing: 3px;
-  font-size: 2rem;
-  text-align: center;
-}
-.message.info {
-  background-color: #2599eb;
-}
-.message.error {
-  background-color: #ff0000;
-}
-.message.success {
-  background-color: #087408;
-}
-.message.warning {
-  background-color: #ff7700;
-}
-
 .button-calendar-trigger {
   background-color: rgb(64, 64, 64);
   padding: 11px;
@@ -687,4 +655,50 @@ tr:nth-child(even) {
 }
 .modal-calendar .calendar .calendar-day.current-day {
   background-color: rgb(12, 76, 125);
+}
+
+.message {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -200%);
+  width: 85%;
+  min-height: 20vh;
+  background-color: #AA3939;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  padding: 13px 25px;
+  border: 1px solid white;
+  letter-spacing: 4px;
+  text-align: center;
+  transition: all 0.4s ease-in-out;
+  z-index: 9999;
+}
+.message.active {
+  transform: translate(-50%, 0);
+}
+.message .message-title {
+  font-weight: bold;
+  font-size: 1.7rem;
+  margin-bottom: 30px;
+}
+.message .message-text {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+.message.info {
+  background-color: #2599eb;
+}
+.message.error {
+  background-color: #ff0000;
+}
+.message.success {
+  background-color: #087408;
+}
+.message.warning {
+  background-color: #ff7700;
 }

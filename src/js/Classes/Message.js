@@ -8,26 +8,37 @@ export class Message {
         info: 'info',
     };
 
-    constructor(message, type, duration) {
+    constructor(title, message, type, duration) {
+        this.title = title;
         this.message = message;
         this.type = type;
         this.duration = duration;
     }
 
     showMessage() {
-        // create a div element
+        const message_title = document.createElement('div');
+        message_title.innerHTML = this.title;
+        message_title.classList.add('message-title');
+
+        const message_text = document.createElement('div');
+        message_text.innerHTML = this.message;
+        message_text.classList.add('message-text');
+
         const messageElement = document.createElement('div');
-        // add a class to the div element
         messageElement.classList.add('message');
-        // add a class to the div element
         messageElement.classList.add(this.type);
-        // add the message to the div element
-        messageElement.textContent = this.message;
-        // append the div element to the body
+        messageElement.appendChild(message_title);
+        messageElement.appendChild(message_text);
         document.body.appendChild(messageElement);
-        // remove the message after a certain duration
+
         setTimeout(() => {
-            messageElement.remove();
+            messageElement.classList.add('active');
+        }, 50);
+        setTimeout(() => {
+            messageElement.classList.remove('active');
+            setTimeout(() => {
+                messageElement.remove();
+            }, 200);
         }, this.duration);
     }
 }

@@ -95,6 +95,7 @@ let save_Object = {
 window.onload = () => {
     load_local_storage();
     add_years_to_select();
+
     setInterval(() => {
         observer();
     }, 1000);
@@ -492,8 +493,14 @@ btn_saveExercise.addEventListener('click', () => {
         save_Object.exercises.push(newExercise);
     }
 
+    const msg = new Message('Gespeichert', 'Einen neue Übung wurde hinzugefügt', 'success', 3000);
+    msg.showMessage();
+
     save_into_storage();
-    location.reload();
+    
+    setTimeout(() => {
+        location.reload();
+    }, 3000);
 })
 
 
@@ -603,9 +610,12 @@ btn_trackSport.addEventListener('click', () => {
             //     const message = new Message('Ein neues Training wurde gestartet.', 'success', 5000);
             //     message.showMessage();
             // }, 500);
-
-            alert("Ein weiterer Satz wurde hinzugefügt");
-            location.reload();
+            const message = new Message('Training gestartet', 'Ein neues Training wurde gestartet. 1 Satz wurde hinzugefügt', 'success', 2500);
+            message.showMessage();
+            // alert("Ein weiterer Satz wurde hinzugefügt");
+            setTimeout(() => {
+                location.reload();
+            }, 2500);
         }
 
     } else {
@@ -616,8 +626,14 @@ btn_trackSport.addEventListener('click', () => {
         save_into_storage();
 
         //TODO -  replace alert
-        alert("Ein weiterer Satz wurde hinzugefügt");
-        location.reload();
+        const message = new Message('Satz getrackt', 'Ein weiterer Satz wurde hinzugefügt', 'success', 2500);
+        message.showMessage();
+
+        setTimeout(() => {
+            location.reload();
+        }, 2500);
+        // alert("Ein weiterer Satz wurde hinzugefügt");
+        // location.reload();
     }
 })
 
