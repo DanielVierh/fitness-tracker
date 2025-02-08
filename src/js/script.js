@@ -504,7 +504,9 @@ function open_exercise() {
 
     const trainingamount = save_Object.trainings.length - 1;
     exercise_table.innerHTML = '';
-
+    let last_training_date = null;
+    
+    //* Iterate all trainings and decrement index to show the newest trainings at first
     for (let i = trainingamount; i > -1; i--) {
         const trainings_date = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
@@ -512,7 +514,7 @@ function open_exercise() {
         let only_ecercise;
         let is_in = false;
 
-
+        //* Check if selected exercise == training exercise
         for (let j = 0; j < exc.length; j++) {
             is_in = false;
             if (exc[j].exercise_id === selected_Exercise.exercise_id) {
@@ -521,9 +523,30 @@ function open_exercise() {
                 break;
             }
         }
+        //* if exercise == training
         if (is_in === true) {
+            //* Show label with time between trainings
+            let lbl_time_to_last_training = document.createElement('p');
+            lbl_time_to_last_training.classList.add('between-trainings')
+    
+            try {
+                if ((i - 1) !== -1) {
+                    const duration_to_last_training = time_between_dates(trainings_date, last_training_date);
+                    if (duration_to_last_training > 1) {
+                        lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tage seit dem letzten Training`;
+                        exercise_table.appendChild(lbl_time_to_last_training);
+                    } else if (duration_to_last_training === 1) {
+                        lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tag seit dem letzten Training`;
+                        exercise_table.appendChild(lbl_time_to_last_training);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            //************************************* */
             const tableContainer = createTable(`${trainings_date} - ${duration}`, only_ecercise, true);
             exercise_table.appendChild(tableContainer);
+            last_training_date = trainings_date;
         }
     }
 
