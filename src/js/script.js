@@ -75,6 +75,7 @@ let selected_Exercise;
 let is_edit = false;
 let currentTrainingObj = undefined; // for active training
 let calendar_year = undefined;
+
 /////////////////////////////////////
 //*  Saveobj
 /////////////////////////////////////
@@ -510,6 +511,11 @@ btn_saveExercise.addEventListener('click', () => {
 function open_exercise() {
     Modal.open_modal(modal_exercise);
     lbl_trainingsname.innerHTML = selected_Exercise.name;
+
+    //* save last opened id to scroll to the last btn
+    save_Object.last_exercise_id = selected_Exercise.exercise_id;
+    save_into_storage();
+    
     lbl_weight.innerHTML = `${selected_Exercise.weight} Kg`;
     lbl_sets.innerHTML = `${selected_Exercise.sets}`;
     lbl_repeats.innerHTML = `${selected_Exercise.repeats}`;
@@ -758,6 +764,16 @@ function observer() {
 
     //* Schaue ob trainin aktiv
     if (training_running) {
+        if (save_Object.last_exercise_id) {
+            const lastExerciseElement = document.getElementById(save_Object.last_exercise_id);
+            if (lastExerciseElement) {
+                setTimeout(() => {
+                    lastExerciseElement.scrollIntoView({ behavior: 'smooth' });
+                    delete save_Object.last_exercise_id; 
+                }, 1100);
+                save_into_storage(); 
+            }
+        }
         bdy.classList.add('active-training');
         btn_finish.classList.add('active-training');
         //* Show Active Training section
@@ -824,6 +840,7 @@ btn_finish.addEventListener('click', () => {
 function finish_training() {
     const decision = window.confirm('Soll das Training beendet werden?');
     if (decision) {
+        delete save_Object.last_exercise_id; //* remove last exercise id from save obj
         const trainingsdate = new Date(save_Object.training_start)
         const day = trainingsdate.getDate();
         const month = trainingsdate.getMonth() + 1;
