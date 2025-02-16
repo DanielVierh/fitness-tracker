@@ -511,7 +511,8 @@ btn_saveExercise.addEventListener('click', () => {
 function open_exercise() {
     Modal.open_modal(modal_exercise);
     lbl_trainingsname.innerHTML = selected_Exercise.name;
-
+    //* Scroll to top
+    btn_edit.scrollIntoView({ behavior: 'smooth' });
     //* save last opened id to scroll to the last btn
     save_Object.last_exercise_id = selected_Exercise.exercise_id;
     save_into_storage();
