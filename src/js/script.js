@@ -64,16 +64,15 @@ const statistics_table = document.getElementById('statistics_table');
 const btn_delete_exercise = document.getElementById('btn_delete_exercise');
 const btn_open_calendar = document.getElementById('btn_open_calendar');
 const modal_calendar = document.getElementById('modal_calendar');
+const lbl_solved_sum = document.getElementById('lbl_solved_sum');
 
 
 /////////////////////////////////////
 //* ANCHOR -  Variablen
 /////////////////////////////////////
 let training_running = false;
-let training_place_filter = '';
 let selected_Exercise;
 let is_edit = false;
-let currentTrainingObj = undefined; // for active training
 let calendar_year = undefined;
 
 /////////////////////////////////////
@@ -538,6 +537,8 @@ function open_exercise() {
     let last_training_date = null;
     
     //* Iterate all trainings and decrement index to show the newest trainings at first
+    let solved_exercise_amount = 0;
+    let solved_set_sum = 0;
     for (let i = trainingamount; i > -1; i--) {
         const trainings_date = save_Object.trainings[i].training_date;
         const duration = save_Object.trainings[i].duration;
@@ -552,6 +553,7 @@ function open_exercise() {
                 is_in = true;
                 is_never_trained = false;
                 only_ecercise = exc[j];
+                solved_set_sum += exc[j].solved_sets;
                 break;
             }
         }
@@ -560,7 +562,7 @@ function open_exercise() {
             //* Show label with time between trainings
             let lbl_time_to_last_training = document.createElement('p');
             lbl_time_to_last_training.classList.add('between-trainings')
-    
+            solved_exercise_amount++;
             try {
                 if ((i - 1) !== -1) {
                     const duration_to_last_training = time_between_dates(trainings_date, last_training_date);
@@ -580,6 +582,7 @@ function open_exercise() {
             exercise_table.appendChild(tableContainer);
             last_training_date = trainings_date;
         }
+        lbl_solved_sum.innerHTML = `Insgesamt ${solved_exercise_amount} mal absolviert mit insgesamt ${solved_set_sum} Sätzen`
     }
     
     //* show if the exercise has not been performed before
