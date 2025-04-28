@@ -479,6 +479,8 @@ btn_saveExercise.addEventListener('click', () => {
         selected_Exercise.machine_seat_settings = inpExercise_seatSettings.value;
         selected_Exercise.musclegroup = muscle_select.value;
         selected_Exercise.trainingsplace = training_Area.value;
+        const msg = new Message('Gespeichert', 'Änderungen wurden gespeichert', 'success', 3000);
+        msg.showMessage();
     } else {
         const newExercise = new Exercise(rnd_id(),
             inpExercise_Name.value,
@@ -492,10 +494,9 @@ btn_saveExercise.addEventListener('click', () => {
             0
         );
         save_Object.exercises.push(newExercise);
+        const msg = new Message('Gespeichert', 'Eine neue Übung wurde hinzugefügt', 'success', 3000);
+        msg.showMessage();
     }
-
-    const msg = new Message('Gespeichert', 'Einen neue Übung wurde hinzugefügt', 'success', 3000);
-    msg.showMessage();
 
     save_into_storage();
     
