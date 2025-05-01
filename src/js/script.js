@@ -996,12 +996,12 @@ function createTable(title, data, only_exercise) {
     const weightHeaderCell = document.createElement("th");
     const totalWeightHeaderCell = document.createElement("th");
     const muscleHeaderCell = document.createElement("th");
-    nameHeaderCell.appendChild(document.createTextNode("Übung"));
-    setsHeaderCell.appendChild(document.createTextNode("Sätze"));
+    nameHeaderCell.appendChild(document.createTextNode("Übng"));
+    setsHeaderCell.appendChild(document.createTextNode("Sät"));
     repsHeaderCell.appendChild(document.createTextNode("Wdh"));
     weightHeaderCell.appendChild(document.createTextNode("Gew"));
     totalWeightHeaderCell.appendChild(document.createTextNode("Sum"));
-    muscleHeaderCell.appendChild(document.createTextNode("Muskel"));
+    muscleHeaderCell.appendChild(document.createTextNode("Mskl"));
     header.appendChild(nameHeaderCell);
     header.appendChild(setsHeaderCell);
     header.appendChild(repsHeaderCell);
