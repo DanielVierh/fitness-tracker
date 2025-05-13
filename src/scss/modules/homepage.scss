@@ -114,7 +114,8 @@
     border-radius: 5px;
     font-size: 10px;
     font-weight: bold;
-    background-color: $color-main;
+    // background-color: $color-main;
+    background: linear-gradient(to top, $color-main, aqua);
     color: black;
     padding: 4px;
     min-height: 10px;
