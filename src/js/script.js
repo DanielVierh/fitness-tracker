@@ -906,6 +906,7 @@ function render_trainings() {
     }
     for (let i = trainingamount; i > -1; i--) {
         const trainingsdate = save_Object.trainings[i].training_date;
+        
         const duration = save_Object.trainings[i].duration;
         const exc = save_Object.trainings[i].exercises;
         const traintingsplace = identify_trainingsplace(exc);
@@ -922,7 +923,7 @@ function render_trainings() {
             max_weight_sum.date = trainingsdate;
         }
 
-        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc);
+        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc, false, i);
         trainings_wrapper.appendChild(tableContainer);
         let lbl_time_to_last_training = document.createElement('p');
         lbl_time_to_last_training.classList.add('between-trainings')
@@ -987,7 +988,8 @@ function identify_trainingsplace(training) {
 /////////////////////////////////////
 //* ANCHOR - Create Table
 /////////////////////////////////////
-function createTable(title, data, only_exercise) {
+function createTable(title, data, only_exercise, index) {
+    
     const table = document.createElement("table");
     const header = document.createElement("tr");
     const nameHeaderCell = document.createElement("th");
@@ -1061,11 +1063,26 @@ function createTable(title, data, only_exercise) {
         row.appendChild(muscleCell);
         table.appendChild(row);
     }
-
+    //* Create delete button
+    let delete_button = document.createElement('div');
+    delete_button.classList.add('delete-button');
+    delete_button.innerText = 'löschen';
+    delete_button.addEventListener('click', ()=> {
+        const confirm = window.confirm('Soll dieses Training wirklich gelöscht werden?')
+        if(confirm) {
+            save_Object.trainings.splice(index, 1);
+            setTimeout(() => {
+                save_into_storage();
+                window.location.reload();
+            }, 100);
+            
+        }
+    })
     const container = document.createElement("div");
     const heading = document.createElement("h3");
     heading.appendChild(document.createTextNode(title));
     container.appendChild(heading);
+    container.appendChild(delete_button);
     container.appendChild(table);
     return container;
 }
