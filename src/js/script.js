@@ -578,7 +578,7 @@ function open_exercise() {
                 console.log(error);
             }
             //************************************* */
-            const tableContainer = createTable(`${trainings_date} - ${duration}`, only_ecercise, true);
+            const tableContainer = createTable(`${trainings_date} - ${duration}`, only_ecercise, true, i);
             exercise_table.appendChild(tableContainer);
             last_training_date = trainings_date;
         }
