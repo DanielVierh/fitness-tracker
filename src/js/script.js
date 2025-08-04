@@ -67,7 +67,7 @@ const btn_delete_exercise = document.getElementById('btn_delete_exercise');
 const btn_open_calendar = document.getElementById('btn_open_calendar');
 const modal_calendar = document.getElementById('modal_calendar');
 const lbl_solved_sum = document.getElementById('lbl_solved_sum');
-const btn_submit_training = document.getElementById('btn_submit_training');
+
 
 
 /////////////////////////////////////
@@ -105,17 +105,7 @@ window.onload = () => {
 }
 
 
-//*ANCHOR - Addendum
-btn_submit_training.addEventListener('click', (e)=> {
-    e.preventDefault();
 
-    const trainingsname = inp_add_training_name.value;
-    const trainings_date = inp_add_training_date.value;
-    const trainingsduration = inp_add_training_time.value;
-    const trainings_place = training_place.value;
-
-    console.log(`trainingsname: ${trainingsname} trainings_date: ${trainings_date}  trainingsduration: ${trainingsduration} trainings_place ${trainings_place}..       `);
-})
 
 /////////////////////////////////////
 //* ANCHOR - Load Local Storage
