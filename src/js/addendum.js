@@ -1,4 +1,5 @@
 import { splitVal } from "./functions";
+import { Training } from './Classes/Training.js';
 
 export async function addendum(save_Object) {
     const btn_submit_training = document.getElementById('btn_submit_training');
@@ -16,27 +17,17 @@ export async function addendum(save_Object) {
         const month = splitVal(addendum_trainings_date, '-',1);
         const year = splitVal(addendum_trainings_date, '-',0);
         const date = `${day}.${month}.${year}`;
-
-        console.log('date', date);
-        console.log('trainings length',save_Object.trainings.length);
         
         //* Loop through trainings to detect date
         for(let i = 0; i < save_Object.trainings.length; i++) {
             const i_date = save_Object.trainings[i].training_date;
-            console.log('i_date', i_date);
             
             if(i_date <= date) {
-                console.info('Kleiner gleich');
                 const new_index = i - 1;
-                console.log('new_index', new_index);
-                save_Object.trainings.splice(new_index, 0, {
-                    training_name: addendum_trainingsname,
-                    training_date: date,
-                    training_duration: addendum_trainingsduration,
-                    training_place: addendum_trainings_place,
-                    training_id: save_Object.trainings.length + 1
-                });
-                console.log('save_Object.trainings', save_Object.trainings);
+                const new_addendum_training = new Training(date, addendum_trainingsduration, addendum_trainingsname);
+                new_addendum_training.training_place = addendum_trainings_place;
+                new_addendum_training.training_date = date;
+                save_Object.trainings.splice(new_index, 0, new_addendum_training);
                 localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
                 break;
 
