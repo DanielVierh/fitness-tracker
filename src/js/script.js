@@ -11,6 +11,8 @@ import { Exercise } from './Classes/Exercise.js';
 import { Training } from './Classes/Training.js';
 import { Modal } from './Classes/Modal.js';
 import { Message } from './Classes/Message.js';
+import { addendum } from './addendum.js';
+
 
 
 restTimer();
@@ -65,6 +67,7 @@ const btn_delete_exercise = document.getElementById('btn_delete_exercise');
 const btn_open_calendar = document.getElementById('btn_open_calendar');
 const modal_calendar = document.getElementById('modal_calendar');
 const lbl_solved_sum = document.getElementById('lbl_solved_sum');
+const btn_submit_training = document.getElementById('btn_submit_training');
 
 
 /////////////////////////////////////
@@ -102,6 +105,18 @@ window.onload = () => {
 }
 
 
+//*ANCHOR - Addendum
+btn_submit_training.addEventListener('click', (e)=> {
+    e.preventDefault();
+
+    const trainingsname = inp_add_training_name.value;
+    const trainings_date = inp_add_training_date.value;
+    const trainingsduration = inp_add_training_time.value;
+    const trainings_place = training_place.value;
+
+    console.log(`trainingsname: ${trainingsname} trainings_date: ${trainings_date}  trainingsduration: ${trainingsduration} trainings_place ${trainings_place}..       `);
+})
+
 /////////////////////////////////////
 //* ANCHOR - Load Local Storage
 /////////////////////////////////////
@@ -110,6 +125,7 @@ function load_local_storage() {
         try {
             save_Object = JSON.parse(localStorage.getItem('stored_fitness_saveobj'));
             backup(save_Object);
+            addendum(save_Object);
         } catch (error) {
             console.log('Main Error', error);
             save_Object = {

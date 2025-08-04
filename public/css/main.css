@@ -616,6 +616,39 @@ tr:nth-child(even) {
   letter-spacing: 2px;
 }
 
+.training-addendum {
+  width: 100%;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #17514d;
+  padding: 20px;
+}
+.training-addendum #form_add_training {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.training-addendum .addendum-label {
+  font-size: 1.2rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+.training-addendum textarea {
+  width: 90%;
+  height: 100px;
+  border-radius: 8px;
+  padding-left: 10px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
 .modal-calendar .calendar {
   width: 95%;
   margin: 0 auto;
