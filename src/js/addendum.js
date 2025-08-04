@@ -1,5 +1,6 @@
 import { splitVal } from "./functions";
 import { Training } from './Classes/Training.js';
+import { Message } from './Classes/Message.js';
 
 export async function addendum(save_Object) {
     const btn_submit_training = document.getElementById('btn_submit_training');
@@ -36,7 +37,8 @@ export async function addendum(save_Object) {
         if (save_Object.trainings.length === 0) {
             save_Object.trainings.push(new_addendum_training);
             localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
-            console.log(`No trainings found, adding new training: ${addendum_trainingsname}`);
+            const message = new Message('Training hinzugefügt', '', 'success', 3000);
+            message.showMessage();
             return;
         }
 
@@ -48,15 +50,12 @@ export async function addendum(save_Object) {
                 const new_index = i - 1;
                 save_Object.trainings.splice(new_index, 0, new_addendum_training);
                 localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
+                const message = new Message('Training hinzugefügt', '', 'success', 3000);
+                message.showMessage();
                 break;
             }
         }
 
-        console.log(`
-            addendum_trainingsname: ${addendum_trainingsname} 
-            trainings_date: ${date}  
-            trainingsduration: ${addendum_trainingsduration} 
-            trainings_place ${addendum_trainings_place}..       `);
     })
 
 }
