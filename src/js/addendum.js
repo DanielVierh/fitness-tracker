@@ -18,7 +18,7 @@ export async function addendum(save_Object) {
         const month = splitVal(addendum_trainings_date, '-', 1);
         const year = splitVal(addendum_trainings_date, '-', 0);
         const date = `${day}.${month}.${year}`;
-        const compare_Date = new Date(date);
+        const compare_Date = new Date(`${year}-${month}-${day}`);
 
         const new_addendum_training = new Training(date, addendum_trainingsduration,
             [            {
@@ -46,10 +46,14 @@ export async function addendum(save_Object) {
 
         //* Loop through trainings to detect date
         for (let i = 0; i < save_Object.trainings.length; i++) {
-            const i_date = new Date(save_Object.trainings[i].training_date);
+            const i_date = save_Object.trainings[i].training_date;
+            const i_day = splitVal(i_date, '.', 0);
+            const i_month = splitVal(i_date, '.', 1);
+            const i_year = splitVal(i_date, '.', 2);
+            const i_compare_date = new Date(`${i_year}-${i_month}-${i_day}`)
             console.log('Bin in Foor Schleife', `${i_date} <= ${compare_Date}`);
             
-            if (i_date >= compare_Date) {
+            if (compare_Date <= i_compare_date) {
                 const new_index = i - 1;
                 save_Object.trainings.splice(new_index, 0, new_addendum_training);
                 localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
