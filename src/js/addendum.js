@@ -18,6 +18,7 @@ export async function addendum(save_Object) {
         const month = splitVal(addendum_trainings_date, '-', 1);
         const year = splitVal(addendum_trainings_date, '-', 0);
         const date = `${day}.${month}.${year}`;
+        const compare_Date = new Date(date);
 
         const new_addendum_training = new Training(date, addendum_trainingsduration,
             [            {
@@ -35,6 +36,7 @@ export async function addendum(save_Object) {
         );
 
         if (save_Object.trainings.length === 0) {
+            console.log('Bin im IF');
             save_Object.trainings.push(new_addendum_training);
             localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
             const message = new Message('Training hinzugefügt', '', 'success', 3000);
@@ -44,9 +46,10 @@ export async function addendum(save_Object) {
 
         //* Loop through trainings to detect date
         for (let i = 0; i < save_Object.trainings.length; i++) {
-            const i_date = save_Object.trainings[i].training_date;
-
-            if (i_date <= date) {
+            const i_date = new Date(save_Object.trainings[i].training_date);
+            console.log('Bin in Foor Schleife', `${i_date} <= ${compare_Date}`);
+            
+            if (i_date >= compare_Date) {
                 const new_index = i - 1;
                 save_Object.trainings.splice(new_index, 0, new_addendum_training);
                 localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
