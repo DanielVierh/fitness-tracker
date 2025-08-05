@@ -69,5 +69,8 @@ export async function addendum(save_Object) {
         localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
         const message = new Message('Training hinzugefügt', '', 'success', 3000);
         message.showMessage();
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
     });
 }
