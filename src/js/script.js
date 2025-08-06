@@ -14,6 +14,8 @@ import { addendum } from './addendum.js';
 import { render_trainings } from './render_trainings.js';
 import { sum_of_weight } from './sum_of_weight.js';
 import { time_between_dates } from './time_between_days.js';
+import { identify_trainingsplace } from './functions.js';
+import { createTable } from './create_table.js';
 
 
 restTimer();
@@ -155,24 +157,24 @@ function load_local_storage() {
 
             if (time_to_last_training > 1) {
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tagen`;
-            } else if(time_to_last_training === 0) {
+            } else if (time_to_last_training === 0) {
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt: heute`;
-            }else {
+            } else {
                 last_training.innerHTML = `${save_Object.trainings[last].training_date} -- ${save_Object.trainings[last].duration} <br> Zuletzt vor ${time_to_last_training}. Tag`;
             }
 
             //* Colorize day diff to last training
-            if(time_to_last_training >= 7) {
+            if (time_to_last_training >= 7) {
                 last_training.style.color = 'red'
-            }else if(time_to_last_training >= 5) {
+            } else if (time_to_last_training >= 5) {
                 last_training.style.color = 'orange'
-            }else if(time_to_last_training >= 3) {
+            } else if (time_to_last_training >= 3) {
                 last_training.style.color = 'yellow'
-            }else if(time_to_last_training >= 0) {
+            } else if (time_to_last_training >= 0) {
                 last_training.style.color = 'green'
             }
-            
-           
+
+
 
 
         } catch (error) {
@@ -504,7 +506,7 @@ btn_saveExercise.addEventListener('click', () => {
     }
 
     save_into_storage();
-    
+
     setTimeout(() => {
         location.reload();
     }, 3000);
@@ -522,7 +524,7 @@ function open_exercise() {
     //* save last opened id to scroll to the last btn
     save_Object.last_exercise_id = selected_Exercise.exercise_id;
     save_into_storage();
-    
+
     lbl_weight.innerHTML = `${selected_Exercise.weight} Kg`;
     lbl_sets.innerHTML = `${selected_Exercise.sets}`;
     lbl_repeats.innerHTML = `${selected_Exercise.repeats}`;
@@ -541,7 +543,7 @@ function open_exercise() {
     const trainingamount = save_Object.trainings.length - 1;
     exercise_table.innerHTML = '';
     let last_training_date = null;
-    
+
     //* Iterate all trainings and decrement index to show the newest trainings at first
     let solved_exercise_amount = 0;
     let solved_set_sum = 0;
@@ -590,9 +592,9 @@ function open_exercise() {
         }
         lbl_solved_sum.innerHTML = `Insgesamt ${solved_exercise_amount} mal absolviert mit insgesamt ${solved_set_sum} Sätzen`
     }
-    
+
     //* show if the exercise has not been performed before
-    if(is_never_trained) {
+    if (is_never_trained) {
         let lbl = document.createElement('div');
         lbl.innerHTML = 'Noch keine Übung absolviert';
         lbl.style.color = 'yellow'
@@ -731,7 +733,7 @@ btn_add.addEventListener('click', () => {
     btn_delete_exercise.classList.remove('active');
 });
 
-btn_open_calendar.addEventListener('click', ()=> {
+btn_open_calendar.addEventListener('click', () => {
     Modal.open_modal(modal_calendar);
     calendar(save_Object, calendar_year);
 });
@@ -775,9 +777,9 @@ function observer() {
             if (lastExerciseElement) {
                 setTimeout(() => {
                     lastExerciseElement.scrollIntoView({ behavior: 'smooth' });
-                    delete save_Object.last_exercise_id; 
+                    delete save_Object.last_exercise_id;
                 }, 1100);
-                save_into_storage(); 
+                save_into_storage();
             }
         }
         bdy.classList.add('active-training');
@@ -844,7 +846,7 @@ function finish_training() {
 
         //* Trainingsobject erstellen und abspeichern
         const new_solved_training = new Training(datum, duration, save_Object.current_training);
-        
+
         save_Object.trainings.push(new_solved_training)
 
         //* alle sets zurücksetzen
@@ -897,7 +899,7 @@ function finish_training() {
 //     }
 //     for (let i = trainingamount; i > -1; i--) {
 //         const trainingsdate = save_Object.trainings[i].training_date;
-        
+
 //         const duration = save_Object.trainings[i].duration;
 //         const exc = save_Object.trainings[i].exercises;
 //         const traintingsplace = identify_trainingsplace(exc);
@@ -980,7 +982,7 @@ function finish_training() {
 //* ANCHOR - Create Table
 /////////////////////////////////////
 // function createTable(title, data, only_exercise, index) {
-    
+
 //     const table = document.createElement("table");
 //     const header = document.createElement("tr");
 //     const nameHeaderCell = document.createElement("th");
@@ -1066,7 +1068,7 @@ function finish_training() {
 //                 save_into_storage();
 //                 window.location.reload();
 //             }, 100);
-            
+
 //         }
 //     })
 //     const container = document.createElement("div");

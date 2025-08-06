@@ -1,5 +1,6 @@
 import { add_zero } from "./functions.js";
 import { Modal } from './Classes/Modal.js';
+import  {render_trainings}  from "./render_trainings.js";
 
 export function calendar(save_obj, _calendar_year) {
   const calendar = document.getElementById("calendar");
@@ -63,7 +64,6 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
   //* Loop for days
   for (let i = 1; i <= max_day; i++) {
     let calendar_day = document.createElement("div");
-    // calendar_day.innerHTML = `${i}`;
     calendar_day.classList.add("calendar-day");
     const current_day = `${add_zero(i)}.${add_zero(month_index)}.${ref_year}`;
     const date = new Date(ref_year, month_index - 1, i);
@@ -82,6 +82,12 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
       if (current_day === current_training_date) {
         let training_day = document.createElement("div");
         calendar_day.setAttribute("data-trainingDate", current_training_date);
+        calendar_day.addEventListener('click', (e) => {
+          // Open Modal with trainings and scroll to date
+          const training_date = e.currentTarget.getAttribute('data-trainingDate');
+              Modal.open_modal(modal_trainings);
+              render_trainings(save_obj, training_date);
+        });
         training_day.classList.add("calendar-training-day");
         calendar_day.appendChild(training_day);
         calendar_day.classList.add('sport-day')

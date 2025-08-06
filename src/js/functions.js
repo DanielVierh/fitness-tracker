@@ -63,3 +63,35 @@ export function daysDiff(dateTimeValue2, dateTimeValue1) {
 export function numberWithCommas(val) {
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
+
+export /////////////////////////////////////
+//* ANCHOR - Identify Trainingsplace
+//TODO - Show other Trainingsplace
+/////////////////////////////////////
+function identify_trainingsplace(training) {
+
+    let fitnessstudio = 0;
+    let otherTrainingsplace = 0;
+    let heimtraining = 0;
+
+    for (let i = 0; i < training.length; i++) {
+        if (training[i].trainingsplace === 'Fitnessstudio') {
+            fitnessstudio++
+        } else if (training[i].trainingsplace === 'Heimtraining') {
+            heimtraining++;
+        } else {
+            otherTrainingsplace++;
+        }
+    }
+    if (fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
+        return 'Fitti';
+    }
+
+    if (otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
+        return 'Sonstiges';
+    }
+
+    if (heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
+        return 'Home';
+    }
+}
