@@ -5,7 +5,6 @@ import { rnd_id } from './functions.js';
 import { add_zero } from './functions.js';
 import { minutesDiff } from './functions.js';
 import { daysDiff } from './functions.js';
-import { numberWithCommas } from './functions.js';
 import { calendar } from './calendar.js';
 import { Exercise } from './Classes/Exercise.js';
 import { Training } from './Classes/Training.js';
@@ -13,6 +12,8 @@ import { Modal } from './Classes/Modal.js';
 import { Message } from './Classes/Message.js';
 import { addendum } from './addendum.js';
 import { render_trainings } from './render_trainings.js';
+import { sum_of_weight } from './sum_of_weight.js';
+import { time_between_dates } from './time_between_days.js';
 
 
 restTimer();
@@ -809,22 +810,7 @@ function sum_of_sets() {
     return solvedSets;
 }
 
-//* ANCHOR - Sum of sets
-function sum_of_weight(training) {
 
-    let weight = 0;
-
-    for (let i = 0; i < training.length; i++) {
-        const solvedSets = training[i].solved_sets;
-        weight = weight += (training[i].weight * solvedSets * training[i].repeats);
-    }
-
-    const weightWithCommas = numberWithCommas(weight);
-    return {
-        weight: weight,
-        weightWithCommas: weightWithCommas
-    };
-}
 
 
 //* Slider
@@ -962,135 +948,135 @@ function finish_training() {
 //* ANCHOR - Identify Trainingsplace
 //TODO - Show other Trainingsplace
 /////////////////////////////////////
-function identify_trainingsplace(training) {
+// function identify_trainingsplace(training) {
 
-    let fitnessstudio = 0;
-    let otherTrainingsplace = 0;
-    let heimtraining = 0;
+//     let fitnessstudio = 0;
+//     let otherTrainingsplace = 0;
+//     let heimtraining = 0;
 
-    for (let i = 0; i < training.length; i++) {
-        if (training[i].trainingsplace === 'Fitnessstudio') {
-            fitnessstudio++
-        } else if (training[i].trainingsplace === 'Heimtraining') {
-            heimtraining++;
-        } else {
-            otherTrainingsplace++;
-        }
-    }
-    if (fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
-        return 'Fitti';
-    }
+//     for (let i = 0; i < training.length; i++) {
+//         if (training[i].trainingsplace === 'Fitnessstudio') {
+//             fitnessstudio++
+//         } else if (training[i].trainingsplace === 'Heimtraining') {
+//             heimtraining++;
+//         } else {
+//             otherTrainingsplace++;
+//         }
+//     }
+//     if (fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
+//         return 'Fitti';
+//     }
 
-    if (otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
-        return 'Sonstiges';
-    }
+//     if (otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
+//         return 'Sonstiges';
+//     }
 
-    if (heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
-        return 'Home';
-    }
-}
+//     if (heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
+//         return 'Home';
+//     }
+// }
 
 /////////////////////////////////////
 //* ANCHOR - Create Table
 /////////////////////////////////////
-function createTable(title, data, only_exercise, index) {
+// function createTable(title, data, only_exercise, index) {
     
-    const table = document.createElement("table");
-    const header = document.createElement("tr");
-    const nameHeaderCell = document.createElement("th");
-    const setsHeaderCell = document.createElement("th");
-    const repsHeaderCell = document.createElement("th");
-    const weightHeaderCell = document.createElement("th");
-    const totalWeightHeaderCell = document.createElement("th");
-    const muscleHeaderCell = document.createElement("th");
-    nameHeaderCell.appendChild(document.createTextNode("Übng"));
-    setsHeaderCell.appendChild(document.createTextNode("Sät"));
-    repsHeaderCell.appendChild(document.createTextNode("Wdh"));
-    weightHeaderCell.appendChild(document.createTextNode("Gew"));
-    totalWeightHeaderCell.appendChild(document.createTextNode("Sum"));
-    muscleHeaderCell.appendChild(document.createTextNode("Mskl"));
-    header.appendChild(nameHeaderCell);
-    header.appendChild(setsHeaderCell);
-    header.appendChild(repsHeaderCell);
-    header.appendChild(weightHeaderCell);
-    header.appendChild(totalWeightHeaderCell);
-    header.appendChild(muscleHeaderCell);
-    table.appendChild(header);
+//     const table = document.createElement("table");
+//     const header = document.createElement("tr");
+//     const nameHeaderCell = document.createElement("th");
+//     const setsHeaderCell = document.createElement("th");
+//     const repsHeaderCell = document.createElement("th");
+//     const weightHeaderCell = document.createElement("th");
+//     const totalWeightHeaderCell = document.createElement("th");
+//     const muscleHeaderCell = document.createElement("th");
+//     nameHeaderCell.appendChild(document.createTextNode("Übng"));
+//     setsHeaderCell.appendChild(document.createTextNode("Sät"));
+//     repsHeaderCell.appendChild(document.createTextNode("Wdh"));
+//     weightHeaderCell.appendChild(document.createTextNode("Gew"));
+//     totalWeightHeaderCell.appendChild(document.createTextNode("Sum"));
+//     muscleHeaderCell.appendChild(document.createTextNode("Mskl"));
+//     header.appendChild(nameHeaderCell);
+//     header.appendChild(setsHeaderCell);
+//     header.appendChild(repsHeaderCell);
+//     header.appendChild(weightHeaderCell);
+//     header.appendChild(totalWeightHeaderCell);
+//     header.appendChild(muscleHeaderCell);
+//     table.appendChild(header);
 
-    for (let i = 0; i < data.length; i++) {
-        const row = document.createElement("tr");
-        const nameCell = document.createElement("td");
-        const setsCell = document.createElement("td");
-        const repsCell = document.createElement("td");
-        const weightCell = document.createElement("td");
-        const totalWeightCell = document.createElement("td");
-        const muscleCell = document.createElement("td");
-        const totalWeight = data[i].weight * data[i].repeats * data[i].solved_sets;
+//     for (let i = 0; i < data.length; i++) {
+//         const row = document.createElement("tr");
+//         const nameCell = document.createElement("td");
+//         const setsCell = document.createElement("td");
+//         const repsCell = document.createElement("td");
+//         const weightCell = document.createElement("td");
+//         const totalWeightCell = document.createElement("td");
+//         const muscleCell = document.createElement("td");
+//         const totalWeight = data[i].weight * data[i].repeats * data[i].solved_sets;
 
-        nameCell.appendChild(document.createTextNode(data[i].name));
-        setsCell.appendChild(document.createTextNode(data[i].solved_sets));
-        repsCell.appendChild(document.createTextNode(data[i].repeats));
-        weightCell.appendChild(document.createTextNode(data[i].weight));
-        totalWeightCell.appendChild(document.createTextNode(totalWeight));
-        muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
+//         nameCell.appendChild(document.createTextNode(data[i].name));
+//         setsCell.appendChild(document.createTextNode(data[i].solved_sets));
+//         repsCell.appendChild(document.createTextNode(data[i].repeats));
+//         weightCell.appendChild(document.createTextNode(data[i].weight));
+//         totalWeightCell.appendChild(document.createTextNode(totalWeight));
+//         muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
 
-        row.appendChild(nameCell);
-        row.appendChild(setsCell);
-        row.appendChild(repsCell);
-        row.appendChild(weightCell);
-        row.appendChild(totalWeightCell);
-        row.appendChild(muscleCell);
-        table.appendChild(row);
-    }
+//         row.appendChild(nameCell);
+//         row.appendChild(setsCell);
+//         row.appendChild(repsCell);
+//         row.appendChild(weightCell);
+//         row.appendChild(totalWeightCell);
+//         row.appendChild(muscleCell);
+//         table.appendChild(row);
+//     }
 
-    if (only_exercise) {
-        const row = document.createElement("tr");
-        const nameCell = document.createElement("td");
-        const setsCell = document.createElement("td");
-        const repsCell = document.createElement("td");
-        const weightCell = document.createElement("td");
-        const totalWeightCell = document.createElement("td");
-        const muscleCell = document.createElement("td");
-        const totalWeight = data.weight * data.repeats * data.solved_sets;
+//     if (only_exercise) {
+//         const row = document.createElement("tr");
+//         const nameCell = document.createElement("td");
+//         const setsCell = document.createElement("td");
+//         const repsCell = document.createElement("td");
+//         const weightCell = document.createElement("td");
+//         const totalWeightCell = document.createElement("td");
+//         const muscleCell = document.createElement("td");
+//         const totalWeight = data.weight * data.repeats * data.solved_sets;
 
-        nameCell.appendChild(document.createTextNode(data.name));
-        setsCell.appendChild(document.createTextNode(data.solved_sets));
-        repsCell.appendChild(document.createTextNode(data.repeats));
-        weightCell.appendChild(document.createTextNode(data.weight));
-        totalWeightCell.appendChild(document.createTextNode(totalWeight));
-        muscleCell.appendChild(document.createTextNode(data.musclegroup));
+//         nameCell.appendChild(document.createTextNode(data.name));
+//         setsCell.appendChild(document.createTextNode(data.solved_sets));
+//         repsCell.appendChild(document.createTextNode(data.repeats));
+//         weightCell.appendChild(document.createTextNode(data.weight));
+//         totalWeightCell.appendChild(document.createTextNode(totalWeight));
+//         muscleCell.appendChild(document.createTextNode(data.musclegroup));
 
-        row.appendChild(nameCell);
-        row.appendChild(setsCell);
-        row.appendChild(repsCell);
-        row.appendChild(weightCell);
-        row.appendChild(totalWeightCell);
-        row.appendChild(muscleCell);
-        table.appendChild(row);
-    }
-    //* Create delete button
-    let delete_button = document.createElement('div');
-    delete_button.classList.add('delete-button');
-    delete_button.innerText = 'löschen';
-    delete_button.addEventListener('click', ()=> {
-        const confirm = window.confirm('Soll dieses Training wirklich gelöscht werden?')
-        if(confirm) {
-            save_Object.trainings.splice(index, 1);
-            setTimeout(() => {
-                save_into_storage();
-                window.location.reload();
-            }, 100);
+//         row.appendChild(nameCell);
+//         row.appendChild(setsCell);
+//         row.appendChild(repsCell);
+//         row.appendChild(weightCell);
+//         row.appendChild(totalWeightCell);
+//         row.appendChild(muscleCell);
+//         table.appendChild(row);
+//     }
+//     //* Create delete button
+//     let delete_button = document.createElement('div');
+//     delete_button.classList.add('delete-button');
+//     delete_button.innerText = 'löschen';
+//     delete_button.addEventListener('click', ()=> {
+//         const confirm = window.confirm('Soll dieses Training wirklich gelöscht werden?')
+//         if(confirm) {
+//             save_Object.trainings.splice(index, 1);
+//             setTimeout(() => {
+//                 save_into_storage();
+//                 window.location.reload();
+//             }, 100);
             
-        }
-    })
-    const container = document.createElement("div");
-    const heading = document.createElement("h3");
-    heading.appendChild(document.createTextNode(title));
-    container.appendChild(heading);
-    container.appendChild(delete_button);
-    container.appendChild(table);
-    return container;
-}
+//         }
+//     })
+//     const container = document.createElement("div");
+//     const heading = document.createElement("h3");
+//     heading.appendChild(document.createTextNode(title));
+//     container.appendChild(heading);
+//     container.appendChild(delete_button);
+//     container.appendChild(table);
+//     return container;
+// }
 
 
 /////////////////////////////////////
@@ -1113,29 +1099,29 @@ function load_exercise_into_edit() {
 //* ANCHOR - Time between Dates
 /////////////////////////////////////
 
-function time_between_dates(newer_date, older_date) {
-    try {
-        // Die Daten müssen im Format "DD.MM.YYYY" sein
-        const newerDay = splitVal(newer_date, '.', 0);
-        const newerMonth = splitVal(newer_date, '.', 1);
-        const newerYear = splitVal(newer_date, '.', 2);
-        const newerDateObject = new Date(`${newerYear}-${newerMonth}-${newerDay}`);
+// function time_between_dates(newer_date, older_date) {
+//     try {
+//         // Die Daten müssen im Format "DD.MM.YYYY" sein
+//         const newerDay = splitVal(newer_date, '.', 0);
+//         const newerMonth = splitVal(newer_date, '.', 1);
+//         const newerYear = splitVal(newer_date, '.', 2);
+//         const newerDateObject = new Date(`${newerYear}-${newerMonth}-${newerDay}`);
 
-        const olderDay = splitVal(older_date, '.', 0);
-        const olderMonth = splitVal(older_date, '.', 1);
-        const olderYear = splitVal(older_date, '.', 2);
-        const olderDateObject = new Date(`${olderYear}-${olderMonth}-${olderDay}`);
+//         const olderDay = splitVal(older_date, '.', 0);
+//         const olderMonth = splitVal(older_date, '.', 1);
+//         const olderYear = splitVal(older_date, '.', 2);
+//         const olderDateObject = new Date(`${olderYear}-${olderMonth}-${olderDay}`);
 
-        // Berechnung der Differenz in Tagen
-        const time_difference_in_days = daysDiff(newerDateObject, olderDateObject);
+//         // Berechnung der Differenz in Tagen
+//         const time_difference_in_days = daysDiff(newerDateObject, olderDateObject);
 
-        // Ergebnis ausgeben oder weiterverarbeiten
-        return time_difference_in_days;
+//         // Ergebnis ausgeben oder weiterverarbeiten
+//         return time_difference_in_days;
 
-    } catch (error) {
-        console.log('time_between_dates', error);
-    }
-}
+//     } catch (error) {
+//         console.log('time_between_dates', error);
+//     }
+// }
 
 
 

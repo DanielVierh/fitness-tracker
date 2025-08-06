@@ -1,3 +1,6 @@
+import { sum_of_weight } from "./sum_of_weight";
+import { createTable } from "./create_table.js";
+import { time_between_dates } from "./time_between_days.js";
 
 export function render_trainings(save_Object) {
     const trainings_wrapper = document.getElementById('trainings_wrapper');
@@ -53,5 +56,37 @@ export function render_trainings(save_Object) {
     const max_weight_label = document.getElementById('max_weight_label');
     if (max_weight_sum.amount > 0) {
         max_weight_label.innerHTML = `Maximal bewegtes Gewicht: <br> ${max_weight_sum.amount_with_comma} Kg am ${max_weight_sum.date}`
+    }
+}
+
+/////////////////////////////////////
+//* ANCHOR - Identify Trainingsplace
+//TODO - Show other Trainingsplace
+/////////////////////////////////////
+function identify_trainingsplace(training) {
+
+    let fitnessstudio = 0;
+    let otherTrainingsplace = 0;
+    let heimtraining = 0;
+
+    for (let i = 0; i < training.length; i++) {
+        if (training[i].trainingsplace === 'Fitnessstudio') {
+            fitnessstudio++
+        } else if (training[i].trainingsplace === 'Heimtraining') {
+            heimtraining++;
+        } else {
+            otherTrainingsplace++;
+        }
+    }
+    if (fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
+        return 'Fitti';
+    }
+
+    if (otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
+        return 'Sonstiges';
+    }
+
+    if (heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
+        return 'Home';
     }
 }
