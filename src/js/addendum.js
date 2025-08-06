@@ -1,8 +1,9 @@
 import { splitVal } from "./functions";
 import { Training } from './Classes/Training.js';
 import { Message } from './Classes/Message.js';
+import { save_into_storage } from './functions.js';
 
-export async function addendum(save_Object) {
+export function addendum(save_Object) {
     const btn_submit_training = document.getElementById('btn_submit_training');
 
     btn_submit_training.addEventListener('click', (e) => {
@@ -66,7 +67,7 @@ export async function addendum(save_Object) {
         }
 
         // Speichern und Erfolgsmeldung
-        localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
+        save_into_storage(save_Object);
         const message = new Message('Training hinzugefügt', '', 'success', 3000);
         message.showMessage();
     });
