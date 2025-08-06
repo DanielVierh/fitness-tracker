@@ -12,7 +12,7 @@ import { Training } from './Classes/Training.js';
 import { Modal } from './Classes/Modal.js';
 import { Message } from './Classes/Message.js';
 import { addendum } from './addendum.js';
-
+import { render_trainings } from './render_trainings.js';
 
 
 restTimer();
@@ -45,7 +45,6 @@ const bdy = document.getElementById('bdy');
 const btn_finish = document.getElementById('btn_finish');
 const btn_show_trainings = document.getElementById('btn_show_trainings');
 const modal_trainings = document.getElementById('modal_trainings');
-const trainings_wrapper = document.getElementById('trainings_wrapper');
 const last_training = document.getElementById('last_training');
 const btn_edit = document.getElementById('btn_edit');
 const exercise_table = document.getElementById('exercise_table');
@@ -738,12 +737,12 @@ btn_open_calendar.addEventListener('click', ()=> {
 
 btn_show_trainings.addEventListener('click', () => {
     Modal.open_modal(modal_trainings);
-    render_trainings();
+    render_trainings(save_Object);
 })
 
 btn_gotoSolvedTrainings.addEventListener('click', () => {
     Modal.open_modal(modal_trainings);
-    render_trainings();
+    render_trainings(save_Object);
     statistic();
     console.log('%c Feffe', `color: green; font-weight: bold; font-size: 20px;`);
 })
@@ -902,61 +901,61 @@ function finish_training() {
 //* ANCHOR - Render Trainings
 /////////////////////////////////////
 
-function render_trainings() {
-    const trainingamount = save_Object.trainings.length - 1;
-    trainings_wrapper.innerHTML = '';
-    let max_weight_sum = {
-        amount: 0,
-        amount_with_comma: '',
-        date: ''
-    }
-    for (let i = trainingamount; i > -1; i--) {
-        const trainingsdate = save_Object.trainings[i].training_date;
+// function render_trainings() {
+//     const trainingamount = save_Object.trainings.length - 1;
+//     trainings_wrapper.innerHTML = '';
+//     let max_weight_sum = {
+//         amount: 0,
+//         amount_with_comma: '',
+//         date: ''
+//     }
+//     for (let i = trainingamount; i > -1; i--) {
+//         const trainingsdate = save_Object.trainings[i].training_date;
         
-        const duration = save_Object.trainings[i].duration;
-        const exc = save_Object.trainings[i].exercises;
-        const traintingsplace = identify_trainingsplace(exc);
-        //* Trainings weight
-        const training_weight_sum_Int = sum_of_weight(save_Object.trainings[i].exercises).weight;
-        const training_weight_sum = sum_of_weight(save_Object.trainings[i].exercises).weightWithCommas;
-        let trainings_weight_label = '';
-        training_weight_sum > 0 ? trainings_weight_label = ` - Trainingsgewicht: ${training_weight_sum} Kg bewegt` : trainings_weight_label = '';
+//         const duration = save_Object.trainings[i].duration;
+//         const exc = save_Object.trainings[i].exercises;
+//         const traintingsplace = identify_trainingsplace(exc);
+//         //* Trainings weight
+//         const training_weight_sum_Int = sum_of_weight(save_Object.trainings[i].exercises).weight;
+//         const training_weight_sum = sum_of_weight(save_Object.trainings[i].exercises).weightWithCommas;
+//         let trainings_weight_label = '';
+//         training_weight_sum > 0 ? trainings_weight_label = ` - Trainingsgewicht: ${training_weight_sum} Kg bewegt` : trainings_weight_label = '';
 
-        //*emmit max weight sum
-        if (training_weight_sum_Int > max_weight_sum.amount) {
-            max_weight_sum.amount = training_weight_sum_Int;
-            max_weight_sum.amount_with_comma = training_weight_sum;
-            max_weight_sum.date = trainingsdate;
-        }
+//         //*emmit max weight sum
+//         if (training_weight_sum_Int > max_weight_sum.amount) {
+//             max_weight_sum.amount = training_weight_sum_Int;
+//             max_weight_sum.amount_with_comma = training_weight_sum;
+//             max_weight_sum.date = trainingsdate;
+//         }
 
-        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc, false, i);
-        trainings_wrapper.appendChild(tableContainer);
-        let lbl_time_to_last_training = document.createElement('p');
-        lbl_time_to_last_training.classList.add('between-trainings')
+//         const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc, false, i);
+//         trainings_wrapper.appendChild(tableContainer);
+//         let lbl_time_to_last_training = document.createElement('p');
+//         lbl_time_to_last_training.classList.add('between-trainings')
 
-        try {
-            if ((i - 1) !== -1) {
-                const last_training = save_Object.trainings[i - 1].training_date;
-                const duration_to_last_training = time_between_dates(trainingsdate, last_training);
-                if (duration_to_last_training > 1) {
-                    lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tage seit dem letzten Training`;
-                    trainings_wrapper.appendChild(lbl_time_to_last_training);
-                } else if (duration_to_last_training === 1) {
-                    lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tag seit dem letzten Training`;
-                    trainings_wrapper.appendChild(lbl_time_to_last_training);
-                }
-            }
-        } catch (error) {
-            console.log(error);
+//         try {
+//             if ((i - 1) !== -1) {
+//                 const last_training = save_Object.trainings[i - 1].training_date;
+//                 const duration_to_last_training = time_between_dates(trainingsdate, last_training);
+//                 if (duration_to_last_training > 1) {
+//                     lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tage seit dem letzten Training`;
+//                     trainings_wrapper.appendChild(lbl_time_to_last_training);
+//                 } else if (duration_to_last_training === 1) {
+//                     lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tag seit dem letzten Training`;
+//                     trainings_wrapper.appendChild(lbl_time_to_last_training);
+//                 }
+//             }
+//         } catch (error) {
+//             console.log(error);
 
-        }
-    }
+//         }
+//     }
 
-    const max_weight_label = document.getElementById('max_weight_label');
-    if (max_weight_sum.amount > 0) {
-        max_weight_label.innerHTML = `Maximal bewegtes Gewicht: <br> ${max_weight_sum.amount_with_comma} Kg am ${max_weight_sum.date}`
-    }
-}
+//     const max_weight_label = document.getElementById('max_weight_label');
+//     if (max_weight_sum.amount > 0) {
+//         max_weight_label.innerHTML = `Maximal bewegtes Gewicht: <br> ${max_weight_sum.amount_with_comma} Kg am ${max_weight_sum.date}`
+//     }
+// }
 
 
 /////////////////////////////////////

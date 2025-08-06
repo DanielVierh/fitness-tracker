@@ -1,4 +1,5 @@
 import { add_zero } from "./functions.js";
+import { Modal } from './Classes/Modal.js';
 
 export function calendar(save_obj, _calendar_year) {
   const calendar = document.getElementById("calendar");
@@ -74,12 +75,13 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
       calendar_day.classList.add('current-day')
     }
 
-    //* Loop to Match Training Days and nark them
+    //* Loop to Match Training Days and mark them
     for (let j = 0; j < save_obj.trainings.length; j++) {
       const current_training_date = save_obj.trainings[j].training_date;
 
       if (current_day === current_training_date) {
         let training_day = document.createElement("div");
+        calendar_day.setAttribute("data-trainingDate", current_training_date);
         training_day.classList.add("calendar-training-day");
         calendar_day.appendChild(training_day);
         calendar_day.classList.add('sport-day')
