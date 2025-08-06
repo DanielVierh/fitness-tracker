@@ -11,7 +11,7 @@ export function render_trainings(save_Object, spezific_date) {
     if (spezific_date !== undefined) {
         const training = save_Object.trainings.find(training => training.training_date === spezific_date);
         if (training) {
-            const tableContainer = createTable(`${training.training_date} - ${training.duration} - ${identify_trainingsplace(training.exercises)}`, training.exercises, false, 0);
+            const tableContainer = createTable(`${training.training_date} - ${training.duration} - ${identify_trainingsplace(training.exercises)}`, training.exercises, false, 0, save_Object);
             trainings_wrapper.appendChild(tableContainer);
             const training_date_element = document.querySelector(`[data-trainingDate="${training_date}"]`);
             console.log('training_date_element', training_date_element);
@@ -53,7 +53,7 @@ export function render_trainings(save_Object, spezific_date) {
             max_weight_sum.date = trainingsdate;
         }
 
-        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc, false, i);
+        const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc, false, i, save_Object);
         trainings_wrapper.appendChild(tableContainer);
         let lbl_time_to_last_training = document.createElement('p');
         lbl_time_to_last_training.classList.add('between-trainings')

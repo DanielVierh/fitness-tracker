@@ -95,3 +95,10 @@ function identify_trainingsplace(training) {
         return 'Home';
     }
 }
+
+/////////////////////////////////////
+//* ANCHOR - Save to local Storage
+/////////////////////////////////////
+export function save_into_storage(save_Object) {
+    localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
+}

@@ -1,4 +1,6 @@
-export function createTable(title, data, only_exercise, index) {
+import { save_into_storage } from './functions.js';
+
+export function createTable(title, data, only_exercise, index, save_Object) {
     
     const table = document.createElement("table");
     const header = document.createElement("tr");
@@ -82,7 +84,7 @@ export function createTable(title, data, only_exercise, index) {
         if(confirm) {
             save_Object.trainings.splice(index, 1);
             setTimeout(() => {
-                save_into_storage();
+                save_into_storage(save_Object);
                 window.location.reload();
             }, 100);
             

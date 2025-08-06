@@ -16,6 +16,7 @@ import { sum_of_weight } from './sum_of_weight.js';
 import { time_between_dates } from './time_between_days.js';
 import { identify_trainingsplace } from './functions.js';
 import { createTable } from './create_table.js';
+import { save_into_storage } from './functions.js';
 
 
 restTimer();
@@ -129,7 +130,7 @@ function load_local_storage() {
                 training_place_filter: '',
             };
             backup(save_Object);
-            save_into_storage();
+            save_into_storage(save_Object);
         }
 
         try {
@@ -202,7 +203,7 @@ function load_local_storage() {
             current_training: [],
             training_place_filter: '',
         };
-        save_into_storage();
+        save_into_storage(save_Object);
     }
     console.log('saveobj', save_Object);
 }
@@ -364,12 +365,6 @@ function fill_chart(selct_year) {
     training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstag(e) im Jahr ${current_Year}`;
 }
 
-/////////////////////////////////////
-//* ANCHOR - Save to local Storage
-/////////////////////////////////////
-function save_into_storage() {
-    localStorage.setItem('stored_fitness_saveobj', JSON.stringify(save_Object));
-}
 
 
 /////////////////////////////////////
@@ -505,7 +500,7 @@ btn_saveExercise.addEventListener('click', () => {
         msg.showMessage();
     }
 
-    save_into_storage();
+    save_into_storage(save_Object);
 
     setTimeout(() => {
         location.reload();
@@ -523,7 +518,7 @@ function open_exercise() {
     btn_edit.scrollIntoView({ behavior: 'smooth' });
     //* save last opened id to scroll to the last btn
     save_Object.last_exercise_id = selected_Exercise.exercise_id;
-    save_into_storage();
+    save_into_storage(save_Object);
 
     lbl_weight.innerHTML = `${selected_Exercise.weight} Kg`;
     lbl_sets.innerHTML = `${selected_Exercise.sets}`;
@@ -586,7 +581,7 @@ function open_exercise() {
                 console.log(error);
             }
             //************************************* */
-            const tableContainer = createTable(`${trainings_date} - ${duration}`, only_ecercise, true, i);
+            const tableContainer = createTable(`${trainings_date} - ${duration}`, only_ecercise, true, i, save_Object);
             exercise_table.appendChild(tableContainer);
             last_training_date = trainings_date;
         }
@@ -621,7 +616,7 @@ btn_trackSport.addEventListener('click', () => {
             add_solved_set();
 
             // * persistent speichern
-            save_into_storage();
+            save_into_storage(save_Object);
 
             //TODO -  replace alert
             const message = new Message('Training gestartet', 'Ein neues Training wurde gestartet. 1 Satz wurde hinzugefügt', 'success', 2500);
@@ -637,7 +632,7 @@ btn_trackSport.addEventListener('click', () => {
         add_solved_set()
 
         // * persistent speichern
-        save_into_storage();
+        save_into_storage(save_Object);
 
         //TODO -  replace alert
         const message = new Message('Satz getrackt', 'Ein weiterer Satz wurde hinzugefügt', 'success', 2500);
@@ -779,7 +774,7 @@ function observer() {
                     lastExerciseElement.scrollIntoView({ behavior: 'smooth' });
                     delete save_Object.last_exercise_id;
                 }, 1100);
-                save_into_storage();
+                save_into_storage(save_Object);
             }
         }
         bdy.classList.add('active-training');
@@ -865,7 +860,7 @@ function finish_training() {
         save_Object.training_is_running = false;
 
         // * Save into storage
-        save_into_storage();
+        save_into_storage(save_Object);
 
         const exercArr = new_solved_training.exercises;
         let exerciseInfoArr = '';
@@ -886,202 +881,6 @@ function finish_training() {
 
 
 /////////////////////////////////////
-//* ANCHOR - Render Trainings
-/////////////////////////////////////
-
-// function render_trainings() {
-//     const trainingamount = save_Object.trainings.length - 1;
-//     trainings_wrapper.innerHTML = '';
-//     let max_weight_sum = {
-//         amount: 0,
-//         amount_with_comma: '',
-//         date: ''
-//     }
-//     for (let i = trainingamount; i > -1; i--) {
-//         const trainingsdate = save_Object.trainings[i].training_date;
-
-//         const duration = save_Object.trainings[i].duration;
-//         const exc = save_Object.trainings[i].exercises;
-//         const traintingsplace = identify_trainingsplace(exc);
-//         //* Trainings weight
-//         const training_weight_sum_Int = sum_of_weight(save_Object.trainings[i].exercises).weight;
-//         const training_weight_sum = sum_of_weight(save_Object.trainings[i].exercises).weightWithCommas;
-//         let trainings_weight_label = '';
-//         training_weight_sum > 0 ? trainings_weight_label = ` - Trainingsgewicht: ${training_weight_sum} Kg bewegt` : trainings_weight_label = '';
-
-//         //*emmit max weight sum
-//         if (training_weight_sum_Int > max_weight_sum.amount) {
-//             max_weight_sum.amount = training_weight_sum_Int;
-//             max_weight_sum.amount_with_comma = training_weight_sum;
-//             max_weight_sum.date = trainingsdate;
-//         }
-
-//         const tableContainer = createTable(`${trainingsdate} - ${duration} - ${traintingsplace} ${trainings_weight_label}`, exc, false, i);
-//         trainings_wrapper.appendChild(tableContainer);
-//         let lbl_time_to_last_training = document.createElement('p');
-//         lbl_time_to_last_training.classList.add('between-trainings')
-
-//         try {
-//             if ((i - 1) !== -1) {
-//                 const last_training = save_Object.trainings[i - 1].training_date;
-//                 const duration_to_last_training = time_between_dates(trainingsdate, last_training);
-//                 if (duration_to_last_training > 1) {
-//                     lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tage seit dem letzten Training`;
-//                     trainings_wrapper.appendChild(lbl_time_to_last_training);
-//                 } else if (duration_to_last_training === 1) {
-//                     lbl_time_to_last_training.innerHTML = `${duration_to_last_training}. Tag seit dem letzten Training`;
-//                     trainings_wrapper.appendChild(lbl_time_to_last_training);
-//                 }
-//             }
-//         } catch (error) {
-//             console.log(error);
-
-//         }
-//     }
-
-//     const max_weight_label = document.getElementById('max_weight_label');
-//     if (max_weight_sum.amount > 0) {
-//         max_weight_label.innerHTML = `Maximal bewegtes Gewicht: <br> ${max_weight_sum.amount_with_comma} Kg am ${max_weight_sum.date}`
-//     }
-// }
-
-
-/////////////////////////////////////
-//* ANCHOR - Identify Trainingsplace
-//TODO - Show other Trainingsplace
-/////////////////////////////////////
-// function identify_trainingsplace(training) {
-
-//     let fitnessstudio = 0;
-//     let otherTrainingsplace = 0;
-//     let heimtraining = 0;
-
-//     for (let i = 0; i < training.length; i++) {
-//         if (training[i].trainingsplace === 'Fitnessstudio') {
-//             fitnessstudio++
-//         } else if (training[i].trainingsplace === 'Heimtraining') {
-//             heimtraining++;
-//         } else {
-//             otherTrainingsplace++;
-//         }
-//     }
-//     if (fitnessstudio > otherTrainingsplace && fitnessstudio > heimtraining) {
-//         return 'Fitti';
-//     }
-
-//     if (otherTrainingsplace > fitnessstudio && otherTrainingsplace > heimtraining) {
-//         return 'Sonstiges';
-//     }
-
-//     if (heimtraining > fitnessstudio && heimtraining > otherTrainingsplace) {
-//         return 'Home';
-//     }
-// }
-
-/////////////////////////////////////
-//* ANCHOR - Create Table
-/////////////////////////////////////
-// function createTable(title, data, only_exercise, index) {
-
-//     const table = document.createElement("table");
-//     const header = document.createElement("tr");
-//     const nameHeaderCell = document.createElement("th");
-//     const setsHeaderCell = document.createElement("th");
-//     const repsHeaderCell = document.createElement("th");
-//     const weightHeaderCell = document.createElement("th");
-//     const totalWeightHeaderCell = document.createElement("th");
-//     const muscleHeaderCell = document.createElement("th");
-//     nameHeaderCell.appendChild(document.createTextNode("Übng"));
-//     setsHeaderCell.appendChild(document.createTextNode("Sät"));
-//     repsHeaderCell.appendChild(document.createTextNode("Wdh"));
-//     weightHeaderCell.appendChild(document.createTextNode("Gew"));
-//     totalWeightHeaderCell.appendChild(document.createTextNode("Sum"));
-//     muscleHeaderCell.appendChild(document.createTextNode("Mskl"));
-//     header.appendChild(nameHeaderCell);
-//     header.appendChild(setsHeaderCell);
-//     header.appendChild(repsHeaderCell);
-//     header.appendChild(weightHeaderCell);
-//     header.appendChild(totalWeightHeaderCell);
-//     header.appendChild(muscleHeaderCell);
-//     table.appendChild(header);
-
-//     for (let i = 0; i < data.length; i++) {
-//         const row = document.createElement("tr");
-//         const nameCell = document.createElement("td");
-//         const setsCell = document.createElement("td");
-//         const repsCell = document.createElement("td");
-//         const weightCell = document.createElement("td");
-//         const totalWeightCell = document.createElement("td");
-//         const muscleCell = document.createElement("td");
-//         const totalWeight = data[i].weight * data[i].repeats * data[i].solved_sets;
-
-//         nameCell.appendChild(document.createTextNode(data[i].name));
-//         setsCell.appendChild(document.createTextNode(data[i].solved_sets));
-//         repsCell.appendChild(document.createTextNode(data[i].repeats));
-//         weightCell.appendChild(document.createTextNode(data[i].weight));
-//         totalWeightCell.appendChild(document.createTextNode(totalWeight));
-//         muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
-
-//         row.appendChild(nameCell);
-//         row.appendChild(setsCell);
-//         row.appendChild(repsCell);
-//         row.appendChild(weightCell);
-//         row.appendChild(totalWeightCell);
-//         row.appendChild(muscleCell);
-//         table.appendChild(row);
-//     }
-
-//     if (only_exercise) {
-//         const row = document.createElement("tr");
-//         const nameCell = document.createElement("td");
-//         const setsCell = document.createElement("td");
-//         const repsCell = document.createElement("td");
-//         const weightCell = document.createElement("td");
-//         const totalWeightCell = document.createElement("td");
-//         const muscleCell = document.createElement("td");
-//         const totalWeight = data.weight * data.repeats * data.solved_sets;
-
-//         nameCell.appendChild(document.createTextNode(data.name));
-//         setsCell.appendChild(document.createTextNode(data.solved_sets));
-//         repsCell.appendChild(document.createTextNode(data.repeats));
-//         weightCell.appendChild(document.createTextNode(data.weight));
-//         totalWeightCell.appendChild(document.createTextNode(totalWeight));
-//         muscleCell.appendChild(document.createTextNode(data.musclegroup));
-
-//         row.appendChild(nameCell);
-//         row.appendChild(setsCell);
-//         row.appendChild(repsCell);
-//         row.appendChild(weightCell);
-//         row.appendChild(totalWeightCell);
-//         row.appendChild(muscleCell);
-//         table.appendChild(row);
-//     }
-//     //* Create delete button
-//     let delete_button = document.createElement('div');
-//     delete_button.classList.add('delete-button');
-//     delete_button.innerText = 'löschen';
-//     delete_button.addEventListener('click', ()=> {
-//         const confirm = window.confirm('Soll dieses Training wirklich gelöscht werden?')
-//         if(confirm) {
-//             save_Object.trainings.splice(index, 1);
-//             setTimeout(() => {
-//                 save_into_storage();
-//                 window.location.reload();
-//             }, 100);
-
-//         }
-//     })
-//     const container = document.createElement("div");
-//     const heading = document.createElement("h3");
-//     heading.appendChild(document.createTextNode(title));
-//     container.appendChild(heading);
-//     container.appendChild(delete_button);
-//     container.appendChild(table);
-//     return container;
-// }
-
-
-/////////////////////////////////////
 //* ANCHOR - Edit Exercise
 /////////////////////////////////////
 function load_exercise_into_edit() {
@@ -1096,35 +895,6 @@ function load_exercise_into_edit() {
     lbl_exerciseRepeats.innerHTML = inpExercise_Repeats.value;
     lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
 }
-
-/////////////////////////////////////
-//* ANCHOR - Time between Dates
-/////////////////////////////////////
-
-// function time_between_dates(newer_date, older_date) {
-//     try {
-//         // Die Daten müssen im Format "DD.MM.YYYY" sein
-//         const newerDay = splitVal(newer_date, '.', 0);
-//         const newerMonth = splitVal(newer_date, '.', 1);
-//         const newerYear = splitVal(newer_date, '.', 2);
-//         const newerDateObject = new Date(`${newerYear}-${newerMonth}-${newerDay}`);
-
-//         const olderDay = splitVal(older_date, '.', 0);
-//         const olderMonth = splitVal(older_date, '.', 1);
-//         const olderYear = splitVal(older_date, '.', 2);
-//         const olderDateObject = new Date(`${olderYear}-${olderMonth}-${olderDay}`);
-
-//         // Berechnung der Differenz in Tagen
-//         const time_difference_in_days = daysDiff(newerDateObject, olderDateObject);
-
-//         // Ergebnis ausgeben oder weiterverarbeiten
-//         return time_difference_in_days;
-
-//     } catch (error) {
-//         console.log('time_between_dates', error);
-//     }
-// }
-
 
 
 /////////////////////////////////////
@@ -1243,7 +1013,7 @@ btn_delete_exercise.addEventListener('click', () => {
     const decision = window.confirm('Soll die Übung gelöscht werden?');
     if (decision) {
         save_Object.exercises.splice(indexOfExercise(selected_Exercise, save_Object.exercises), 1);
-        save_into_storage();
+        save_into_storage(save_Object);
         location.reload();
     }
 });
