@@ -1,5 +1,6 @@
 import { add_zero } from "./functions.js";
 import { Modal } from './Classes/Modal.js';
+import { Mini_Modal } from "./Classes/MiniModal.js";
 import  {render_trainings}  from "./render_trainings.js";
 
 export function calendar(save_obj, _calendar_year) {
@@ -85,7 +86,8 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
         calendar_day.addEventListener('click', (e) => {
           // Open Modal with trainings and scroll to date
           const training_date = e.currentTarget.getAttribute('data-trainingDate');
-              Modal.open_modal(modal_trainings);
+              //Modal.open_modal(modal_trainings);
+              Mini_Modal.open_modal(mini_modal_training)
               render_trainings(save_obj, training_date);
         });
         training_day.classList.add("calendar-training-day");

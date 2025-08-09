@@ -17,7 +17,7 @@ import { time_between_dates } from './time_between_days.js';
 import { identify_trainingsplace } from './functions.js';
 import { createTable } from './create_table.js';
 import { save_into_storage } from './functions.js';
-
+import { Mini_Modal } from './Classes/MiniModal.js';
 
 restTimer();
 /////////////////////////////////////
@@ -1018,3 +1018,10 @@ btn_delete_exercise.addEventListener('click', () => {
     }
 });
 
+
+const mini_modal_close_btns = document.querySelectorAll('.mini_modal_close_btn');
+mini_modal_close_btns.forEach((btn) => {
+    btn.addEventListener('click', ()=> {
+        Mini_Modal.close_all_modals();
+    })
+})

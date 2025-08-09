@@ -381,10 +381,10 @@ tr:nth-child(even) {
   font-size: 1.3rem;
 }
 
-.modal {
+.modal, .mini-modal {
   display: none;
 }
-.modal.active {
+.modal.active, .mini-modal.active {
   display: block;
   position: fixed;
   background: linear-gradient(to right, #2B4A6F, #051C38);
@@ -399,7 +399,7 @@ tr:nth-child(even) {
   overflow-y: scroll;
   padding: 50px 10px;
 }
-.modal .modal_close_btn {
+.modal .modal_close_btn, .modal .mini_modal_close_btn, .mini-modal .modal_close_btn, .mini-modal .mini_modal_close_btn {
   position: fixed;
   background-color: #AA3939;
   top: 10px;
@@ -415,6 +415,14 @@ tr:nth-child(even) {
   text-align: center;
   font-size: 1.5em;
   cursor: pointer;
+}
+
+.mini-modal.active {
+  width: 100%;
+  height: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
 }
 
 .modal-exercise {

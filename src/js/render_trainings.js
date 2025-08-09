@@ -9,12 +9,13 @@ export function render_trainings(save_Object, spezific_date) {
     trainings_wrapper.innerHTML = '';
 
     if (spezific_date !== undefined) {
+        const mini_trainings_wrapper = document.getElementById('mini_trainings_wrapper');
+        mini_trainings_wrapper.innerHTML = '';
         const training = save_Object.trainings.find(training => training.training_date === spezific_date);
         if (training) {
             const tableContainer = createTable(`${training.training_date} - ${training.duration} - ${identify_trainingsplace(training.exercises)}`, training.exercises, false, 0, save_Object);
-            trainings_wrapper.appendChild(tableContainer);
+            mini_trainings_wrapper.appendChild(tableContainer);
             const training_date_element = document.querySelector(`[data-trainingDate="${training_date}"]`);
-            console.log('training_date_element', training_date_element);
 
             setTimeout(() => {
                 training_date_element.scrollIntoView({ behavior: 'smooth', block: 'center' });
