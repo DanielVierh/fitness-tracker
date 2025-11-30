@@ -148,6 +148,7 @@ table {
   background: radial-gradient(#2B4A6F, #143153);
   box-shadow: 0 0 10px rgb(0, 200, 255);
   hyphens: auto;
+  font-size: 12px;
 }
 
 th,
