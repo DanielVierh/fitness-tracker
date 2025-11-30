@@ -382,10 +382,12 @@ tr:nth-child(even) {
   font-size: 1.3rem;
 }
 
-.modal, .mini-modal {
+.modal,
+.mini-modal {
   display: none;
 }
-.modal.active, .mini-modal.active {
+.modal.active,
+.mini-modal.active {
   display: block;
   position: fixed;
   background: linear-gradient(to right, #2B4A6F, #051C38);
@@ -400,7 +402,10 @@ tr:nth-child(even) {
   overflow-y: scroll;
   padding: 50px 10px;
 }
-.modal .modal_close_btn, .modal .mini_modal_close_btn, .mini-modal .modal_close_btn, .mini-modal .mini_modal_close_btn {
+.modal .modal_close_btn,
+.modal .mini_modal_close_btn,
+.mini-modal .modal_close_btn,
+.mini-modal .mini_modal_close_btn {
   position: fixed;
   background-color: #AA3939;
   top: 10px;
@@ -607,7 +612,9 @@ tr:nth-child(even) {
 }
 
 .between-trainings {
-  margin: 70px 0;
+  padding: 30px 30px;
+  background: linear-gradient(to bottom, transparent, black);
+  border-radius: 8px;
 }
 
 .modal-settings .backup-button {

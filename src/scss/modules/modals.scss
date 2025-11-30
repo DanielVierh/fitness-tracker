@@ -1,4 +1,5 @@
-.modal, .mini-modal {
+.modal,
+.mini-modal {
   display: none;
 
   &.active {
@@ -17,7 +18,8 @@
     padding: 50px 10px;
   }
 
-  .modal_close_btn, .mini_modal_close_btn {
+  .modal_close_btn,
+  .mini_modal_close_btn {
     position: fixed;
     background-color: $color-secondary-1-0;
     top: 10px;
@@ -37,14 +39,12 @@
 }
 
 .mini-modal {
-
   &.active {
     width: 100%;
     height: 100%;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%) scale(.9);
-    
+    transform: translate(-50%, -50%) scale(0.9);
   }
 }
 
@@ -115,8 +115,6 @@
     cursor: pointer;
   }
 
-
-
   .track-button {
     background-color: $color-main;
     padding: 20px 30px;
@@ -131,11 +129,10 @@
   }
 }
 
-  ///////////////////////////////////////////////
-  .modal-trainints {
-    padding-bottom: 50px;
-
-  }
+///////////////////////////////////////////////
+.modal-trainints {
+  padding-bottom: 50px;
+}
 
 ///////////////////////////////////////////////
 
@@ -169,7 +166,7 @@
       font-size: 16px;
     }
 
-    .lbl{
+    .lbl {
       width: 100%;
       text-align: left;
       margin-bottom: 0;
@@ -179,7 +176,7 @@
       text-transform: uppercase;
     }
 
-    .range-wrapper{
+    .range-wrapper {
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
@@ -193,7 +190,6 @@
         margin-top: 7px;
         text-decoration: underline;
       }
-
     }
 
     div {
@@ -222,7 +218,6 @@
       height: 25px;
       border-radius: 8px;
     }
-
   }
 }
 
@@ -253,11 +248,12 @@
 }
 
 .between-trainings {
-  margin: 70px 0;
+  padding: 30px 30px;
+  background: linear-gradient(to bottom, transparent, black);
+  border-radius: 8px;
 }
 
 .modal-settings {
-
   .backup-button {
     background-color: lightgreen;
     color: black;
@@ -270,85 +266,83 @@
   }
 
   .status-label {
-   text-align: center;
-   letter-spacing: 2px;
+    text-align: center;
+    letter-spacing: 2px;
   }
-
 }
 
-  .training-addendum {
-    width: 100%;
-    margin-top: 50px;
+.training-addendum {
+  width: 100%;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #232c2b;
+  padding: 20px;
+
+  #form_add_training {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #232c2b;
-    padding: 20px;
-
-    #form_add_training {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    .addendum-label {
-      font-size: 1.2rem;
-      color: white;
-      text-align: center;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-    }
-
-    textarea {
-      width: 90%;
-      height: 100px;
-      border-radius: 8px;
-      padding-left: 10px;
-      letter-spacing: 2px;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    input {
-      margin-bottom: 10px;
-      width: 90%;
-      height: 25px;
-      border-radius: 8px;
-      padding-left: 10px;
-      letter-spacing: 2px;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    #training_place {
-      margin: 0 0 30px 0;
-      font-size: 16px;
-      font-weight: bold;
-      width: 100%;
-      height: 30px;
-      border-radius: 8px;
-      padding-left: 10px;
-      letter-spacing: 2px;
-    }
-
-    .submit-button {
-      margin: 20px auto;
-      background-color: $color-primary-2;
-      width: 100px;
-      height: 40px;
-      border-radius: 10px;
-      box-shadow: inset 0 0 15px rgb(65, 65, 65), 0 0 10px rgba(0, 0, 0, 0.655);
-      border: 1px solid rgba(0, 0, 0, 0.552);
-      text-shadow: 0 0 5px black;
-      color: white;
-      cursor: pointer;
-    }
   }
 
-.modal-calendar {
+  .addendum-label {
+    font-size: 1.2rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+  }
 
+  textarea {
+    width: 90%;
+    height: 100px;
+    border-radius: 8px;
+    padding-left: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  input {
+    margin-bottom: 10px;
+    width: 90%;
+    height: 25px;
+    border-radius: 8px;
+    padding-left: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  #training_place {
+    margin: 0 0 30px 0;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+    height: 30px;
+    border-radius: 8px;
+    padding-left: 10px;
+    letter-spacing: 2px;
+  }
+
+  .submit-button {
+    margin: 20px auto;
+    background-color: $color-primary-2;
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 15px rgb(65, 65, 65), 0 0 10px rgba(0, 0, 0, 0.655);
+    border: 1px solid rgba(0, 0, 0, 0.552);
+    text-shadow: 0 0 5px black;
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.modal-calendar {
   .calendar {
     width: 95%;
     margin: 0 auto;
@@ -359,18 +353,18 @@
     flex-direction: column;
 
     .calendar-year-label {
-        position: sticky;
-        top: 0;
-        background-color: rgba(0, 0, 0, 0.727);
-        backdrop-filter: blur(3px);
-        width: fit-content;
-        border-radius: 15px;
-        padding: 20px 30px;
-        margin-left: 50%;
-        transform: translateX(-50%);
-        color: aqua;
-        text-shadow: 0 0 30px aqua, 0 10px 30px rgba(0, 255, 255, 0.915);
-        transition: all 400ms ease-in-out;
+      position: sticky;
+      top: 0;
+      background-color: rgba(0, 0, 0, 0.727);
+      backdrop-filter: blur(3px);
+      width: fit-content;
+      border-radius: 15px;
+      padding: 20px 30px;
+      margin-left: 50%;
+      transform: translateX(-50%);
+      color: aqua;
+      text-shadow: 0 0 30px aqua, 0 10px 30px rgba(0, 255, 255, 0.915);
+      transition: all 400ms ease-in-out;
     }
 
     .month-wrapper {
