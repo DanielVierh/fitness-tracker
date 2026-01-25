@@ -252,96 +252,72 @@ function fill_chart(selct_year) {
   let current_time_stamp = new Date();
   let current_Year = current_time_stamp.getFullYear();
   const training_counter = document.getElementById("training_counter");
+  const chart_legend = document.getElementById("chart_legend");
 
   if (selct_year !== undefined) {
     current_time_stamp = new Date(`${selct_year}-01-01`);
     current_Year = current_time_stamp.getFullYear();
   }
 
-  let jan = 0;
-  let feb = 0;
-  let mrz = 0;
-  let apr = 0;
-  let mai = 0;
-  let jun = 0;
-  let jul = 0;
-  let aug = 0;
-  let sep = 0;
-  let okt = 0;
-  let nov = 0;
-  let dez = 0;
-  let last_day = "";
-  let sum = 0;
+  const totals = Array(12).fill(0);
+  const cardio = Array(12).fill(0);
+  const strengthFitti = Array(12).fill(0);
+  const strengthHome = Array(12).fill(0);
+  const strengthOther = Array(12).fill(0);
 
+  // Gruppiere Trainings nach Datum (Trainingstag) und aggregiere Exercises,
+  // damit pro Tag genau 1 Kategorie gezählt wird.
+  const byDay = new Map();
   for (let i = 0; i < save_Object.trainings.length; i++) {
-    const solved_Date = save_Object.trainings[i].training_date;
+    const training = save_Object.trainings[i];
+    const solved_Date = training.training_date;
     const solved_year = splitVal(solved_Date, ".", 2);
-    const solved_month = splitVal(solved_Date, ".", 1);
-    const solved_day = splitVal(solved_Date, ".", 0);
-    const day_Month = solved_day + solved_month;
+    if (String(solved_year) !== String(current_Year)) continue;
 
-    if (solved_year == current_Year && day_Month !== last_day) {
-      last_day = day_Month;
-      sum++;
-
-      switch (solved_month) {
-        case "01":
-          jan++;
-          break;
-        case "02":
-          feb++;
-          break;
-        case "03":
-          mrz++;
-          break;
-        case "04":
-          apr++;
-          break;
-        case "05":
-          mai++;
-          break;
-        case "06":
-          jun++;
-          break;
-        case "07":
-          jul++;
-          break;
-        case "08":
-          aug++;
-          break;
-        case "09":
-          sep++;
-          break;
-        case "10":
-          okt++;
-          break;
-        case "11":
-          nov++;
-          break;
-        case "12":
-          dez++;
-          break;
-
-        default:
-          break;
-      }
+    if (!byDay.has(solved_Date)) {
+      byDay.set(solved_Date, []);
     }
+    const existing = byDay.get(solved_Date);
+    existing.push(...(training.exercises || []));
   }
 
-  const month_arr = [
-    jan,
-    feb,
-    mrz,
-    apr,
-    mai,
-    jun,
-    jul,
-    aug,
-    sep,
-    okt,
-    nov,
-    dez,
-  ];
+  // Klassifiziere Trainingstag → Cardio / Kraft (Fitti/Home)
+  byDay.forEach((exercises, dateStr) => {
+    const monthStr = splitVal(dateStr, ".", 1);
+    const monthIndex = Number(monthStr) - 1;
+    if (Number.isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) return;
+
+    totals[monthIndex] += 1;
+
+    const movedWeightInt = sum_of_weight(exercises).weight;
+    if (movedWeightInt <= 0) {
+      cardio[monthIndex] += 1;
+      return;
+    }
+
+    const place = identify_trainingsplace(exercises);
+    if (place === "Fitti") {
+      strengthFitti[monthIndex] += 1;
+      return;
+    }
+    if (place === "Home") {
+      strengthHome[monthIndex] += 1;
+      return;
+    }
+
+    // Fallback falls place undef/sonstiges
+    const hasFitti = exercises.some((e) => e.trainingsplace === "Fitnessstudio");
+    const hasHome = exercises.some((e) => e.trainingsplace === "Heimtraining");
+    if (hasFitti && !hasHome) {
+      strengthFitti[monthIndex] += 1;
+    } else if (hasHome && !hasFitti) {
+      strengthHome[monthIndex] += 1;
+    } else {
+      strengthOther[monthIndex] += 1;
+    }
+  });
+
+  const month_arr = totals;
   const month_Descr_arr = [
     "Jan",
     "Feb",
@@ -364,6 +340,9 @@ function fill_chart(selct_year) {
       max_per_month = month;
     }
   });
+  if (max_per_month === 0) {
+    max_per_month = 1;
+  }
 
   //* Render Col
   // max = 100% aka 350px
@@ -371,14 +350,67 @@ function fill_chart(selct_year) {
   month_arr.forEach((month, index) => {
     const value_in_pixel = (month * 350) / max_per_month;
     const col = `chart_col_${index + 1}`;
-    document.getElementById(col).style.height = `${value_in_pixel}px`;
-    document.getElementById(col).style.left = `${left}%`;
-    document.getElementById(col).innerHTML =
-      month_Descr_arr[index] + `</br> ${month}`;
+    const colEl = document.getElementById(col);
+    colEl.style.height = `${value_in_pixel}px`;
+    colEl.style.left = `${left}%`;
+
+    colEl.innerHTML = "";
+    const label = document.createElement("div");
+    label.classList.add("chart__label");
+    label.innerHTML = `${month_Descr_arr[index]}<br>${month}`;
+
+    const stack = document.createElement("div");
+    stack.classList.add("chart__stack");
+
+    const total = month;
+    const segs = [
+      { key: "cardio", val: cardio[index], cls: "chart__segment--cardio" },
+      {
+        key: "home",
+        val: strengthHome[index],
+        cls: "chart__segment--home",
+      },
+      {
+        key: "fitti",
+        val: strengthFitti[index],
+        cls: "chart__segment--fitti",
+      },
+      {
+        key: "other",
+        val: strengthOther[index],
+        cls: "chart__segment--other",
+      },
+    ];
+    if (total > 0) {
+      segs.forEach((seg) => {
+        if (seg.val <= 0) return;
+        const div = document.createElement("div");
+        div.classList.add("chart__segment");
+        div.classList.add(seg.cls);
+        div.style.height = `${(seg.val / total) * 100}%`;
+        stack.appendChild(div);
+      });
+      colEl.title = `Gesamt: ${total}\nCardio: ${cardio[index]}\nKraft Home: ${strengthHome[index]}\nKraft Fitti: ${strengthFitti[index]}\nKraft Sonstiges: ${strengthOther[index]}`;
+    } else {
+      colEl.title = `Gesamt: 0`;
+    }
+
+    colEl.appendChild(label);
+    colEl.appendChild(stack);
     left = left += 8;
   });
 
+  const sum = totals.reduce((acc, v) => acc + v, 0);
   training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstag(e) im Jahr ${current_Year}`;
+
+  if (chart_legend) {
+    chart_legend.innerHTML = `
+      <div class="chart-legend__item"><span class="chart-legend__swatch chart-legend__swatch--cardio"></span>Cardio</div>
+      <div class="chart-legend__item"><span class="chart-legend__swatch chart-legend__swatch--fitti"></span>Kraft Fitti</div>
+      <div class="chart-legend__item"><span class="chart-legend__swatch chart-legend__swatch--home"></span>Kraft Home</div>
+      <div class="chart-legend__item"><span class="chart-legend__swatch chart-legend__swatch--other"></span>Sonstiges</div>
+    `;
+  }
 }
 
 /////////////////////////////////////

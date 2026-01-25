@@ -105,23 +105,107 @@
   overflow-x: scroll;
   position: relative;
 
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0 0 0;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .chart-legend__item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+  }
+
+  .chart-legend__swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .chart-legend__swatch--cardio {
+    background: linear-gradient(to top, #ffb300, #ffe082);
+  }
+
+  .chart-legend__swatch--fitti {
+    background: linear-gradient(to top, $color-main, aqua);
+  }
+
+  .chart-legend__swatch--home {
+    background: linear-gradient(to top, #2e7d32, #81c784);
+  }
+
+  .chart-legend__swatch--other {
+    background: linear-gradient(to top, #6a1b9a, #ce93d8);
+  }
+
   .chart__col {
     position: absolute;
     bottom: 0;
     border-radius: 5px;
     font-size: 10px;
     font-weight: bold;
-    // background-color: $color-main;
-    background: linear-gradient(to top, $color-main, aqua);
-    color: black;
-    padding: 4px;
+    background: transparent;
+    color: white;
+    padding: 0;
     min-height: 10px;
     width: 18px;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: center;
     text-align: center;
     cursor: pointer;
+    overflow: visible;
+  }
+
+  .chart__label {
+    position: relative;
+    z-index: 2;
+    padding: 4px;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+    line-height: 1.1;
+  }
+
+  .chart__stack {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column-reverse;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 6px $color-main;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .chart__segment {
+    width: 100%;
+  }
+
+  .chart__segment--cardio {
+    background: linear-gradient(to top, #ffb300, #ffe082);
+  }
+
+  .chart__segment--fitti {
+    background: linear-gradient(to top, $color-main, aqua);
+  }
+
+  .chart__segment--home {
+    background: linear-gradient(to top, #2e7d32, #81c784);
+  }
+
+  .chart__segment--other {
+    background: linear-gradient(to top, #6a1b9a, #ce93d8);
   }
 
   .chart #col_1 {
