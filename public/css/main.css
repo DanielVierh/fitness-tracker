@@ -1,6 +1,12 @@
 /*!**************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/scss/style.scss ***!
   \**************************************************************************************************************/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -503,6 +509,7 @@ tr:nth-child(even) {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: hidden;
   overflow-y: scroll;
   padding: 50px 10px;
 }
@@ -526,6 +533,19 @@ tr:nth-child(even) {
   font-size: 1.5em;
   cursor: pointer;
 }
+.modal table,
+.mini-modal table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+}
+.modal th,
+.modal td,
+.mini-modal th,
+.mini-modal td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 
 .mini-modal.active {
   width: 100%;
@@ -537,6 +557,10 @@ tr:nth-child(even) {
 
 .modal-exercise {
   padding-bottom: 50px;
+}
+.modal-exercise #exercise_table {
+  width: 100%;
+  max-width: 100%;
 }
 .modal-exercise #lbl_trainingsname {
   font-size: 24px;
@@ -567,18 +591,21 @@ tr:nth-child(even) {
   box-shadow: 0 0 10px rgb(0, 200, 255);
 }
 .modal-exercise .info-container .exercise-info .half {
-  width: 40%;
+  flex: 0 1 40%;
+  min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.284);
   padding: 10px;
   color: yellow;
   font-weight: bold;
   font-size: 1rem;
   letter-spacing: 1.5px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .modal-exercise .info-container .exercise-info .half.title {
   font-weight: bold;
   color: white;
-  width: 60%;
+  flex-basis: 60%;
   text-align: right;
 }
 .modal-exercise .button-edit {
@@ -634,6 +661,8 @@ tr:nth-child(even) {
   margin: 10px 0;
   flex: 1;
   font-size: 1rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .modal-trainints .training-entry__toggle {
   background-color: #135a23;
