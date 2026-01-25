@@ -791,11 +791,105 @@ function observer() {
         //*Update moved Weight     
         document.getElementById('lbl_overview_weight').innerHTML = `Bewegtes Gewicht: ${sum_of_weight(save_Object.current_training).weightWithCommas} Kg`
 
+        render_active_training_muscle_summary();
+
 
     } else {
         bdy.classList.remove('active-training');
         btn_finish.classList.remove('active-training');
+        active_training_sect.classList.remove('active');
+        clear_active_training_muscle_summary();
     }
+}
+
+function clear_active_training_muscle_summary() {
+    const container = document.getElementById('active_training_muscle_summary');
+    if (!container) return;
+    container.innerHTML = '';
+}
+
+function render_active_training_muscle_summary() {
+    const container = document.getElementById('active_training_muscle_summary');
+    if (!container) return;
+
+    const currentTraining = save_Object.current_training || [];
+    if (currentTraining.length === 0) {
+        container.innerHTML = '<p class="muscle-summary-empty">Noch keine Sätze getrackt.</p>';
+        return;
+    }
+
+    const summaryByMuscle = new Map();
+    for (let i = 0; i < currentTraining.length; i++) {
+        const entry = currentTraining[i];
+        const musclegroup = entry.musclegroup || '-';
+        const solvedSets = Number(entry.solved_sets) || 0;
+        const weight = Number(entry.weight) || 0;
+        const repeats = Number(entry.repeats) || 0;
+        const movedWeight = solvedSets * repeats * weight;
+
+        if (!summaryByMuscle.has(musclegroup)) {
+            summaryByMuscle.set(musclegroup, { sets: 0, weight: 0 });
+        }
+        const agg = summaryByMuscle.get(musclegroup);
+        agg.sets += solvedSets;
+        agg.weight += movedWeight;
+    }
+
+    const rows = Array.from(summaryByMuscle.entries())
+        .map(([musclegroup, agg]) => ({ musclegroup, sets: agg.sets, weight: agg.weight }))
+        .sort((a, b) => (b.sets - a.sets) || (b.weight - a.weight) || a.musclegroup.localeCompare(b.musclegroup));
+
+    const fmt = new Intl.NumberFormat('de-DE');
+
+    const table = document.createElement('table');
+    table.classList.add('muscle-summary-table');
+
+    const headerRow = document.createElement('tr');
+    const thMuscle = document.createElement('th');
+    const thSets = document.createElement('th');
+    const thWeight = document.createElement('th');
+    thMuscle.textContent = 'Muskelgruppe';
+    thSets.textContent = 'Sätze';
+    thWeight.textContent = 'Gewicht (Kg)';
+    headerRow.appendChild(thMuscle);
+    headerRow.appendChild(thSets);
+    headerRow.appendChild(thWeight);
+    table.appendChild(headerRow);
+
+    let totalSets = 0;
+    let totalWeight = 0;
+    for (let i = 0; i < rows.length; i++) {
+        totalSets += rows[i].sets;
+        totalWeight += rows[i].weight;
+
+        const row = document.createElement('tr');
+        const tdMuscle = document.createElement('td');
+        const tdSets = document.createElement('td');
+        const tdWeight = document.createElement('td');
+        tdMuscle.textContent = rows[i].musclegroup;
+        tdSets.textContent = String(rows[i].sets);
+        tdWeight.textContent = fmt.format(Math.round(rows[i].weight));
+        row.appendChild(tdMuscle);
+        row.appendChild(tdSets);
+        row.appendChild(tdWeight);
+        table.appendChild(row);
+    }
+
+    const totalRow = document.createElement('tr');
+    totalRow.classList.add('muscle-summary-total');
+    const tdTotalLabel = document.createElement('td');
+    const tdTotalSets = document.createElement('td');
+    const tdTotalWeight = document.createElement('td');
+    tdTotalLabel.textContent = 'Gesamt';
+    tdTotalSets.textContent = String(totalSets);
+    tdTotalWeight.textContent = fmt.format(Math.round(totalWeight));
+    totalRow.appendChild(tdTotalLabel);
+    totalRow.appendChild(tdTotalSets);
+    totalRow.appendChild(tdTotalWeight);
+    table.appendChild(totalRow);
+
+    container.innerHTML = '';
+    container.appendChild(table);
 }
 
 //* ANCHOR - Sum of Sets

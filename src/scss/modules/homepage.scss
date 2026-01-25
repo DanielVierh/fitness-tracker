@@ -214,6 +214,46 @@
       }
 
     }
+
+    .muscle-summary {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .muscle-summary-empty {
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 1px;
+      font-size: 1rem;
+    }
+
+    .muscle-summary-table {
+      width: 100%;
+      margin: 10px 0 0 0;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: black;
+      box-shadow: none;
+
+      th {
+        background-color: black;
+        color: white;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+      }
+
+      td {
+        background-color: transparent;
+      }
+
+      tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .muscle-summary-total td {
+        font-weight: bold;
+      }
+    }
   }
 
 

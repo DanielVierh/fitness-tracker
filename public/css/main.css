@@ -381,6 +381,39 @@ tr:nth-child(even) {
   margin: 0;
   font-size: 1.3rem;
 }
+.active-training-sect.active .muscle-summary {
+  width: 100%;
+  margin-top: 12px;
+}
+.active-training-sect.active .muscle-summary-empty {
+  margin: 0;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 1rem;
+}
+.active-training-sect.active .muscle-summary-table {
+  width: 100%;
+  margin: 10px 0 0 0;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: black;
+  box-shadow: none;
+}
+.active-training-sect.active .muscle-summary-table th {
+  background-color: black;
+  color: white;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+.active-training-sect.active .muscle-summary-table td {
+  background-color: transparent;
+}
+.active-training-sect.active .muscle-summary-table tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.active-training-sect.active .muscle-summary-table .muscle-summary-total td {
+  font-weight: bold;
+}
 
 .modal,
 .mini-modal {
