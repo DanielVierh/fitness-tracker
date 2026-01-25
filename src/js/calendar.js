@@ -1,45 +1,55 @@
 import { add_zero } from "./functions.js";
-import { Modal } from './Classes/Modal.js';
+import { Modal } from "./Classes/Modal.js";
 import { Mini_Modal } from "./Classes/MiniModal.js";
-import  {render_trainings}  from "./render_trainings.js";
+import { render_trainings } from "./render_trainings.js";
 
 export function calendar(save_obj, _calendar_year) {
   const calendar = document.getElementById("calendar");
   const calendar_top = document.getElementById("calendar_top");
-  calendar.innerHTML = '';
+  const modal_calendar_trainings = document.getElementById(
+    "modal_calendar_trainings",
+  );
+  calendar.innerHTML = "";
   //* check and set year
   const today = new Date();
   let ref_year = undefined;
   const this_year = today.getFullYear();
-  if(_calendar_year === undefined) {
-     ref_year = this_year;
-  }else {
-    ref_year = _calendar_year
+  if (_calendar_year === undefined) {
+    ref_year = this_year;
+  } else {
+    ref_year = _calendar_year;
   }
   //* Create year label
-  let year_label = document.createElement('h2');
+  let year_label = document.createElement("h2");
   year_label.innerHTML = ref_year;
-  year_label.classList.add('calendar-year-label')
+  year_label.classList.add("calendar-year-label");
   calendar.appendChild(year_label);
 
-  draw_calendar(calendar, save_obj, ref_year);
+  draw_calendar(calendar, save_obj, ref_year, modal_calendar_trainings);
 }
 
 //* Function to render every Month
-function draw_calendar(calendar, save_obj, ref_year) {
+function draw_calendar(calendar, save_obj, ref_year, modal_calendar_trainings) {
   for (let i = 1; i <= 12; i++) {
     if (i === 2) {
-      draw_month(calendar, save_obj, 28, i, ref_year);
+      draw_month(calendar, save_obj, 28, i, ref_year, modal_calendar_trainings);
     } else if (i === 4 || i === 6 || i === 9 || i === 11) {
-      draw_month(calendar, save_obj, 30, i, ref_year);
+      draw_month(calendar, save_obj, 30, i, ref_year, modal_calendar_trainings);
     } else {
-      draw_month(calendar, save_obj, 31, i, ref_year);
+      draw_month(calendar, save_obj, 31, i, ref_year, modal_calendar_trainings);
     }
   }
 }
 
 //* Function to render the days per Month
-function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
+function draw_month(
+  calendar,
+  save_obj,
+  max_day,
+  month_index,
+  ref_year,
+  modal_calendar_trainings,
+) {
   const months = [
     "Januar",
     "Februar",
@@ -57,8 +67,31 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
 
   let month = document.createElement("div");
   month.classList.add("month-wrapper");
+
+  const month_header = document.createElement("div");
+  month_header.classList.add("month-header");
+
   let month_title = document.createElement("h3");
   month_title.innerHTML = months[month_index - 1];
+
+  const btn_to_trainings = document.createElement("button");
+  btn_to_trainings.type = "button";
+  btn_to_trainings.classList.add("calendar-to-trainings");
+  btn_to_trainings.textContent = "Zu den Trainings";
+  btn_to_trainings.addEventListener("click", () => {
+    if (!modal_calendar_trainings) return;
+    Modal.open_modal(modal_calendar_trainings);
+    render_trainings(save_obj, undefined, {
+      targetWrapperId: "calendar_trainings_wrapper",
+      collapsed: false,
+      showMaxWeightLabel: false,
+      month: month_index,
+      year: ref_year,
+    });
+  });
+
+  month_header.appendChild(month_title);
+  month_header.appendChild(btn_to_trainings);
   const today = new Date();
   const today_date = `${add_zero(today.getDate())}.${add_zero(today.getMonth() + 1)}.${today.getFullYear()}`;
 
@@ -72,8 +105,8 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
     const weekday = days[date.getDay()];
     calendar_day.innerHTML = `${add_zero(i)} <br> ${weekday}`;
 
-    if(current_day === today_date) {
-      calendar_day.classList.add('current-day')
+    if (current_day === today_date) {
+      calendar_day.classList.add("current-day");
     }
 
     //* Loop to Match Training Days and mark them
@@ -83,24 +116,25 @@ function draw_month(calendar, save_obj, max_day, month_index, ref_year) {
       if (current_day === current_training_date) {
         let training_day = document.createElement("div");
         calendar_day.setAttribute("data-trainingDate", current_training_date);
-        calendar_day.addEventListener('click', (e) => {
+        calendar_day.addEventListener("click", (e) => {
           // Open Modal with trainings and scroll to date
-          const training_date = e.currentTarget.getAttribute('data-trainingDate');
-              //Modal.open_modal(modal_trainings);
-              Mini_Modal.open_modal(mini_modal_training)
-              render_trainings(save_obj, training_date);
+          const training_date =
+            e.currentTarget.getAttribute("data-trainingDate");
+          //Modal.open_modal(modal_trainings);
+          Mini_Modal.open_modal(mini_modal_training);
+          render_trainings(save_obj, training_date);
         });
         training_day.classList.add("calendar-training-day");
         calendar_day.appendChild(training_day);
-        calendar_day.classList.add('sport-day')
+        calendar_day.classList.add("sport-day");
         break;
       }
     }
 
-    calendar.appendChild(month_title);
     month.appendChild(calendar_day);
-    calendar.appendChild(month);
-    
-    document.getElementById('calendar_top').scrollIntoView();
   }
+
+  calendar.appendChild(month_header);
+  calendar.appendChild(month);
+  document.getElementById("calendar_top").scrollIntoView();
 }

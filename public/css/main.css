@@ -772,6 +772,30 @@ tr:nth-child(even) {
   align-items: center;
   gap: 5px;
 }
+.modal-calendar .calendar .month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 25px 0 10px 0;
+  width: 100%;
+}
+.modal-calendar .calendar .month-header h3 {
+  margin: 0;
+  letter-spacing: 2px;
+}
+.modal-calendar .calendar .month-header .calendar-to-trainings {
+  background-color: #135a23;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
 .modal-calendar .calendar .calendar-day {
   width: 53px;
   height: 53px;
@@ -799,6 +823,13 @@ tr:nth-child(even) {
 }
 .modal-calendar .calendar .calendar-day.current-day {
   background-color: rgb(12, 76, 125);
+}
+
+.modal-calendar-trainings {
+  padding-bottom: 50px;
+}
+.modal-calendar-trainings .trainings-wrapper {
+  width: 100%;
 }
 
 .message {
