@@ -306,7 +306,9 @@ function fill_chart(selct_year) {
     }
 
     // Fallback falls place undef/sonstiges
-    const hasFitti = exercises.some((e) => e.trainingsplace === "Fitnessstudio");
+    const hasFitti = exercises.some(
+      (e) => e.trainingsplace === "Fitnessstudio",
+    );
     const hasHome = exercises.some((e) => e.trainingsplace === "Heimtraining");
     if (hasFitti && !hasHome) {
       strengthFitti[monthIndex] += 1;
