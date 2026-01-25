@@ -508,6 +508,48 @@ tr:nth-child(even) {
 .modal-trainints {
   padding-bottom: 50px;
 }
+.modal-trainints .trainings-wrapper {
+  width: 100%;
+}
+.modal-trainints .training-entry {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(to right, #2B4A6F, transparent);
+  box-shadow: 0 0 6px rgb(0, 200, 255);
+}
+.modal-trainints .training-entry__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.modal-trainints .training-entry__header h3 {
+  margin: 10px 0;
+  flex: 1;
+  font-size: 1rem;
+}
+.modal-trainints .training-entry__toggle {
+  background-color: #135a23;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.modal-trainints .training-entry__details {
+  width: 100%;
+  margin-top: 10px;
+}
+.modal-trainints .training-entry__details[hidden] {
+  display: none;
+}
 
 .newExercise {
   display: flex;
