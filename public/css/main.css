@@ -297,7 +297,7 @@ tr:nth-child(even) {
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
   box-shadow: 0 0 6px rgb(0, 200, 255);
-  height: 400px;
+  min-height: 500px;
   overflow-x: scroll;
   position: relative;
 }
