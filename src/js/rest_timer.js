@@ -73,7 +73,8 @@ export function restTimer() {
     if (!obj || typeof obj !== "object") return null;
     const startedAt = Number(obj.startedAt);
     const durationSec = Number(obj.durationSec);
-    if (!Number.isFinite(startedAt) || !Number.isFinite(durationSec)) return null;
+    if (!Number.isFinite(startedAt) || !Number.isFinite(durationSec))
+      return null;
     if (startedAt <= 0 || durationSec <= 0) return null;
     return { startedAt, durationSec };
   }
