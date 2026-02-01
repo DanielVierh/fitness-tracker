@@ -559,6 +559,11 @@ tr:nth-child(even) {
   transform: translate(-50%, -50%) scale(0.8);
 }
 
+.timer-modal {
+  height: 350px !important;
+  box-shadow: 0 0 50px black, 0 0 20px black, 0 0 40px black;
+  border-radius: 15px;
+}
 .timer-modal h2 {
   margin-top: 10px;
 }

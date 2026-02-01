@@ -289,13 +289,13 @@ function fill_chart(selct_year) {
 
     totals[monthIndex] += 1;
 
-    // Sonderfall: Nachträge wie "Krafttraining (Nachtrag)" haben häufig Gewicht 0,
-    // sollen aber je nach Trainingsort als Kraft Home/Fitti gezählt werden.
-    const hasStrengthAddendum = exercises.some(
-      (e) =>
-        typeof e?.name === "string" &&
-        e.name.trim() === "Krafttraining (Nachtrag)",
-    );
+    // Sonderfall: Kraft-Nachträge (z.B. "Krafttraining (Nachtrag)" oder "Nachtrag - Kraft")
+    // haben häufig Gewicht 0, sollen aber je nach Trainingsort als Kraft Home/Fitti gezählt werden.
+    const hasStrengthAddendum = exercises.some((e) => {
+      if (typeof e?.name !== "string") return false;
+      const n = e.name.trim().toLowerCase();
+      return n.includes("nachtrag") && n.includes("kraft");
+    });
     if (hasStrengthAddendum) {
       // Trainingsort aus den Exercises ableiten
       const place = identify_trainingsplace(exercises);
