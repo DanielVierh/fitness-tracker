@@ -345,20 +345,20 @@ tr:nth-child(even) {
   color: white;
   padding: 0;
   min-height: 10px;
-  width: 18px;
+  width: 20px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   text-align: center;
-  cursor: pointer;
   overflow: visible;
 }
 .chart .chart__label {
   position: relative;
   z-index: 2;
   padding: 4px;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
   line-height: 1.1;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 6px;
 }
 .chart .chart__stack {
   position: absolute;
