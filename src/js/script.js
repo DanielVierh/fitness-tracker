@@ -289,6 +289,39 @@ function fill_chart(selct_year) {
 
     totals[monthIndex] += 1;
 
+    // Sonderfall: Nachträge wie "Krafttraining (Nachtrag)" haben häufig Gewicht 0,
+    // sollen aber je nach Trainingsort als Kraft Home/Fitti gezählt werden.
+    const hasStrengthAddendum = exercises.some(
+      (e) =>
+        typeof e?.name === "string" &&
+        e.name.trim() === "Krafttraining (Nachtrag)",
+    );
+    if (hasStrengthAddendum) {
+      // Trainingsort aus den Exercises ableiten
+      const place = identify_trainingsplace(exercises);
+      if (place === "Fitti") {
+        strengthFitti[monthIndex] += 1;
+      } else if (place === "Home") {
+        strengthHome[monthIndex] += 1;
+      } else {
+        // Fallback, falls uneindeutig
+        const hasFitti = exercises.some(
+          (e) => e.trainingsplace === "Fitnessstudio",
+        );
+        const hasHome = exercises.some(
+          (e) => e.trainingsplace === "Heimtraining",
+        );
+        if (hasFitti && !hasHome) {
+          strengthFitti[monthIndex] += 1;
+        } else if (hasHome && !hasFitti) {
+          strengthHome[monthIndex] += 1;
+        } else {
+          strengthOther[monthIndex] += 1;
+        }
+      }
+      return;
+    }
+
     const movedWeightInt = sum_of_weight(exercises).weight;
     if (movedWeightInt <= 0) {
       cardio[monthIndex] += 1;
