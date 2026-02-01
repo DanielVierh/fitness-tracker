@@ -436,7 +436,14 @@ function fill_chart(selct_year) {
   });
 
   const sum = totals.reduce((acc, v) => acc + v, 0);
-  training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstag(e) im Jahr ${current_Year}`;
+  const sumCardio = cardio.reduce((acc, v) => acc + v, 0);
+  const sumStrengthFitti = strengthFitti.reduce((acc, v) => acc + v, 0);
+  const sumStrengthHome = strengthHome.reduce((acc, v) => acc + v, 0);
+
+  training_counter.innerHTML = `Bereits <span class="training-sum-number">${sum}</span> Trainingstag(e) im Jahr ${current_Year}<br>
+    Cardio: <span class="training-sum-number">${sumCardio}</span> &nbsp;|&nbsp;
+    Kraft Fitti: <span class="training-sum-number">${sumStrengthFitti}</span> &nbsp;|&nbsp;
+    Kraft Home: <span class="training-sum-number">${sumStrengthHome}</span>`;
 
   if (chart_legend) {
     chart_legend.innerHTML = `
