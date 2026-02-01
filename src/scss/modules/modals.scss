@@ -281,6 +281,37 @@
       width: 100%;
       margin-top: 10px;
 
+      // Trainings-Tabelle: Textspalten (1+6) breiter, Zahlen kompakter
+      table {
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      th:nth-child(1),
+      td:nth-child(1) {
+        width: 42%;
+        text-align: left;
+      }
+
+      th:nth-child(2),
+      td:nth-child(2),
+      th:nth-child(3),
+      td:nth-child(3),
+      th:nth-child(4),
+      td:nth-child(4),
+      th:nth-child(5),
+      td:nth-child(5) {
+        width: 9.5%;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      th:nth-child(6),
+      td:nth-child(6) {
+        width: 20%;
+        text-align: left;
+      }
+
       &[hidden] {
         display: none;
       }

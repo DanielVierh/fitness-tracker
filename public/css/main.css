@@ -754,6 +754,32 @@ tr:nth-child(even) {
   width: 100%;
   margin-top: 10px;
 }
+.modal-trainints .training-entry__details table {
+  width: 100%;
+  table-layout: fixed;
+}
+.modal-trainints .training-entry__details th:nth-child(1),
+.modal-trainints .training-entry__details td:nth-child(1) {
+  width: 42%;
+  text-align: left;
+}
+.modal-trainints .training-entry__details th:nth-child(2),
+.modal-trainints .training-entry__details td:nth-child(2),
+.modal-trainints .training-entry__details th:nth-child(3),
+.modal-trainints .training-entry__details td:nth-child(3),
+.modal-trainints .training-entry__details th:nth-child(4),
+.modal-trainints .training-entry__details td:nth-child(4),
+.modal-trainints .training-entry__details th:nth-child(5),
+.modal-trainints .training-entry__details td:nth-child(5) {
+  width: 9.5%;
+  text-align: center;
+  white-space: nowrap;
+}
+.modal-trainints .training-entry__details th:nth-child(6),
+.modal-trainints .training-entry__details td:nth-child(6) {
+  width: 20%;
+  text-align: left;
+}
 .modal-trainints .training-entry__details[hidden] {
   display: none;
 }
