@@ -265,6 +265,92 @@
       <div class="chart__col" id="chart_col_12">Dez</div>
     </section>
 
+    <section class="advanced-stats" id="advanced_stats">
+      <div class="advanced-stats__aurora"></div>
+      <div class="advanced-stats__header">
+        <h3>Deep Stats <span id="advanced_stats_year"></span></h3>
+        <p>Rhythmus, Konstanz und Volumen-Trend auf einen Blick</p>
+      </div>
+
+      <div class="advanced-stats__kpi-grid">
+        <article class="advanced-stats__kpi">
+          <span class="advanced-stats__kpi-label">Durchschnitt Abstand</span>
+          <strong class="advanced-stats__kpi-value" id="stat_avg_gap">-</strong>
+        </article>
+        <article class="advanced-stats__kpi">
+          <span class="advanced-stats__kpi-label">Laengste Pause</span>
+          <strong class="advanced-stats__kpi-value" id="stat_max_gap">-</strong>
+        </article>
+        <article class="advanced-stats__kpi">
+          <span class="advanced-stats__kpi-label">Trainings pro Woche</span>
+          <strong class="advanced-stats__kpi-value" id="stat_week_avg"
+            >-</strong
+          >
+        </article>
+        <article class="advanced-stats__kpi">
+          <span class="advanced-stats__kpi-label">Konsistenz-Score</span>
+          <strong class="advanced-stats__kpi-value" id="stat_consistency"
+            >-</strong
+          >
+        </article>
+        <article class="advanced-stats__kpi">
+          <span class="advanced-stats__kpi-label">Trendrichtung</span>
+          <strong class="advanced-stats__kpi-value" id="stat_trend_direction"
+            >-</strong
+          >
+        </article>
+        <article class="advanced-stats__kpi">
+          <span class="advanced-stats__kpi-label">Trend Delta</span>
+          <strong class="advanced-stats__kpi-value" id="stat_trend_delta"
+            >-</strong
+          >
+        </article>
+      </div>
+
+      <div class="advanced-stats__chart-panel">
+        <div class="advanced-stats__panel-head">
+          <h4>Gesamtgewicht Trend</h4>
+          <div class="advanced-stats__toggle" id="advanced_stats_toggle">
+            <button
+              class="advanced-stats__toggle-btn is-active"
+              data-mode="week"
+            >
+              Woche
+            </button>
+            <button class="advanced-stats__toggle-btn" data-mode="month">
+              Monat
+            </button>
+          </div>
+        </div>
+        <svg
+          id="advanced_trend_chart"
+          class="advanced-stats__chart-svg"
+          viewBox="0 0 960 320"
+          preserveAspectRatio="none"
+          aria-label="Trendchart Gesamtgewicht"
+        ></svg>
+      </div>
+
+      <div
+        class="advanced-stats__chart-panel advanced-stats__chart-panel--secondary"
+      >
+        <div class="advanced-stats__panel-head">
+          <h4>Verteilung der Pausen</h4>
+        </div>
+        <svg
+          id="advanced_gap_chart"
+          class="advanced-stats__chart-svg advanced-stats__chart-svg--small"
+          viewBox="0 0 960 220"
+          preserveAspectRatio="none"
+          aria-label="Verteilung Trainingspausen"
+        ></svg>
+      </div>
+
+      <p class="advanced-stats__empty" id="advanced_stats_empty" hidden>
+        Noch zu wenig Trainingsdaten fuer eine Trendanalyse.
+      </p>
+    </section>
+
     <div class="modal-settings modal" id="modal_settings">
       <div id="saveJsonBtn" class="backup-button">Backup erstellen</div>
       <h4>Backup importieren</h4>

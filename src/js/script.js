@@ -3,6 +3,7 @@ import { restTimer } from "./rest_timer.js";
 import { splitVal } from "./functions.js";
 import { rnd_id } from "./functions.js";
 import { add_zero } from "./functions.js";
+import { numberWithCommas } from "./functions.js";
 import { minutesDiff } from "./functions.js";
 import { daysDiff } from "./functions.js";
 import { calendar } from "./calendar.js";
@@ -82,6 +83,7 @@ let training_running = false;
 let selected_Exercise;
 let is_edit = false;
 let calendar_year = undefined;
+let advanced_stats_mode = "week";
 
 /////////////////////////////////////
 //*  Saveobj
@@ -101,6 +103,7 @@ let save_Object = {
 window.onload = () => {
   load_local_storage();
   add_years_to_select();
+  init_advanced_statistics_controls();
 
   setInterval(() => {
     observer();
@@ -184,6 +187,7 @@ function load_local_storage() {
 
     try {
       fill_chart();
+      render_advanced_statistics();
     } catch (error) {
       console.log(error);
     }
@@ -209,6 +213,7 @@ function load_local_storage() {
 change_StatisticYear.addEventListener("change", () => {
   const selected_year = change_StatisticYear.value;
   fill_chart(selected_year);
+  render_advanced_statistics(selected_year);
 
   //* Set Data-attr for calendar
   calendar_year = selected_year;
@@ -243,6 +248,7 @@ function add_years_to_select() {
   }
   change_StatisticYear.value = latest_year;
   fill_chart(latest_year);
+  render_advanced_statistics(latest_year);
 }
 
 /////////////////////////////////////
@@ -453,6 +459,587 @@ function fill_chart(selct_year) {
       <div class="chart-legend__item"><span class="chart-legend__swatch chart-legend__swatch--home"></span>Kraft Home</div>
       <div class="chart-legend__item"><span class="chart-legend__swatch chart-legend__swatch--other"></span>Sonstiges</div>
     `;
+  }
+}
+
+/////////////////////////////////////
+//* ANCHOR - Advanced Statistics
+/////////////////////////////////////
+
+function init_advanced_statistics_controls() {
+  const toggle = document.getElementById("advanced_stats_toggle");
+  if (!toggle || toggle.dataset.bound === "true") return;
+
+  toggle.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const button = target.closest("button[data-mode]");
+    if (!button) return;
+
+    const mode = button.dataset.mode;
+    advanced_stats_mode = mode === "month" ? "month" : "week";
+    set_advanced_stats_toggle_state();
+    render_advanced_statistics(change_StatisticYear.value);
+  });
+
+  toggle.dataset.bound = "true";
+  set_advanced_stats_toggle_state();
+}
+
+function set_advanced_stats_toggle_state() {
+  const buttons = document.querySelectorAll(".advanced-stats__toggle-btn");
+  buttons.forEach((button) => {
+    if (!(button instanceof HTMLElement)) return;
+    if (button.dataset.mode === advanced_stats_mode) {
+      button.classList.add("is-active");
+    } else {
+      button.classList.remove("is-active");
+    }
+  });
+}
+
+function render_advanced_statistics(selected_year) {
+  const section = document.getElementById("advanced_stats");
+  if (!section) return;
+
+  const nowYear = new Date().getFullYear();
+  const parsed = Number(selected_year || change_StatisticYear.value || nowYear);
+  const targetYear = Number.isFinite(parsed) ? parsed : nowYear;
+
+  const data = collect_advanced_statistics_data(targetYear);
+  set_advanced_stats_toggle_state();
+
+  const yearLabel = document.getElementById("advanced_stats_year");
+  if (yearLabel) {
+    yearLabel.textContent = `(${targetYear})`;
+  }
+
+  const avgGapLabel = document.getElementById("stat_avg_gap");
+  const maxGapLabel = document.getElementById("stat_max_gap");
+  const weekAvgLabel = document.getElementById("stat_week_avg");
+  const consistencyLabel = document.getElementById("stat_consistency");
+  const trendDirectionLabel = document.getElementById("stat_trend_direction");
+  const trendDeltaLabel = document.getElementById("stat_trend_delta");
+  const emptyLabel = document.getElementById("advanced_stats_empty");
+
+  if (avgGapLabel)
+    avgGapLabel.textContent = format_number(data.avgGapDays, 1) + " Tage";
+  if (maxGapLabel) maxGapLabel.textContent = `${data.maxGapDays} Tage`;
+  if (weekAvgLabel)
+    weekAvgLabel.textContent = format_number(data.avgTrainingsPerWeek, 2);
+  if (consistencyLabel)
+    consistencyLabel.textContent =
+      format_number(data.consistencyScore, 1) + " %";
+
+  const activeSeries =
+    advanced_stats_mode === "month"
+      ? data.monthlyWeightSeries
+      : data.weeklyWeightSeries;
+  const trend = calculate_series_trend(activeSeries);
+  if (trendDirectionLabel)
+    trendDirectionLabel.textContent = trend.directionLabel;
+  if (trendDeltaLabel) trendDeltaLabel.textContent = trend.deltaLabel;
+
+  const trendChart = document.getElementById("advanced_trend_chart");
+  const gapChart = document.getElementById("advanced_gap_chart");
+
+  if (data.trainingDays < 2) {
+    if (emptyLabel) emptyLabel.hidden = false;
+  } else if (emptyLabel) {
+    emptyLabel.hidden = true;
+  }
+
+  render_weight_trend_chart(trendChart, activeSeries, advanced_stats_mode);
+  render_gap_distribution_chart(gapChart, data.gapBuckets);
+}
+
+function collect_advanced_statistics_data(targetYear) {
+  const dayMap = new Map();
+  let totalTrainingSessions = 0;
+
+  for (let i = 0; i < save_Object.trainings.length; i++) {
+    const training = save_Object.trainings[i];
+    if (!training || typeof training.training_date !== "string") continue;
+
+    const year = Number(splitVal(training.training_date, ".", 2));
+    if (year !== Number(targetYear)) continue;
+
+    const dateObj = parse_training_date(training.training_date);
+    if (!dateObj) continue;
+
+    const dayKey = to_day_key(dateObj);
+    if (!dayMap.has(dayKey)) {
+      dayMap.set(dayKey, {
+        date: dateObj,
+        exercises: [],
+        weight: 0,
+        trainingCount: 0,
+      });
+    }
+
+    const entry = dayMap.get(dayKey);
+    const exercises = Array.isArray(training.exercises)
+      ? training.exercises
+      : [];
+    entry.exercises.push(...exercises);
+    entry.weight += safe_sum_of_weight(exercises);
+    entry.trainingCount += 1;
+    totalTrainingSessions += 1;
+  }
+
+  const days = Array.from(dayMap.values()).sort((a, b) => a.date - b.date);
+  const gaps = [];
+  for (let i = 1; i < days.length; i++) {
+    gaps.push(daysDiff(days[i].date, days[i - 1].date));
+  }
+
+  const avgGapDays =
+    gaps.length > 0 ? gaps.reduce((acc, val) => acc + val, 0) / gaps.length : 0;
+  const maxGapDays = gaps.length > 0 ? Math.max(...gaps) : 0;
+
+  const weeksInYear = get_iso_weeks_in_year(targetYear);
+  const weekSeries = [];
+  const weekKeyToIndex = new Map();
+  for (let week = 1; week <= weeksInYear; week++) {
+    const key = `W${add_zero(week)}`;
+    weekKeyToIndex.set(key, week - 1);
+    weekSeries.push({
+      label: `KW ${week}`,
+      shortLabel: `${week}`,
+      value: 0,
+    });
+  }
+
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mrz",
+    "Apr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Okt",
+    "Nov",
+    "Dez",
+  ];
+  const monthSeries = monthNames.map((name) => ({
+    label: name,
+    shortLabel: name,
+    value: 0,
+  }));
+
+  const activeWeekKeys = new Set();
+  days.forEach((day) => {
+    const isoInfo = get_iso_week_info(day.date);
+    if (isoInfo.year === Number(targetYear)) {
+      const key = `W${add_zero(isoInfo.week)}`;
+      const index = weekKeyToIndex.get(key);
+      if (index !== undefined) {
+        weekSeries[index].value += day.weight;
+        activeWeekKeys.add(key);
+      }
+    }
+
+    const monthIndex = day.date.getMonth();
+    monthSeries[monthIndex].value += day.weight;
+  });
+
+  const observedWeeks = get_observed_span_weeks(days, targetYear);
+  const avgTrainingsPerWeek =
+    observedWeeks > 0 ? totalTrainingSessions / observedWeeks : 0;
+  const consistencyScore =
+    weeksInYear > 0 ? (activeWeekKeys.size / weeksInYear) * 100 : 0;
+
+  return {
+    trainingDays: days.length,
+    avgGapDays,
+    maxGapDays,
+    avgTrainingsPerWeek,
+    consistencyScore,
+    weeklyWeightSeries: weekSeries,
+    monthlyWeightSeries: monthSeries,
+    gapBuckets: build_gap_buckets(gaps),
+  };
+}
+
+function safe_sum_of_weight(exercises) {
+  if (!Array.isArray(exercises) || exercises.length === 0) return 0;
+
+  const utilityVal = Number(sum_of_weight(exercises).weight);
+  if (Number.isFinite(utilityVal)) return utilityVal;
+
+  let weight = 0;
+  for (let i = 0; i < exercises.length; i++) {
+    const exercise = exercises[i] || {};
+    const exWeight = Number(exercise.weight) || 0;
+    const solvedSets = Number(exercise.solved_sets) || 0;
+    const repeats = Number(exercise.repeats) || 0;
+    weight += exWeight * solvedSets * repeats;
+  }
+  return Number.isFinite(weight) ? weight : 0;
+}
+
+function parse_training_date(dateStr) {
+  const day = splitVal(dateStr, ".", 0);
+  const month = splitVal(dateStr, ".", 1);
+  const year = splitVal(dateStr, ".", 2);
+  const parsed = new Date(`${year}-${month}-${day}`);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+}
+
+function to_day_key(dateObj) {
+  return `${dateObj.getFullYear()}-${add_zero(dateObj.getMonth() + 1)}-${add_zero(dateObj.getDate())}`;
+}
+
+function get_iso_week_info(date) {
+  const utcDate = new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+  );
+  const weekday = utcDate.getUTCDay() || 7;
+  utcDate.setUTCDate(utcDate.getUTCDate() + 4 - weekday);
+  const isoYear = utcDate.getUTCFullYear();
+  const yearStart = new Date(Date.UTC(isoYear, 0, 1));
+  const week = Math.ceil(((utcDate - yearStart) / 86400000 + 1) / 7);
+  return { year: isoYear, week };
+}
+
+function get_iso_weeks_in_year(year) {
+  const dec28 = new Date(Date.UTC(year, 11, 28));
+  return get_iso_week_info(dec28).week;
+}
+
+function get_observed_span_weeks(days, targetYear) {
+  if (!Array.isArray(days) || days.length === 0) {
+    return 0;
+  }
+
+  const sortedDays = [...days].sort((a, b) => a.date - b.date);
+  const first = sortedDays[0].date;
+  const last = sortedDays[sortedDays.length - 1].date;
+  const millisDiff = Math.max(0, last.getTime() - first.getTime());
+  const daysSpan = Math.floor(millisDiff / (1000 * 60 * 60 * 24)) + 1;
+  const spanWeeks = Math.max(1, Math.ceil(daysSpan / 7));
+
+  const now = new Date();
+  if (Number(targetYear) === now.getFullYear()) {
+    const elapsedWeeksThisYear = Math.max(1, get_iso_week_info(now).week);
+    return Math.min(spanWeeks, elapsedWeeksThisYear);
+  }
+
+  return spanWeeks;
+}
+
+function build_gap_buckets(gaps) {
+  const buckets = [
+    { label: "0-1 Tage", value: 0 },
+    { label: "2-3 Tage", value: 0 },
+    { label: "4-6 Tage", value: 0 },
+    { label: "7+ Tage", value: 0 },
+  ];
+
+  gaps.forEach((gap) => {
+    if (gap <= 1) {
+      buckets[0].value += 1;
+    } else if (gap <= 3) {
+      buckets[1].value += 1;
+    } else if (gap <= 6) {
+      buckets[2].value += 1;
+    } else {
+      buckets[3].value += 1;
+    }
+  });
+
+  return buckets;
+}
+
+function calculate_series_trend(series) {
+  if (!Array.isArray(series) || series.length === 0) {
+    return {
+      directionLabel: "Keine Daten",
+      deltaLabel: "-",
+    };
+  }
+
+  const windowSize = Math.min(3, Math.max(1, Math.floor(series.length / 3)));
+  const firstValues = series
+    .slice(0, windowSize)
+    .map((item) => Number(item.value) || 0);
+  const lastValues = series
+    .slice(series.length - windowSize)
+    .map((item) => Number(item.value) || 0);
+  const start =
+    firstValues.reduce((acc, val) => acc + val, 0) / firstValues.length;
+  const end = lastValues.reduce((acc, val) => acc + val, 0) / lastValues.length;
+  const diff = end - start;
+
+  let directionLabel = "Stabil";
+  if (diff > 0) directionLabel = "Steigend";
+  if (diff < 0) directionLabel = "Fallend";
+
+  if (start <= 0 && end > 0) {
+    return {
+      directionLabel,
+      deltaLabel: `+${format_number(end, 0)} kg Volumen`,
+    };
+  }
+
+  if (start === 0 && end === 0) {
+    return {
+      directionLabel,
+      deltaLabel: "0 %",
+    };
+  }
+
+  const percent = (diff / start) * 100;
+  const prefix = percent > 0 ? "+" : "";
+  return {
+    directionLabel,
+    deltaLabel: `${prefix}${format_number(percent, 1)} %`,
+  };
+}
+
+function format_number(value, decimals) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "0";
+  return number.toLocaleString("de-DE", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
+function render_weight_trend_chart(svgElement, series, mode) {
+  if (!(svgElement instanceof SVGElement)) return;
+  svgElement.innerHTML = "";
+
+  const width = 960;
+  const height = 320;
+  const padding = { top: 24, right: 24, bottom: 46, left: 48 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const values = series.map((item) => Number(item.value) || 0);
+  const maxVal = Math.max(...values, 0);
+  const safeMax = maxVal <= 0 ? 1 : maxVal;
+
+  const ns = "http://www.w3.org/2000/svg";
+
+  const defs = document.createElementNS(ns, "defs");
+  const gradient = document.createElementNS(ns, "linearGradient");
+  gradient.setAttribute("id", "trendGradient");
+  gradient.setAttribute("x1", "0%");
+  gradient.setAttribute("x2", "0%");
+  gradient.setAttribute("y1", "0%");
+  gradient.setAttribute("y2", "100%");
+
+  const stopTop = document.createElementNS(ns, "stop");
+  stopTop.setAttribute("offset", "0%");
+  stopTop.setAttribute("stop-color", "#21f3ff");
+  stopTop.setAttribute("stop-opacity", "0.55");
+
+  const stopBottom = document.createElementNS(ns, "stop");
+  stopBottom.setAttribute("offset", "100%");
+  stopBottom.setAttribute("stop-color", "#21f3ff");
+  stopBottom.setAttribute("stop-opacity", "0.05");
+
+  gradient.appendChild(stopTop);
+  gradient.appendChild(stopBottom);
+  defs.appendChild(gradient);
+  svgElement.appendChild(defs);
+
+  const horizontalLines = 4;
+  for (let i = 0; i <= horizontalLines; i++) {
+    const y = padding.top + (plotHeight / horizontalLines) * i;
+    const line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", String(padding.left));
+    line.setAttribute("x2", String(width - padding.right));
+    line.setAttribute("y1", String(y));
+    line.setAttribute("y2", String(y));
+    line.setAttribute("stroke", "rgba(255,255,255,0.12)");
+    line.setAttribute("stroke-width", "1");
+    svgElement.appendChild(line);
+  }
+
+  const points = series.map((item, index) => {
+    const x =
+      padding.left + (index / Math.max(1, series.length - 1)) * plotWidth;
+    const normalized = (Number(item.value) || 0) / safeMax;
+    const y = padding.top + (1 - normalized) * plotHeight;
+    return {
+      x,
+      y,
+      value: Number(item.value) || 0,
+      label: item.label,
+      shortLabel: item.shortLabel,
+    };
+  });
+
+  const linePath = points
+    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x},${point.y}`)
+    .join(" ");
+  const areaPath = `${linePath} L${padding.left + plotWidth},${padding.top + plotHeight} L${padding.left},${padding.top + plotHeight} Z`;
+
+  const area = document.createElementNS(ns, "path");
+  area.setAttribute("d", areaPath);
+  area.setAttribute("fill", "url(#trendGradient)");
+  svgElement.appendChild(area);
+
+  const line = document.createElementNS(ns, "path");
+  line.setAttribute("d", linePath);
+  line.setAttribute("fill", "none");
+  line.setAttribute("stroke", "#21f3ff");
+  line.setAttribute("stroke-width", "3");
+  line.setAttribute("stroke-linecap", "round");
+  line.setAttribute("stroke-linejoin", "round");
+  svgElement.appendChild(line);
+
+  const targetPoints =
+    points.length > 16
+      ? points.filter((_, index) => index % Math.ceil(points.length / 16) === 0)
+      : points;
+
+  targetPoints.forEach((point) => {
+    const dot = document.createElementNS(ns, "circle");
+    dot.setAttribute("cx", String(point.x));
+    dot.setAttribute("cy", String(point.y));
+    dot.setAttribute("r", "3.5");
+    dot.setAttribute("fill", "#ffffff");
+    dot.setAttribute("stroke", "#21f3ff");
+    dot.setAttribute("stroke-width", "2");
+
+    const title = document.createElementNS(ns, "title");
+    const metric = mode === "month" ? "Monat" : "Woche";
+    title.textContent = `${metric}: ${point.label} | Volumen: ${numberWithCommas(Math.round(point.value))}`;
+    dot.appendChild(title);
+    svgElement.appendChild(dot);
+
+    const xLabel = document.createElementNS(ns, "text");
+    xLabel.setAttribute("x", String(point.x));
+    xLabel.setAttribute("y", String(height - 16));
+    xLabel.setAttribute("text-anchor", "middle");
+    xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
+    xLabel.setAttribute("font-size", "11");
+    xLabel.textContent = point.shortLabel;
+    svgElement.appendChild(xLabel);
+  });
+
+  const maxLabel = document.createElementNS(ns, "text");
+  maxLabel.setAttribute("x", String(padding.left));
+  maxLabel.setAttribute("y", String(padding.top - 6));
+  maxLabel.setAttribute("fill", "rgba(255,255,255,0.75)");
+  maxLabel.setAttribute("font-size", "11");
+  maxLabel.textContent = `Max: ${numberWithCommas(Math.round(maxVal))}`;
+  svgElement.appendChild(maxLabel);
+}
+
+function render_gap_distribution_chart(svgElement, buckets) {
+  if (!(svgElement instanceof SVGElement)) return;
+  svgElement.innerHTML = "";
+
+  const safeBuckets = Array.isArray(buckets)
+    ? buckets
+    : [
+        { label: "0-1 Tage", value: 0 },
+        { label: "2-3 Tage", value: 0 },
+        { label: "4-6 Tage", value: 0 },
+        { label: "7+ Tage", value: 0 },
+      ];
+
+  const width = 960;
+  const height = 220;
+  const padding = { top: 20, right: 28, bottom: 48, left: 42 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const maxVal = Math.max(...safeBuckets.map((bucket) => bucket.value), 1);
+  const barWidth = plotWidth / Math.max(1, safeBuckets.length) - 20;
+  const ns = "http://www.w3.org/2000/svg";
+  const totalPauses = safeBuckets.reduce(
+    (acc, bucket) => acc + (Number(bucket.value) || 0),
+    0,
+  );
+
+  const defs = document.createElementNS(ns, "defs");
+  const gradient = document.createElementNS(ns, "linearGradient");
+  gradient.setAttribute("id", "gapBarGradient");
+  gradient.setAttribute("x1", "0%");
+  gradient.setAttribute("x2", "0%");
+  gradient.setAttribute("y1", "0%");
+  gradient.setAttribute("y2", "100%");
+
+  const stopOne = document.createElementNS(ns, "stop");
+  stopOne.setAttribute("offset", "0%");
+  stopOne.setAttribute("stop-color", "#ffd166");
+
+  const stopTwo = document.createElementNS(ns, "stop");
+  stopTwo.setAttribute("offset", "100%");
+  stopTwo.setAttribute("stop-color", "#ff8f3f");
+
+  gradient.appendChild(stopOne);
+  gradient.appendChild(stopTwo);
+  defs.appendChild(gradient);
+  svgElement.appendChild(defs);
+
+  for (let i = 0; i <= 3; i++) {
+    const y = padding.top + (plotHeight / 3) * i;
+    const line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", String(padding.left));
+    line.setAttribute("x2", String(width - padding.right));
+    line.setAttribute("y1", String(y));
+    line.setAttribute("y2", String(y));
+    line.setAttribute("stroke", "rgba(255,255,255,0.12)");
+    line.setAttribute("stroke-width", "1");
+    svgElement.appendChild(line);
+  }
+
+  safeBuckets.forEach((bucket, index) => {
+    const x = padding.left + index * (barWidth + 20) + 10;
+    const rawHeight = ((Number(bucket.value) || 0) / maxVal) * plotHeight;
+    const barHeight = totalPauses === 0 ? 8 : Math.max(rawHeight, 6);
+    const y = padding.top + plotHeight - barHeight;
+
+    const rect = document.createElementNS(ns, "rect");
+    rect.setAttribute("x", String(x));
+    rect.setAttribute("y", String(y));
+    rect.setAttribute("width", String(barWidth));
+    rect.setAttribute("height", String(barHeight));
+    rect.setAttribute("rx", "8");
+    rect.setAttribute("fill", "url(#gapBarGradient)");
+
+    const title = document.createElementNS(ns, "title");
+    title.textContent = `${bucket.label}: ${bucket.value}`;
+    rect.appendChild(title);
+    svgElement.appendChild(rect);
+
+    const valueLabel = document.createElementNS(ns, "text");
+    valueLabel.setAttribute("x", String(x + barWidth / 2));
+    valueLabel.setAttribute("y", String(y - 8));
+    valueLabel.setAttribute("text-anchor", "middle");
+    valueLabel.setAttribute("fill", "#ffffff");
+    valueLabel.setAttribute("font-size", "12");
+    valueLabel.textContent = String(bucket.value);
+    svgElement.appendChild(valueLabel);
+
+    const xLabel = document.createElementNS(ns, "text");
+    xLabel.setAttribute("x", String(x + barWidth / 2));
+    xLabel.setAttribute("y", String(height - 18));
+    xLabel.setAttribute("text-anchor", "middle");
+    xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
+    xLabel.setAttribute("font-size", "11");
+    xLabel.textContent = bucket.label;
+    svgElement.appendChild(xLabel);
+  });
+
+  if (totalPauses === 0) {
+    const info = document.createElementNS(ns, "text");
+    info.setAttribute("x", String(width / 2));
+    info.setAttribute("y", String(padding.top + 18));
+    info.setAttribute("text-anchor", "middle");
+    info.setAttribute("fill", "rgba(255,255,255,0.82)");
+    info.setAttribute("font-size", "12");
+    info.textContent =
+      "Noch keine Pausenwerte verfuegbar (mindestens 2 Trainingstage noetig)";
+    svgElement.appendChild(info);
   }
 }
 
