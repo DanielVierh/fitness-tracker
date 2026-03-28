@@ -274,33 +274,35 @@
 
       <div class="advanced-stats__kpi-grid">
         <article class="advanced-stats__kpi">
-          <span class="advanced-stats__kpi-label">Durchschnitt Abstand</span>
+          <span class="advanced-stats__kpi-label"
+            >Fester Trainingstag-Score</span
+          >
           <strong class="advanced-stats__kpi-value" id="stat_avg_gap">-</strong>
         </article>
         <article class="advanced-stats__kpi">
-          <span class="advanced-stats__kpi-label">Laengste Pause</span>
+          <span class="advanced-stats__kpi-label">Wochenende / Wochentag</span>
           <strong class="advanced-stats__kpi-value" id="stat_max_gap">-</strong>
         </article>
         <article class="advanced-stats__kpi">
-          <span class="advanced-stats__kpi-label">Trainings pro Woche</span>
+          <span class="advanced-stats__kpi-label">Rolling Average 4W</span>
           <strong class="advanced-stats__kpi-value" id="stat_week_avg"
             >-</strong
           >
         </article>
         <article class="advanced-stats__kpi">
-          <span class="advanced-stats__kpi-label">Konsistenz-Score</span>
+          <span class="advanced-stats__kpi-label">Muskelgruppen-Balance</span>
           <strong class="advanced-stats__kpi-value" id="stat_consistency"
             >-</strong
           >
         </article>
         <article class="advanced-stats__kpi">
-          <span class="advanced-stats__kpi-label">Trendrichtung</span>
+          <span class="advanced-stats__kpi-label">Cardio-Minuten / Woche</span>
           <strong class="advanced-stats__kpi-value" id="stat_trend_direction"
             >-</strong
           >
         </article>
         <article class="advanced-stats__kpi">
-          <span class="advanced-stats__kpi-label">Trend Delta</span>
+          <span class="advanced-stats__kpi-label">Sessions pro 30 Tage</span>
           <strong class="advanced-stats__kpi-value" id="stat_trend_delta"
             >-</strong
           >
@@ -343,6 +345,36 @@
           viewBox="0 0 960 220"
           preserveAspectRatio="none"
           aria-label="Verteilung Trainingspausen"
+        ></svg>
+      </div>
+
+      <div
+        class="advanced-stats__chart-panel advanced-stats__chart-panel--secondary"
+      >
+        <div class="advanced-stats__panel-head">
+          <h4>4-Wochen Rolling Average Volumen</h4>
+        </div>
+        <svg
+          id="advanced_rolling_chart"
+          class="advanced-stats__chart-svg advanced-stats__chart-svg--small"
+          viewBox="0 0 960 220"
+          preserveAspectRatio="none"
+          aria-label="4 Wochen Rolling Average Volumen"
+        ></svg>
+      </div>
+
+      <div
+        class="advanced-stats__chart-panel advanced-stats__chart-panel--secondary"
+      >
+        <div class="advanced-stats__panel-head">
+          <h4>Muskelgruppen Balance</h4>
+        </div>
+        <svg
+          id="advanced_muscle_chart"
+          class="advanced-stats__chart-svg advanced-stats__chart-svg--small"
+          viewBox="0 0 960 220"
+          preserveAspectRatio="none"
+          aria-label="Muskelgruppen Balance"
         ></svg>
       </div>
 

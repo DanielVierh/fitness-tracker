@@ -522,14 +522,24 @@ function render_advanced_statistics(selected_year) {
   const trendDeltaLabel = document.getElementById("stat_trend_delta");
   const emptyLabel = document.getElementById("advanced_stats_empty");
 
-  if (avgGapLabel)
-    avgGapLabel.textContent = format_number(data.avgGapDays, 1) + " Tage";
-  if (maxGapLabel) maxGapLabel.textContent = `${data.maxGapDays} Tage`;
-  if (weekAvgLabel)
-    weekAvgLabel.textContent = format_number(data.avgTrainingsPerWeek, 2);
-  if (consistencyLabel)
-    consistencyLabel.textContent =
-      format_number(data.consistencyScore, 1) + " %";
+  if (avgGapLabel) {
+    avgGapLabel.textContent = `${data.dominantWeekday} ${format_number(data.dominantWeekdayShare, 1)} %`;
+  }
+  if (maxGapLabel) {
+    maxGapLabel.textContent = `${format_number(data.weekendShare, 1)} % / ${format_number(data.weekdayShare, 1)} %`;
+  }
+  if (weekAvgLabel) {
+    weekAvgLabel.textContent = `${numberWithCommas(Math.round(data.latestRolling4WeekVolume))} kg`;
+  }
+  if (consistencyLabel) {
+    consistencyLabel.textContent = `${data.overRepresentedMuscleLabel} | ${data.underRepresentedMuscleLabel}`;
+  }
+  if (trendDirectionLabel) {
+    trendDirectionLabel.textContent = `${format_number(data.cardioMinutesPerWeek, 1)} Min`;
+  }
+  if (trendDeltaLabel) {
+    trendDeltaLabel.textContent = format_number(data.sessionsPer30Days, 1);
+  }
 
   const activeSeries =
     advanced_stats_mode === "month"
@@ -542,6 +552,8 @@ function render_advanced_statistics(selected_year) {
 
   const trendChart = document.getElementById("advanced_trend_chart");
   const gapChart = document.getElementById("advanced_gap_chart");
+  const rollingChart = document.getElementById("advanced_rolling_chart");
+  const muscleChart = document.getElementById("advanced_muscle_chart");
 
   if (data.trainingDays < 2) {
     if (emptyLabel) emptyLabel.hidden = false;
@@ -551,11 +563,24 @@ function render_advanced_statistics(selected_year) {
 
   render_weight_trend_chart(trendChart, activeSeries, advanced_stats_mode);
   render_gap_distribution_chart(gapChart, data.gapBuckets);
+  render_rolling_average_chart(rollingChart, data.rolling4WeekSeries);
+  render_muscle_balance_chart(
+    muscleChart,
+    data.muscleDistribution,
+    data.muscleTargetShare,
+  );
 }
 
 function collect_advanced_statistics_data(targetYear) {
   const dayMap = new Map();
   let totalTrainingSessions = 0;
+  const weekdaySessionCounts = Array(7).fill(0);
+  let weekendSessions = 0;
+  let weekdaySessions = 0;
+  const cardioMinutesByWeekKey = new Map();
+  const muscleLoadMap = new Map();
+  let observedMinDate = null;
+  let observedMaxDate = null;
 
   for (let i = 0; i < save_Object.trainings.length; i++) {
     const training = save_Object.trainings[i];
@@ -566,6 +591,13 @@ function collect_advanced_statistics_data(targetYear) {
 
     const dateObj = parse_training_date(training.training_date);
     if (!dateObj) continue;
+
+    if (observedMinDate === null || dateObj < observedMinDate) {
+      observedMinDate = dateObj;
+    }
+    if (observedMaxDate === null || dateObj > observedMaxDate) {
+      observedMaxDate = dateObj;
+    }
 
     const dayKey = to_day_key(dateObj);
     if (!dayMap.has(dayKey)) {
@@ -581,10 +613,44 @@ function collect_advanced_statistics_data(targetYear) {
     const exercises = Array.isArray(training.exercises)
       ? training.exercises
       : [];
+    const sessionWeight = safe_sum_of_weight(exercises);
+    const sessionDurationMinutes = parse_duration_to_minutes(training.duration);
+    const weekdayIndex = get_weekday_index(dateObj);
+
     entry.exercises.push(...exercises);
-    entry.weight += safe_sum_of_weight(exercises);
+    entry.weight += sessionWeight;
     entry.trainingCount += 1;
     totalTrainingSessions += 1;
+
+    weekdaySessionCounts[weekdayIndex] += 1;
+    if (is_weekend(dateObj)) {
+      weekendSessions += 1;
+    } else {
+      weekdaySessions += 1;
+    }
+
+    if (sessionWeight <= 0 && sessionDurationMinutes > 0) {
+      const isoInfo = get_iso_week_info(dateObj);
+      if (isoInfo.year === Number(targetYear)) {
+        const key = `W${add_zero(isoInfo.week)}`;
+        const currentCardio = cardioMinutesByWeekKey.get(key) || 0;
+        cardioMinutesByWeekKey.set(key, currentCardio + sessionDurationMinutes);
+      }
+    }
+
+    exercises.forEach((exercise) => {
+      const muscle =
+        typeof exercise?.musclegroup === "string"
+          ? exercise.musclegroup.trim()
+          : "";
+      if (!muscle || muscle === "-") return;
+
+      const load = safe_exercise_load(exercise);
+      if (load <= 0) return;
+
+      const currentLoad = muscleLoadMap.get(muscle) || 0;
+      muscleLoadMap.set(muscle, currentLoad + load);
+    });
   }
 
   const days = Array.from(dayMap.values()).sort((a, b) => a.date - b.date);
@@ -651,6 +717,71 @@ function collect_advanced_statistics_data(targetYear) {
     observedWeeks > 0 ? totalTrainingSessions / observedWeeks : 0;
   const consistencyScore =
     weeksInYear > 0 ? (activeWeekKeys.size / weeksInYear) * 100 : 0;
+  const totalCardioMinutes = Array.from(cardioMinutesByWeekKey.values()).reduce(
+    (acc, val) => acc + val,
+    0,
+  );
+  const cardioMinutesPerWeek =
+    observedWeeks > 0 ? totalCardioMinutes / observedWeeks : 0;
+
+  let observedDays = 0;
+  if (observedMinDate && observedMaxDate) {
+    observedDays = daysDiff(observedMaxDate, observedMinDate) + 1;
+  }
+  const sessionsPer30Days =
+    observedDays > 0 ? (totalTrainingSessions / observedDays) * 30 : 0;
+
+  const dominantWeekdayCount = Math.max(...weekdaySessionCounts, 0);
+  const dominantWeekdayIndex = weekdaySessionCounts.findIndex(
+    (count) => count === dominantWeekdayCount,
+  );
+  const dominantWeekday = get_weekday_name(dominantWeekdayIndex);
+  const dominantWeekdayShare =
+    totalTrainingSessions > 0
+      ? (dominantWeekdayCount / totalTrainingSessions) * 100
+      : 0;
+
+  const weekendShare =
+    totalTrainingSessions > 0
+      ? (weekendSessions / totalTrainingSessions) * 100
+      : 0;
+  const weekdayShare =
+    totalTrainingSessions > 0
+      ? (weekdaySessions / totalTrainingSessions) * 100
+      : 0;
+
+  const rolling4WeekSeries = build_rolling_average_series(weekSeries, 4);
+  const latestRolling4WeekVolume =
+    rolling4WeekSeries.length > 0
+      ? rolling4WeekSeries[rolling4WeekSeries.length - 1].value
+      : 0;
+
+  const muscleDistribution = build_muscle_distribution(muscleLoadMap);
+  const muscleTargetShare =
+    muscleDistribution.length > 0 ? 100 / muscleDistribution.length : 0;
+  const overRepresentedMuscle = muscleDistribution.reduce(
+    (acc, item) =>
+      item.share - muscleTargetShare > acc.delta
+        ? { label: item.label, delta: item.share - muscleTargetShare }
+        : acc,
+    { label: "-", delta: 0 },
+  );
+  const underRepresentedMuscle = muscleDistribution.reduce(
+    (acc, item) =>
+      muscleTargetShare - item.share > acc.delta
+        ? { label: item.label, delta: muscleTargetShare - item.share }
+        : acc,
+    { label: "-", delta: 0 },
+  );
+
+  const overRepresentedMuscleLabel =
+    overRepresentedMuscle.label === "-"
+      ? "Ausgeglichen"
+      : `+ ${overRepresentedMuscle.label}`;
+  const underRepresentedMuscleLabel =
+    underRepresentedMuscle.label === "-"
+      ? "Ausgeglichen"
+      : `- ${underRepresentedMuscle.label}`;
 
   return {
     trainingDays: days.length,
@@ -661,6 +792,18 @@ function collect_advanced_statistics_data(targetYear) {
     weeklyWeightSeries: weekSeries,
     monthlyWeightSeries: monthSeries,
     gapBuckets: build_gap_buckets(gaps),
+    dominantWeekday,
+    dominantWeekdayShare,
+    weekendShare,
+    weekdayShare,
+    rolling4WeekSeries,
+    latestRolling4WeekVolume,
+    muscleDistribution,
+    muscleTargetShare,
+    overRepresentedMuscleLabel,
+    underRepresentedMuscleLabel,
+    cardioMinutesPerWeek,
+    sessionsPer30Days,
   };
 }
 
@@ -730,6 +873,81 @@ function get_observed_span_weeks(days, targetYear) {
   }
 
   return spanWeeks;
+}
+
+function get_weekday_index(dateObj) {
+  const day = dateObj.getDay();
+  return day === 0 ? 6 : day - 1;
+}
+
+function get_weekday_name(weekdayIndex) {
+  const names = [
+    "Montag",
+    "Dienstag",
+    "Mittwoch",
+    "Donnerstag",
+    "Freitag",
+    "Samstag",
+    "Sonntag",
+  ];
+  return names[weekdayIndex] || "-";
+}
+
+function is_weekend(dateObj) {
+  const day = dateObj.getDay();
+  return day === 0 || day === 6;
+}
+
+function parse_duration_to_minutes(duration) {
+  if (typeof duration !== "string") return 0;
+  const parts = duration.split(":");
+  if (parts.length < 2) return 0;
+
+  const hours = Number(parts[0]);
+  const minutes = Number(parts[1]);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return 0;
+  return Math.max(0, hours * 60 + minutes);
+}
+
+function safe_exercise_load(exercise) {
+  const weight = Number(exercise?.weight) || 0;
+  const solvedSets = Number(exercise?.solved_sets) || 0;
+  const repeats = Number(exercise?.repeats) || 0;
+  const weightedLoad = weight * solvedSets * repeats;
+  if (weightedLoad > 0) return weightedLoad;
+  return solvedSets * repeats;
+}
+
+function build_rolling_average_series(series, windowSize) {
+  if (!Array.isArray(series) || series.length === 0) return [];
+
+  const result = [];
+  for (let i = 0; i < series.length; i++) {
+    const from = Math.max(0, i - (windowSize - 1));
+    const chunk = series.slice(from, i + 1);
+    const sum = chunk.reduce((acc, item) => acc + (Number(item.value) || 0), 0);
+    result.push({
+      label: series[i].label,
+      shortLabel: series[i].shortLabel,
+      value: chunk.length > 0 ? sum / chunk.length : 0,
+    });
+  }
+
+  return result;
+}
+
+function build_muscle_distribution(muscleLoadMap) {
+  const entries = Array.from(muscleLoadMap.entries());
+  const totalLoad = entries.reduce((acc, [, value]) => acc + value, 0);
+  if (totalLoad <= 0) return [];
+
+  return entries
+    .map(([label, value]) => ({
+      label,
+      value,
+      share: (value / totalLoad) * 100,
+    }))
+    .sort((a, b) => b.share - a.share);
 }
 
 function build_gap_buckets(gaps) {
@@ -1041,6 +1259,198 @@ function render_gap_distribution_chart(svgElement, buckets) {
       "Noch keine Pausenwerte verfuegbar (mindestens 2 Trainingstage noetig)";
     svgElement.appendChild(info);
   }
+}
+
+function render_rolling_average_chart(svgElement, rollingSeries) {
+  if (!(svgElement instanceof SVGElement)) return;
+  svgElement.innerHTML = "";
+
+  const series = Array.isArray(rollingSeries) ? rollingSeries : [];
+  const ns = "http://www.w3.org/2000/svg";
+  const width = 960;
+  const height = 220;
+  const padding = { top: 20, right: 24, bottom: 42, left: 44 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+
+  if (series.length === 0) {
+    const info = document.createElementNS(ns, "text");
+    info.setAttribute("x", String(width / 2));
+    info.setAttribute("y", String(height / 2));
+    info.setAttribute("text-anchor", "middle");
+    info.setAttribute("fill", "rgba(255,255,255,0.8)");
+    info.setAttribute("font-size", "12");
+    info.textContent = "Noch keine Wochenwerte fuer Rolling Average";
+    svgElement.appendChild(info);
+    return;
+  }
+
+  const values = series.map((item) => Number(item.value) || 0);
+  const maxVal = Math.max(...values, 1);
+
+  for (let i = 0; i <= 3; i++) {
+    const y = padding.top + (plotHeight / 3) * i;
+    const line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", String(padding.left));
+    line.setAttribute("x2", String(width - padding.right));
+    line.setAttribute("y1", String(y));
+    line.setAttribute("y2", String(y));
+    line.setAttribute("stroke", "rgba(255,255,255,0.12)");
+    line.setAttribute("stroke-width", "1");
+    svgElement.appendChild(line);
+  }
+
+  const points = series.map((item, index) => {
+    const x =
+      padding.left + (index / Math.max(1, series.length - 1)) * plotWidth;
+    const y =
+      padding.top + (1 - (Number(item.value) || 0) / maxVal) * plotHeight;
+    return {
+      x,
+      y,
+      value: Number(item.value) || 0,
+      label: item.label,
+      shortLabel: item.shortLabel,
+    };
+  });
+
+  const pathData = points
+    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x},${point.y}`)
+    .join(" ");
+
+  const path = document.createElementNS(ns, "path");
+  path.setAttribute("d", pathData);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "#ffd166");
+  path.setAttribute("stroke-width", "3");
+  path.setAttribute("stroke-linecap", "round");
+  path.setAttribute("stroke-linejoin", "round");
+  svgElement.appendChild(path);
+
+  const pointSample =
+    points.length > 16
+      ? points.filter((_, index) => index % Math.ceil(points.length / 16) === 0)
+      : points;
+
+  pointSample.forEach((point) => {
+    const dot = document.createElementNS(ns, "circle");
+    dot.setAttribute("cx", String(point.x));
+    dot.setAttribute("cy", String(point.y));
+    dot.setAttribute("r", "3");
+    dot.setAttribute("fill", "#ffd166");
+    const title = document.createElementNS(ns, "title");
+    title.textContent = `${point.label}: ${numberWithCommas(Math.round(point.value))} kg`;
+    dot.appendChild(title);
+    svgElement.appendChild(dot);
+
+    const xLabel = document.createElementNS(ns, "text");
+    xLabel.setAttribute("x", String(point.x));
+    xLabel.setAttribute("y", String(height - 14));
+    xLabel.setAttribute("text-anchor", "middle");
+    xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
+    xLabel.setAttribute("font-size", "11");
+    xLabel.textContent = point.shortLabel;
+    svgElement.appendChild(xLabel);
+  });
+}
+
+function render_muscle_balance_chart(
+  svgElement,
+  muscleDistribution,
+  targetShare,
+) {
+  if (!(svgElement instanceof SVGElement)) return;
+  svgElement.innerHTML = "";
+
+  const entries = Array.isArray(muscleDistribution) ? muscleDistribution : [];
+  const ns = "http://www.w3.org/2000/svg";
+  const width = 960;
+  const height = 220;
+  const padding = { top: 20, right: 24, bottom: 50, left: 42 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+
+  if (entries.length === 0) {
+    const info = document.createElementNS(ns, "text");
+    info.setAttribute("x", String(width / 2));
+    info.setAttribute("y", String(height / 2));
+    info.setAttribute("text-anchor", "middle");
+    info.setAttribute("fill", "rgba(255,255,255,0.8)");
+    info.setAttribute("font-size", "12");
+    info.textContent = "Noch keine Muskelgruppenwerte verfuegbar";
+    svgElement.appendChild(info);
+    return;
+  }
+
+  const maxShare = Math.max(
+    ...entries.map((item) => item.share),
+    targetShare || 0,
+    1,
+  );
+  const barWidth = plotWidth / entries.length - 12;
+
+  for (let i = 0; i <= 3; i++) {
+    const y = padding.top + (plotHeight / 3) * i;
+    const line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", String(padding.left));
+    line.setAttribute("x2", String(width - padding.right));
+    line.setAttribute("y1", String(y));
+    line.setAttribute("y2", String(y));
+    line.setAttribute("stroke", "rgba(255,255,255,0.12)");
+    line.setAttribute("stroke-width", "1");
+    svgElement.appendChild(line);
+  }
+
+  if (targetShare > 0) {
+    const targetY = padding.top + (1 - targetShare / maxShare) * plotHeight;
+    const targetLine = document.createElementNS(ns, "line");
+    targetLine.setAttribute("x1", String(padding.left));
+    targetLine.setAttribute("x2", String(width - padding.right));
+    targetLine.setAttribute("y1", String(targetY));
+    targetLine.setAttribute("y2", String(targetY));
+    targetLine.setAttribute("stroke", "rgba(255, 209, 102, 0.9)");
+    targetLine.setAttribute("stroke-width", "1.5");
+    targetLine.setAttribute("stroke-dasharray", "6 4");
+    svgElement.appendChild(targetLine);
+  }
+
+  entries.forEach((entry, index) => {
+    const x = padding.left + index * (barWidth + 12) + 6;
+    const barHeight = Math.max((entry.share / maxShare) * plotHeight, 4);
+    const y = padding.top + plotHeight - barHeight;
+    const isAboveTarget = entry.share >= targetShare;
+
+    const rect = document.createElementNS(ns, "rect");
+    rect.setAttribute("x", String(x));
+    rect.setAttribute("y", String(y));
+    rect.setAttribute("width", String(barWidth));
+    rect.setAttribute("height", String(barHeight));
+    rect.setAttribute("rx", "7");
+    rect.setAttribute("fill", isAboveTarget ? "#21f3ff" : "#8f8bff");
+    const title = document.createElementNS(ns, "title");
+    title.textContent = `${entry.label}: ${format_number(entry.share, 1)} %`;
+    rect.appendChild(title);
+    svgElement.appendChild(rect);
+
+    const valueLabel = document.createElementNS(ns, "text");
+    valueLabel.setAttribute("x", String(x + barWidth / 2));
+    valueLabel.setAttribute("y", String(y - 7));
+    valueLabel.setAttribute("text-anchor", "middle");
+    valueLabel.setAttribute("fill", "#ffffff");
+    valueLabel.setAttribute("font-size", "11");
+    valueLabel.textContent = `${format_number(entry.share, 0)}%`;
+    svgElement.appendChild(valueLabel);
+
+    const xLabel = document.createElementNS(ns, "text");
+    xLabel.setAttribute("x", String(x + barWidth / 2));
+    xLabel.setAttribute("y", String(height - 18));
+    xLabel.setAttribute("text-anchor", "middle");
+    xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
+    xLabel.setAttribute("font-size", "10");
+    xLabel.textContent =
+      entry.label.length > 10 ? `${entry.label.slice(0, 10)}.` : entry.label;
+    svgElement.appendChild(xLabel);
+  });
 }
 
 /////////////////////////////////////
