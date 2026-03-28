@@ -423,6 +423,7 @@ function fill_chart(selct_year) {
         div.classList.add("chart__segment");
         div.classList.add(seg.cls);
         div.style.height = `${(seg.val / total) * 100}%`;
+        div.textContent = seg.val;
         stack.appendChild(div);
       });
       colEl.title = `Gesamt: ${total}\nCardio: ${cardio[index]}\nKraft Home: ${strengthHome[index]}\nKraft Fitti: ${strengthFitti[index]}\nKraft Sonstiges: ${strengthOther[index]}`;
