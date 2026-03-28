@@ -1160,7 +1160,7 @@ function render_weight_trend_chart(svgElement, series, mode) {
     xLabel.setAttribute("y", String(height - 16));
     xLabel.setAttribute("text-anchor", "middle");
     xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
-    xLabel.setAttribute("font-size", "11");
+    xLabel.setAttribute("font-size", "18.7");
     xLabel.textContent = point.shortLabel;
     svgElement.appendChild(xLabel);
   });
@@ -1169,7 +1169,7 @@ function render_weight_trend_chart(svgElement, series, mode) {
   maxLabel.setAttribute("x", String(padding.left));
   maxLabel.setAttribute("y", String(padding.top - 6));
   maxLabel.setAttribute("fill", "rgba(255,255,255,0.75)");
-  maxLabel.setAttribute("font-size", "11");
+  maxLabel.setAttribute("font-size", "18.7");
   maxLabel.textContent = `Max: ${numberWithCommas(Math.round(maxVal))}`;
   svgElement.appendChild(maxLabel);
 }
@@ -1257,7 +1257,7 @@ function render_gap_distribution_chart(svgElement, buckets) {
     valueLabel.setAttribute("y", String(y - 8));
     valueLabel.setAttribute("text-anchor", "middle");
     valueLabel.setAttribute("fill", "#ffffff");
-    valueLabel.setAttribute("font-size", "12");
+    valueLabel.setAttribute("font-size", "20.4");
     valueLabel.textContent = String(bucket.value);
     svgElement.appendChild(valueLabel);
 
@@ -1266,7 +1266,7 @@ function render_gap_distribution_chart(svgElement, buckets) {
     xLabel.setAttribute("y", String(height - 18));
     xLabel.setAttribute("text-anchor", "middle");
     xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
-    xLabel.setAttribute("font-size", "11");
+    xLabel.setAttribute("font-size", "18.7");
     xLabel.textContent = bucket.label;
     svgElement.appendChild(xLabel);
   });
@@ -1277,7 +1277,7 @@ function render_gap_distribution_chart(svgElement, buckets) {
     info.setAttribute("y", String(padding.top + 18));
     info.setAttribute("text-anchor", "middle");
     info.setAttribute("fill", "rgba(255,255,255,0.82)");
-    info.setAttribute("font-size", "12");
+    info.setAttribute("font-size", "20.4");
     info.textContent =
       "Noch keine Pausenwerte verfuegbar (mindestens 2 Trainingstage noetig)";
     svgElement.appendChild(info);
@@ -1302,7 +1302,7 @@ function render_rolling_average_chart(svgElement, rollingSeries) {
     info.setAttribute("y", String(height / 2));
     info.setAttribute("text-anchor", "middle");
     info.setAttribute("fill", "rgba(255,255,255,0.8)");
-    info.setAttribute("font-size", "12");
+    info.setAttribute("font-size", "20.4");
     info.textContent = "Noch keine Wochenwerte fuer Rolling Average";
     svgElement.appendChild(info);
     return;
@@ -1371,7 +1371,7 @@ function render_rolling_average_chart(svgElement, rollingSeries) {
     xLabel.setAttribute("y", String(height - 14));
     xLabel.setAttribute("text-anchor", "middle");
     xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
-    xLabel.setAttribute("font-size", "11");
+    xLabel.setAttribute("font-size", "18.7");
     xLabel.textContent = point.shortLabel;
     svgElement.appendChild(xLabel);
   });
@@ -1399,7 +1399,7 @@ function render_muscle_balance_chart(
     info.setAttribute("y", String(height / 2));
     info.setAttribute("text-anchor", "middle");
     info.setAttribute("fill", "rgba(255,255,255,0.8)");
-    info.setAttribute("font-size", "12");
+    info.setAttribute("font-size", "20.4");
     info.textContent = "Noch keine Muskelgruppenwerte verfuegbar";
     svgElement.appendChild(info);
     return;
@@ -1460,7 +1460,7 @@ function render_muscle_balance_chart(
     valueLabel.setAttribute("y", String(y - 7));
     valueLabel.setAttribute("text-anchor", "middle");
     valueLabel.setAttribute("fill", "#ffffff");
-    valueLabel.setAttribute("font-size", "11");
+    valueLabel.setAttribute("font-size", "18.7");
     valueLabel.textContent = `${format_number(entry.share, 0)}%`;
     svgElement.appendChild(valueLabel);
 
@@ -1469,7 +1469,7 @@ function render_muscle_balance_chart(
     xLabel.setAttribute("y", String(height - 18));
     xLabel.setAttribute("text-anchor", "middle");
     xLabel.setAttribute("fill", "rgba(255,255,255,0.78)");
-    xLabel.setAttribute("font-size", "10");
+    xLabel.setAttribute("font-size", "17");
     xLabel.textContent =
       entry.label.length > 10 ? `${entry.label.slice(0, 10)}.` : entry.label;
     svgElement.appendChild(xLabel);
