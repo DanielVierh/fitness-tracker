@@ -407,6 +407,62 @@
       </p>
     </section>
 
+    <section class="challenge-section" id="challenge_section">
+      <div class="challenge-section__header">
+        <h3>Challenges</h3>
+        <p>Setze dir Ziele und arbeite sie Schritt fuer Schritt ab.</p>
+      </div>
+
+      <form id="challenge_form" class="challenge-form">
+        <input
+          type="text"
+          id="challenge_title"
+          placeholder="Titel (optional)"
+          maxlength="60"
+        />
+
+        <select id="challenge_type" required>
+          <option value="sessions_goal">Sessions-Ziel</option>
+          <option value="volume_goal">Volumen-Ziel</option>
+          <option value="cardio_minutes_goal">Cardio-Minuten-Ziel</option>
+          <option value="streak_goal">Streak-Ziel (Wochen)</option>
+        </select>
+
+        <input
+          type="number"
+          id="challenge_target"
+          min="1"
+          step="1"
+          required
+          placeholder="Zielwert"
+        />
+
+        <select id="challenge_period" required>
+          <option value="deadline">Mit Deadline</option>
+          <option value="weekly">Wiederkehrend: Woechentlich</option>
+          <option value="monthly">Wiederkehrend: Monatlich</option>
+        </select>
+
+        <div id="challenge_deadline_wrap" class="challenge-form__deadline-wrap">
+          <input type="date" id="challenge_deadline" />
+        </div>
+
+        <button type="submit" class="submit-button">Challenge erstellen</button>
+      </form>
+
+      <div class="challenge-toolbar">
+        <label for="challenge_status_filter">Ansicht</label>
+        <select id="challenge_status_filter">
+          <option value="active">Aktiv</option>
+          <option value="completed">Erledigt</option>
+          <option value="all">Alle</option>
+        </select>
+      </div>
+
+      <div id="challenge_summary" class="challenge-summary"></div>
+      <div id="challenge_list" class="challenge-list"></div>
+    </section>
+
     <div class="modal-settings modal" id="modal_settings">
       <div id="saveJsonBtn" class="backup-button">Backup erstellen</div>
       <h4>Backup importieren</h4>

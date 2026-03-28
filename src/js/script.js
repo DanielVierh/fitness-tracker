@@ -84,6 +84,7 @@ let selected_Exercise;
 let is_edit = false;
 let calendar_year = undefined;
 let advanced_stats_mode = "week";
+let challenges_need_save = false;
 
 /////////////////////////////////////
 //*  Saveobj
@@ -95,6 +96,7 @@ let save_Object = {
   trainings: [],
   current_training: [],
   training_place_filter: "",
+  challenges: [],
 };
 
 /////////////////////////////////////
@@ -104,6 +106,8 @@ window.onload = () => {
   load_local_storage();
   add_years_to_select();
   init_advanced_statistics_controls();
+  init_challenge_controls();
+  render_challenges();
 
   setInterval(() => {
     observer();
@@ -128,10 +132,13 @@ function load_local_storage() {
         trainings: [],
         current_training: [],
         training_place_filter: "",
+        challenges: [],
       };
       backup(save_Object);
       save_into_storage(save_Object);
     }
+
+    ensure_challenge_data_structure();
 
     try {
       training_running = save_Object.training_is_running;
@@ -188,6 +195,7 @@ function load_local_storage() {
     try {
       fill_chart();
       render_advanced_statistics();
+      render_challenges();
     } catch (error) {
       console.log(error);
     }
@@ -200,6 +208,7 @@ function load_local_storage() {
       trainings: [],
       current_training: [],
       training_place_filter: "",
+      challenges: [],
     };
     save_into_storage(save_Object);
   }
@@ -1465,6 +1474,503 @@ function render_muscle_balance_chart(
       entry.label.length > 10 ? `${entry.label.slice(0, 10)}.` : entry.label;
     svgElement.appendChild(xLabel);
   });
+}
+
+/////////////////////////////////////
+//* ANCHOR - Challenges
+/////////////////////////////////////
+
+function ensure_challenge_data_structure() {
+  if (!Array.isArray(save_Object.challenges)) {
+    save_Object.challenges = [];
+    challenges_need_save = true;
+  }
+
+  save_Object.challenges = save_Object.challenges
+    .map((challenge) => normalize_challenge(challenge))
+    .filter((challenge) => challenge !== null);
+
+  if (challenges_need_save) {
+    save_into_storage(save_Object);
+    challenges_need_save = false;
+  }
+}
+
+function normalize_challenge(raw) {
+  if (!raw || typeof raw !== "object") {
+    challenges_need_save = true;
+    return null;
+  }
+
+  const type = [
+    "sessions_goal",
+    "volume_goal",
+    "cardio_minutes_goal",
+    "streak_goal",
+  ].includes(raw.type)
+    ? raw.type
+    : "sessions_goal";
+
+  const periodType = ["deadline", "weekly", "monthly"].includes(raw.periodType)
+    ? raw.periodType
+    : "deadline";
+
+  const normalized = {
+    id: raw.id || rnd_id(),
+    title: String(raw.title || "").trim() || get_default_challenge_title(type),
+    type,
+    targetValue: Math.max(1, Number(raw.targetValue) || 1),
+    unit: raw.unit || get_challenge_unit(type),
+    periodType,
+    startDate: raw.startDate || challenge_to_iso_date(new Date()),
+    endDate: raw.endDate || "",
+    status: raw.status || "active",
+    createdAt: raw.createdAt || challenge_to_iso_date(new Date()),
+    archivedAt: raw.archivedAt || "",
+  };
+
+  if (!raw.id || !raw.type || !raw.periodType || !raw.targetValue) {
+    challenges_need_save = true;
+  }
+
+  return normalized;
+}
+
+function init_challenge_controls() {
+  const form = document.getElementById("challenge_form");
+  const list = document.getElementById("challenge_list");
+  const filter = document.getElementById("challenge_status_filter");
+  const period = document.getElementById("challenge_period");
+  const deadlineInput = document.getElementById("challenge_deadline");
+
+  if (deadlineInput) {
+    deadlineInput.min = challenge_to_iso_date(new Date());
+  }
+
+  if (period && period.dataset.bound !== "true") {
+    period.addEventListener("change", () => {
+      update_deadline_field_state();
+    });
+    period.dataset.bound = "true";
+  }
+
+  if (filter && filter.dataset.bound !== "true") {
+    filter.addEventListener("change", () => {
+      render_challenges();
+    });
+    filter.dataset.bound = "true";
+  }
+
+  if (list && list.dataset.bound !== "true") {
+    list.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const button = target.closest("button[data-action][data-challenge-id]");
+      if (!button) return;
+
+      const challengeId = button.dataset.challengeId;
+      const action = button.dataset.action;
+      if (!challengeId || !action) return;
+
+      handle_challenge_action(action, challengeId);
+    });
+    list.dataset.bound = "true";
+  }
+
+  if (form && form.dataset.bound !== "true") {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      create_challenge_from_form();
+    });
+    form.dataset.bound = "true";
+  }
+
+  update_deadline_field_state();
+}
+
+function update_deadline_field_state() {
+  const period = document.getElementById("challenge_period");
+  const wrap = document.getElementById("challenge_deadline_wrap");
+  const deadlineInput = document.getElementById("challenge_deadline");
+  if (!period || !wrap || !deadlineInput) return;
+
+  const useDeadline = period.value === "deadline";
+  wrap.style.display = useDeadline ? "block" : "none";
+  deadlineInput.required = useDeadline;
+}
+
+function create_challenge_from_form() {
+  const titleInput = document.getElementById("challenge_title");
+  const typeInput = document.getElementById("challenge_type");
+  const targetInput = document.getElementById("challenge_target");
+  const periodInput = document.getElementById("challenge_period");
+  const deadlineInput = document.getElementById("challenge_deadline");
+
+  if (!typeInput || !targetInput || !periodInput) return;
+
+  const type = typeInput.value;
+  const periodType = periodInput.value;
+  const targetValue = Math.max(1, Number(targetInput.value) || 0);
+  const title =
+    (titleInput?.value || "").trim() || get_default_challenge_title(type);
+  const today = challenge_to_iso_date(new Date());
+  const deadline = deadlineInput?.value || "";
+
+  if (targetValue <= 0) {
+    new Message(
+      "Challenge",
+      "Bitte einen gueltigen Zielwert setzen.",
+      "warning",
+      2400,
+    ).showMessage();
+    return;
+  }
+
+  if (periodType === "deadline" && !deadline) {
+    new Message(
+      "Challenge",
+      "Bitte Deadline waehlen.",
+      "warning",
+      2400,
+    ).showMessage();
+    return;
+  }
+
+  const challenge = normalize_challenge({
+    id: rnd_id(),
+    title,
+    type,
+    targetValue,
+    unit: get_challenge_unit(type),
+    periodType,
+    startDate: today,
+    endDate: periodType === "deadline" ? deadline : "",
+    status: "active",
+    createdAt: today,
+    archivedAt: "",
+  });
+
+  if (!challenge) return;
+
+  save_Object.challenges.push(challenge);
+  save_into_storage(save_Object);
+  render_challenges();
+
+  const form = document.getElementById("challenge_form");
+  if (form) form.reset();
+  update_deadline_field_state();
+
+  new Message(
+    "Challenge",
+    "Challenge erstellt.",
+    "success",
+    2200,
+  ).showMessage();
+}
+
+function handle_challenge_action(action, challengeId) {
+  const index = save_Object.challenges.findIndex(
+    (item) => item.id === challengeId,
+  );
+  if (index < 0) return;
+
+  const challenge = save_Object.challenges[index];
+  if (action === "archive") {
+    challenge.status = "archived";
+    challenge.archivedAt = challenge_to_iso_date(new Date());
+  }
+  if (action === "activate") {
+    challenge.status = "active";
+    challenge.archivedAt = "";
+  }
+  if (action === "delete") {
+    save_Object.challenges.splice(index, 1);
+  }
+
+  save_into_storage(save_Object);
+  render_challenges();
+}
+
+function render_challenges() {
+  ensure_challenge_data_structure();
+
+  const list = document.getElementById("challenge_list");
+  const summary = document.getElementById("challenge_summary");
+  const filter = document.getElementById("challenge_status_filter");
+  if (!list) return;
+
+  const today = challenge_strip_time(new Date());
+  const selectedFilter = filter?.value || "active";
+
+  const computed = save_Object.challenges.map((challenge) => {
+    const progress = compute_challenge_progress(challenge, today);
+    const status = derive_challenge_status(challenge, progress, today);
+    if (challenge.status !== status) {
+      challenge.status = status;
+      challenges_need_save = true;
+    }
+    return {
+      challenge,
+      progress,
+      status,
+    };
+  });
+
+  if (challenges_need_save) {
+    save_into_storage(save_Object);
+    challenges_need_save = false;
+  }
+
+  const visible = computed.filter((item) => {
+    if (selectedFilter === "all") return true;
+    if (selectedFilter === "completed") return item.status === "completed";
+    return item.status === "active";
+  });
+
+  if (summary) {
+    const activeCount = computed.filter(
+      (item) => item.status === "active",
+    ).length;
+    const doneCount = computed.filter(
+      (item) => item.status === "completed",
+    ).length;
+    summary.textContent = `Aktiv: ${activeCount} | Erledigt: ${doneCount}`;
+  }
+
+  list.innerHTML = "";
+  if (visible.length === 0) {
+    const empty = document.createElement("p");
+    empty.classList.add("challenge-list__empty");
+    empty.textContent = "Keine Challenges in dieser Ansicht.";
+    list.appendChild(empty);
+    return;
+  }
+
+  visible.forEach((item) => {
+    list.appendChild(
+      render_challenge_card(item.challenge, item.progress, item.status),
+    );
+  });
+}
+
+function render_challenge_card(challenge, progress, status) {
+  const card = document.createElement("article");
+  card.classList.add("challenge-card");
+  card.classList.add(`challenge-card--${status}`);
+
+  const percent = Math.max(0, Math.min(100, progress.percent));
+  const unit = challenge.unit || "";
+
+  const actionButton =
+    status === "archived"
+      ? `<button data-action="activate" data-challenge-id="${challenge.id}">Reaktivieren</button>`
+      : `<button data-action="archive" data-challenge-id="${challenge.id}">Archivieren</button>`;
+
+  card.innerHTML = `
+    <div class="challenge-card__head">
+      <h4>${challenge.title}</h4>
+      <span class="challenge-card__status">${get_status_label(status)}</span>
+    </div>
+    <p class="challenge-card__meta">${get_type_label(challenge.type)} | ${progress.windowLabel}</p>
+    <div class="challenge-card__bar">
+      <div class="challenge-card__bar-fill" style="width:${percent}%"></div>
+    </div>
+    <div class="challenge-card__numbers">${format_number(progress.value, 1)} / ${format_number(challenge.targetValue, 1)} ${unit}</div>
+    <div class="challenge-card__actions">
+      ${actionButton}
+      <button data-action="delete" data-challenge-id="${challenge.id}">Loeschen</button>
+    </div>
+  `;
+
+  return card;
+}
+
+function derive_challenge_status(challenge, progress, now) {
+  if (challenge.status === "archived") return "archived";
+
+  if (progress.isCompleted) {
+    if (
+      challenge.periodType === "weekly" ||
+      challenge.periodType === "monthly"
+    ) {
+      return "active";
+    }
+    return "completed";
+  }
+
+  if (
+    challenge.periodType === "deadline" &&
+    challenge.endDate &&
+    challenge_strip_time(new Date(challenge.endDate)) < now
+  ) {
+    return "active";
+  }
+
+  return "active";
+}
+
+function compute_challenge_progress(challenge, nowDate) {
+  const window = get_challenge_window(challenge, nowDate);
+  const trainingsInWindow = get_trainings_in_window(window.start, window.end);
+  let value = 0;
+
+  if (challenge.type === "sessions_goal") {
+    value = trainingsInWindow.length;
+  }
+
+  if (challenge.type === "volume_goal") {
+    value = trainingsInWindow.reduce(
+      (acc, training) => acc + safe_sum_of_weight(training.exercises || []),
+      0,
+    );
+  }
+
+  if (challenge.type === "cardio_minutes_goal") {
+    value = trainingsInWindow.reduce((acc, training) => {
+      const exercises = Array.isArray(training.exercises)
+        ? training.exercises
+        : [];
+      const volume = safe_sum_of_weight(exercises);
+      if (volume > 0) return acc;
+      return acc + parse_duration_to_minutes(training.duration);
+    }, 0);
+  }
+
+  if (challenge.type === "streak_goal") {
+    value = calculate_week_streak(trainingsInWindow);
+  }
+
+  const percent =
+    challenge.targetValue > 0 ? (value / challenge.targetValue) * 100 : 0;
+  return {
+    value,
+    percent,
+    isCompleted: value >= challenge.targetValue,
+    windowLabel: window.label,
+  };
+}
+
+function get_challenge_window(challenge, nowDate) {
+  const now = challenge_strip_time(nowDate);
+  if (challenge.periodType === "weekly") {
+    const start = challenge_start_of_week(now);
+    const end = challenge_end_of_week(now);
+    return { start, end, label: "Diese Woche" };
+  }
+
+  if (challenge.periodType === "monthly") {
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return { start, end, label: "Dieser Monat" };
+  }
+
+  const start = challenge.startDate
+    ? challenge_strip_time(new Date(challenge.startDate))
+    : now;
+  const end = challenge.endDate
+    ? challenge_strip_time(new Date(challenge.endDate))
+    : now;
+  return {
+    start,
+    end,
+    label: challenge.endDate ? `Bis ${challenge.endDate}` : "Offen",
+  };
+}
+
+function get_trainings_in_window(startDate, endDate) {
+  return (save_Object.trainings || []).filter((training) => {
+    const dateObj = parse_training_date(training.training_date);
+    if (!dateObj) return false;
+    return dateObj >= startDate && dateObj <= endDate;
+  });
+}
+
+function calculate_week_streak(trainings) {
+  if (!Array.isArray(trainings) || trainings.length === 0) return 0;
+
+  const weekKeys = Array.from(
+    new Set(
+      trainings
+        .map((training) => parse_training_date(training.training_date))
+        .filter((date) => date)
+        .map((date) => {
+          const info = get_iso_week_info(date);
+          return `${info.year}-${add_zero(info.week)}`;
+        }),
+    ),
+  ).sort();
+
+  if (weekKeys.length === 0) return 0;
+
+  let streak = 1;
+  for (let i = weekKeys.length - 1; i > 0; i--) {
+    const current = challenge_week_key_to_sort_number(weekKeys[i]);
+    const prev = challenge_week_key_to_sort_number(weekKeys[i - 1]);
+    if (current - prev === 1) {
+      streak += 1;
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+function challenge_week_key_to_sort_number(weekKey) {
+  const parts = String(weekKey).split("-");
+  const year = Number(parts[0]) || 0;
+  const week = Number(parts[1]) || 0;
+  return year * 60 + week;
+}
+
+function challenge_start_of_week(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const shift = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + shift);
+  return challenge_strip_time(d);
+}
+
+function challenge_end_of_week(date) {
+  const start = challenge_start_of_week(date);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+  return challenge_strip_time(end);
+}
+
+function challenge_strip_time(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function challenge_to_iso_date(date) {
+  return `${date.getFullYear()}-${add_zero(date.getMonth() + 1)}-${add_zero(date.getDate())}`;
+}
+
+function get_challenge_unit(type) {
+  if (type === "volume_goal") return "kg";
+  if (type === "cardio_minutes_goal") return "Min";
+  if (type === "streak_goal") return "Wochen";
+  return "Sessions";
+}
+
+function get_default_challenge_title(type) {
+  if (type === "volume_goal") return "Volumen-Challenge";
+  if (type === "cardio_minutes_goal") return "Cardio-Challenge";
+  if (type === "streak_goal") return "Streak-Challenge";
+  return "Sessions-Challenge";
+}
+
+function get_type_label(type) {
+  if (type === "volume_goal") return "Volumen";
+  if (type === "cardio_minutes_goal") return "Cardio-Minuten";
+  if (type === "streak_goal") return "Streak";
+  return "Sessions";
+}
+
+function get_status_label(status) {
+  if (status === "completed") return "Erledigt";
+  if (status === "archived") return "Archiv";
+  return "Aktiv";
 }
 
 /////////////////////////////////////
