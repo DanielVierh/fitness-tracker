@@ -520,6 +520,12 @@ function render_advanced_statistics(selected_year) {
   const consistencyLabel = document.getElementById("stat_consistency");
   const trendDirectionLabel = document.getElementById("stat_trend_direction");
   const trendDeltaLabel = document.getElementById("stat_trend_delta");
+  const avgGapDaysLabel = document.getElementById("stat_avg_gap_days");
+  const maxGapDaysLabel = document.getElementById("stat_max_gap_days");
+  const trainingsWeekLabel = document.getElementById("stat_trainings_week");
+  const consistencyScoreLabel = document.getElementById(
+    "stat_consistency_score",
+  );
   const emptyLabel = document.getElementById("advanced_stats_empty");
 
   if (avgGapLabel) {
@@ -540,15 +546,23 @@ function render_advanced_statistics(selected_year) {
   if (trendDeltaLabel) {
     trendDeltaLabel.textContent = format_number(data.sessionsPer30Days, 1);
   }
+  if (avgGapDaysLabel) {
+    avgGapDaysLabel.textContent = `${format_number(data.avgGapDays, 1)} Tage`;
+  }
+  if (maxGapDaysLabel) {
+    maxGapDaysLabel.textContent = `${data.maxGapDays} Tage`;
+  }
+  if (trainingsWeekLabel) {
+    trainingsWeekLabel.textContent = format_number(data.avgTrainingsPerWeek, 2);
+  }
+  if (consistencyScoreLabel) {
+    consistencyScoreLabel.textContent = `${format_number(data.consistencyScore, 1)} %`;
+  }
 
   const activeSeries =
     advanced_stats_mode === "month"
       ? data.monthlyWeightSeries
       : data.weeklyWeightSeries;
-  const trend = calculate_series_trend(activeSeries);
-  if (trendDirectionLabel)
-    trendDirectionLabel.textContent = trend.directionLabel;
-  if (trendDeltaLabel) trendDeltaLabel.textContent = trend.deltaLabel;
 
   const trendChart = document.getElementById("advanced_trend_chart");
   const gapChart = document.getElementById("advanced_gap_chart");
