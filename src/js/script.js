@@ -773,9 +773,15 @@ function collect_advanced_statistics_data(targetYear) {
       : 0;
 
   const rolling4WeekSeries = build_rolling_average_series(weekSeries, 4);
+  const rollingReferenceIndex = get_rolling_reference_index(
+    targetYear,
+    rolling4WeekSeries,
+    activeWeekKeys,
+    weekKeyToIndex,
+  );
   const latestRolling4WeekVolume =
-    rolling4WeekSeries.length > 0
-      ? rolling4WeekSeries[rolling4WeekSeries.length - 1].value
+    rollingReferenceIndex >= 0
+      ? rolling4WeekSeries[rollingReferenceIndex].value
       : 0;
 
   const muscleDistribution = build_muscle_distribution(muscleLoadMap);
@@ -1012,6 +1018,33 @@ function build_rolling_average_series(series, windowSize) {
   }
 
   return result;
+}
+
+function get_rolling_reference_index(
+  targetYear,
+  rollingSeries,
+  activeWeekKeys,
+  weekKeyToIndex,
+) {
+  if (!Array.isArray(rollingSeries) || rollingSeries.length === 0) {
+    return -1;
+  }
+
+  const now = new Date();
+  if (Number(targetYear) === now.getFullYear()) {
+    const currentIsoWeek = Math.max(1, get_iso_week_info(now).week);
+    return Math.min(currentIsoWeek, rollingSeries.length) - 1;
+  }
+
+  const activeIndexes = Array.from(activeWeekKeys || [])
+    .map((key) => weekKeyToIndex.get(key))
+    .filter((index) => Number.isInteger(index) && index >= 0);
+
+  if (activeIndexes.length > 0) {
+    return Math.max(...activeIndexes);
+  }
+
+  return rollingSeries.length - 1;
 }
 
 function build_muscle_distribution(muscleLoadMap) {
