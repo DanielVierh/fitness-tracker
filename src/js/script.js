@@ -636,12 +636,11 @@ function collect_advanced_statistics_data(targetYear) {
     const exercises = Array.isArray(training.exercises)
       ? training.exercises
       : [];
-    const sessionWeight = safe_sum_of_weight(exercises);
     const sessionDurationMinutes = parse_duration_to_minutes(training.duration);
     const weekdayIndex = get_weekday_index(dateObj);
 
     entry.exercises.push(...exercises);
-    entry.weight += sessionWeight;
+    entry.weight += safe_sum_of_weight(exercises);
     entry.trainingCount += 1;
     totalTrainingSessions += 1;
 
@@ -652,7 +651,7 @@ function collect_advanced_statistics_data(targetYear) {
       weekdaySessions += 1;
     }
 
-    if (sessionWeight <= 0 && sessionDurationMinutes > 0) {
+    if (is_cardio_session(training) && sessionDurationMinutes > 0) {
       const isoInfo = get_iso_week_info(dateObj);
       if (isoInfo.year === Number(targetYear)) {
         const key = `W${add_zero(isoInfo.week)}`;
@@ -930,6 +929,45 @@ function parse_duration_to_minutes(duration) {
   const minutes = Number(parts[1]);
   if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return 0;
   return Math.max(0, hours * 60 + minutes);
+}
+
+function is_cardio_session(training) {
+  const exercises = Array.isArray(training?.exercises)
+    ? training.exercises
+    : [];
+  const sessionWeight = safe_sum_of_weight(exercises);
+  if (sessionWeight <= 0) return true;
+
+  const cardioHints = [
+    "cardio",
+    "ausdauer",
+    "lauf",
+    "jog",
+    "run",
+    "rad",
+    "bike",
+    "cycle",
+    "spinning",
+    "ergometer",
+    "crosstrainer",
+    "ellipse",
+    "rudern",
+    "rowing",
+    "hiit",
+    "intervall",
+    "stepper",
+    "schwimmen",
+    "swim",
+    "seilspringen",
+  ];
+
+  return exercises.some((exercise) => {
+    const name = String(exercise?.name || "").toLowerCase();
+    const muscle = String(exercise?.musclegroup || "").toLowerCase();
+    const place = String(exercise?.trainingsplace || "").toLowerCase();
+    const blob = `${name} ${muscle} ${place}`;
+    return cardioHints.some((hint) => blob.includes(hint));
+  });
 }
 
 function safe_exercise_load(exercise) {
@@ -1827,11 +1865,7 @@ function compute_challenge_progress(challenge, nowDate) {
 
   if (challenge.type === "cardio_minutes_goal") {
     value = trainingsInWindow.reduce((acc, training) => {
-      const exercises = Array.isArray(training.exercises)
-        ? training.exercises
-        : [];
-      const volume = safe_sum_of_weight(exercises);
-      if (volume > 0) return acc;
+      if (!is_cardio_session(training)) return acc;
       return acc + parse_duration_to_minutes(training.duration);
     }, 0);
   }
