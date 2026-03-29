@@ -847,10 +847,10 @@ function safe_sum_of_weight(exercises) {
 }
 
 function parse_training_date(dateStr) {
-  const day = splitVal(dateStr, ".", 0);
-  const month = splitVal(dateStr, ".", 1);
-  const year = splitVal(dateStr, ".", 2);
-  const parsed = new Date(`${year}-${month}-${day}`);
+  const day = Number(splitVal(dateStr, ".", 0));
+  const month = Number(splitVal(dateStr, ".", 1));
+  const year = Number(splitVal(dateStr, ".", 2));
+  const parsed = new Date(year, month - 1, day);
   if (Number.isNaN(parsed.getTime())) return null;
   return parsed;
 }
@@ -935,39 +935,56 @@ function is_cardio_session(training) {
   const exercises = Array.isArray(training?.exercises)
     ? training.exercises
     : [];
-  const sessionWeight = safe_sum_of_weight(exercises);
-  if (sessionWeight <= 0) return true;
+  if (exercises.length === 0) return false;
 
-  const cardioHints = [
-    "cardio",
-    "ausdauer",
-    "lauf",
-    "jog",
-    "run",
-    "rad",
-    "bike",
-    "cycle",
-    "spinning",
-    "ergometer",
-    "crosstrainer",
-    "ellipse",
-    "rudern",
-    "rowing",
-    "hiit",
-    "intervall",
-    "stepper",
-    "schwimmen",
-    "swim",
-    "seilspringen",
+  const hasStrengthAddendum = exercises.some((exercise) => {
+    if (typeof exercise?.name !== "string") return false;
+    const name = exercise.name.trim().toLowerCase();
+    return name.includes("nachtrag") && name.includes("kraft");
+  });
+  if (hasStrengthAddendum) return false;
+
+  const cardioNamePatterns = [
+    /\bcardio\b/i,
+    /\bausdauer\b/i,
+    /\bjoggen\b/i,
+    /\bjogging\b/i,
+    /\blaufband\b/i,
+    /\bwalking\b/i,
+    /\bspinning\b/i,
+    /\bergometer\b/i,
+    /\bcrosstrainer\b/i,
+    /\bstepper\b/i,
+    /\bschwimmen\b/i,
+    /\bzumba\b/i,
+    /\bhiit\b/i,
   ];
 
-  return exercises.some((exercise) => {
-    const name = String(exercise?.name || "").toLowerCase();
-    const muscle = String(exercise?.musclegroup || "").toLowerCase();
-    const place = String(exercise?.trainingsplace || "").toLowerCase();
-    const blob = `${name} ${muscle} ${place}`;
-    return cardioHints.some((hint) => blob.includes(hint));
-  });
+  const isExplicitCardioExercise = (exercise) => {
+    const name = String(exercise?.name || "").trim();
+    if (!name) return false;
+    return cardioNamePatterns.some((pattern) => pattern.test(name));
+  };
+
+  const hasExplicitCardioExercise = exercises.some((exercise) =>
+    isExplicitCardioExercise(exercise),
+  );
+  const allExercisesExplicitCardio = exercises.every((exercise) =>
+    isExplicitCardioExercise(exercise),
+  );
+
+  const movedWeight = safe_sum_of_weight(exercises);
+  if (movedWeight > 0) {
+    // Bei bewegtem Gewicht nur dann Cardio, wenn die Session rein aus
+    // expliziten Cardio-Übungen besteht.
+    return hasExplicitCardioExercise && allExercisesExplicitCardio;
+  }
+
+  if (hasExplicitCardioExercise) return true;
+
+  // Gleiche Grundlogik wie im Jahres-Chart: nur Sessions ohne bewegtes Gewicht
+  // gelten als Cardio-Session.
+  return movedWeight <= 0;
 }
 
 function safe_exercise_load(exercise) {
@@ -1799,6 +1816,22 @@ function render_challenge_card(challenge, progress, status) {
   const percent = Math.max(0, Math.min(100, progress.percent));
   const unit = challenge.unit || "";
 
+  if (
+    challenge.type === "cardio_minutes_goal" &&
+    challenge.periodType === "weekly"
+  ) {
+    console.log("[Cardio Debug][Render] weekly challenge output", {
+      challengeId: challenge.id,
+      title: challenge.title,
+      shownValue: progress.value,
+      shownTarget: challenge.targetValue,
+      shownUnit: unit,
+      shownWindow: progress.windowLabel,
+      shownPercent: percent,
+      status,
+    });
+  }
+
   const actionButton =
     status === "archived"
       ? `<button data-action="activate" data-challenge-id="${challenge.id}">Reaktivieren</button>`
@@ -1864,10 +1897,41 @@ function compute_challenge_progress(challenge, nowDate) {
   }
 
   if (challenge.type === "cardio_minutes_goal") {
+    const cardioDebugRows = [];
     value = trainingsInWindow.reduce((acc, training) => {
-      if (!is_cardio_session(training)) return acc;
-      return acc + parse_duration_to_minutes(training.duration);
+      const isCardio = is_cardio_session(training);
+      const minutes = parse_duration_to_minutes(training.duration);
+
+      cardioDebugRows.push({
+        date: training.training_date,
+        duration: training.duration,
+        isCardio,
+        countedMinutes: isCardio ? minutes : 0,
+        exerciseNames: (training.exercises || []).map((exercise) =>
+          String(exercise?.name || "-"),
+        ),
+      });
+
+      if (!isCardio) return acc;
+      return acc + minutes;
     }, 0);
+
+    if (challenge.periodType === "weekly") {
+      console.groupCollapsed(
+        `[Cardio Debug][Challenge] ${challenge.title} | ${window.label}`,
+      );
+      console.log("window", {
+        start: challenge_to_iso_date(window.start),
+        end: challenge_to_iso_date(window.end),
+      });
+      console.table(cardioDebugRows);
+      console.log("result", {
+        challengeId: challenge.id,
+        targetMinutes: challenge.targetValue,
+        calculatedMinutes: value,
+      });
+      console.groupEnd();
+    }
   }
 
   if (challenge.type === "streak_goal") {
