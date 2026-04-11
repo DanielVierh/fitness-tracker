@@ -1149,7 +1149,7 @@ tr:nth-child(even) {
 }
 .modal-exercise .exercise-history-head {
   width: 100%;
-  margin-top: 4px;
+  margin-top: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1163,76 +1163,91 @@ tr:nth-child(even) {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 6px;
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge {
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 0.7rem;
-  letter-spacing: 0.5px;
-  background: rgba(0, 0, 0, 0.35);
-  color: rgba(255, 255, 255, 0.9);
+  padding: 4px 11px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.38));
+  color: rgba(255, 255, 255, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge.is-unlocked {
   border-color: rgba(255, 209, 102, 0.85);
   color: #ffe7a2;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 0 16px rgba(255, 209, 102, 0.25);
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge.is-bronze {
   border-color: #cd7f32;
   color: #f2c08a;
+  background: linear-gradient(135deg, rgba(205, 127, 50, 0.35), rgba(0, 0, 0, 0.35));
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge.is-silver {
   border-color: #c0c0c0;
   color: #f1f1f1;
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.34), rgba(0, 0, 0, 0.35));
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge.is-gold {
   border-color: #ffd700;
   color: #ffeaa0;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(0, 0, 0, 0.35));
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge.is-platinum {
   border-color: #6fd7ff;
   color: #c8f2ff;
+  background: linear-gradient(135deg, rgba(111, 215, 255, 0.35), rgba(0, 0, 0, 0.35));
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge.is-diamond {
   border-color: #8ad8ff;
   color: #dff6ff;
-  box-shadow: 0 0 8px rgba(138, 216, 255, 0.35);
+  background: linear-gradient(135deg, rgba(138, 216, 255, 0.36), rgba(0, 0, 0, 0.34));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 0 12px rgba(138, 216, 255, 0.38);
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__badge.is-legend {
   border-color: #dba9ff;
   color: #f1dcff;
-  box-shadow: 0 0 10px rgba(219, 169, 255, 0.4);
+  background: linear-gradient(135deg, rgba(219, 169, 255, 0.38), rgba(0, 0, 0, 0.34));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 14px rgba(219, 169, 255, 0.42);
 }
 .modal-exercise .exercise-detail-achievement .exercise-detail-achievement__progress {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.35px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 .modal-exercise .exercise-detail-summary {
-  margin: 10px 0 6px 0;
+  margin: 12px 0 8px 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 10px;
 }
 .modal-exercise .exercise-detail-summary .exercise-detail-summary__item {
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 8px;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
-  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(0, 0, 0, 0.24));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 6px 16px rgba(0, 0, 0, 0.2);
+  padding: 10px 12px;
   text-align: left;
 }
 .modal-exercise .exercise-detail-summary .exercise-detail-summary__label {
   display: block;
-  font-size: 0.7rem;
-  letter-spacing: 0.8px;
-  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.68rem;
+  letter-spacing: 1.1px;
+  color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
 }
 .modal-exercise .exercise-detail-summary .exercise-detail-summary__value {
   display: block;
-  margin-top: 3px;
-  font-size: 1.2rem;
+  margin-top: 4px;
+  font-size: 1.3rem;
+  font-weight: bold;
   color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
 }
 
 .modal-trainints {

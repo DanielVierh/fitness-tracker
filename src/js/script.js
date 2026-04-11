@@ -2594,7 +2594,7 @@ function open_exercise() {
         <strong class="exercise-detail-summary__value">${solved_exercise_amount}</strong>
       </div>
       <div class="exercise-detail-summary__item">
-        <span class="exercise-detail-summary__label">Saetze gesamt</span>
+        <span class="exercise-detail-summary__label">Sätze gesamt</span>
         <strong class="exercise-detail-summary__value">${solved_set_sum}</strong>
       </div>
     `;
@@ -2614,9 +2614,9 @@ function open_exercise() {
 
     const progressLabel = achievementState.unlocked
       ? achievementState.target > achievementState.totalSets
-        ? `${achievementState.totalSets}/${achievementState.target} Saetze bis naechster Rang`
-        : `${achievementState.totalSets} Saetze Gesamt`
-      : `${achievementState.totalSets}/${achievementState.target} Saetze`;
+        ? `${achievementState.totalSets}/${achievementState.target} Sätze bis naechster Rang`
+        : `${achievementState.totalSets} Sätze Gesamt`
+      : `${achievementState.totalSets}/${achievementState.target} Sätze`;
 
     exercise_detail_achievement.innerHTML = `
       <span class="${modClass}">${stateLabel}</span>
@@ -2639,7 +2639,7 @@ function open_exercise() {
         <strong class="exercise-detail-summary__value">0</strong>
       </div>
       <div class="exercise-detail-summary__item">
-        <span class="exercise-detail-summary__label">Saetze gesamt</span>
+        <span class="exercise-detail-summary__label">Sätze gesamt</span>
         <strong class="exercise-detail-summary__value">0</strong>
       </div>
     `;
