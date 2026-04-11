@@ -75,6 +75,9 @@ const btn_delete_exercise = document.getElementById("btn_delete_exercise");
 const btn_open_calendar = document.getElementById("btn_open_calendar");
 const modal_calendar = document.getElementById("modal_calendar");
 const lbl_solved_sum = document.getElementById("lbl_solved_sum");
+const exercise_detail_achievement = document.getElementById(
+  "exercise_detail_achievement",
+);
 
 /////////////////////////////////////
 //* ANCHOR -  Variablen
@@ -2294,6 +2297,76 @@ function prepare_render_exercise() {
   render_exercises(fitti_array, "Fitnessstudio");
 }
 
+function get_cumulative_sets_by_exercise() {
+  const setMap = new Map();
+
+  for (let i = 0; i < (save_Object.trainings || []).length; i++) {
+    const training = save_Object.trainings[i];
+    const exercises = Array.isArray(training?.exercises)
+      ? training.exercises
+      : [];
+
+    for (let j = 0; j < exercises.length; j++) {
+      const exercise = exercises[j] || {};
+      const key =
+        String(exercise.exercise_id || "").trim() ||
+        String(exercise.name || "").trim();
+      if (!key) continue;
+
+      const solvedSets = Math.max(
+        0,
+        Number(exercise.solved_sets) || Number(exercise.sets) || 0,
+      );
+      const current = setMap.get(key) || 0;
+      setMap.set(key, current + solvedSets);
+    }
+  }
+
+  return setMap;
+}
+
+function get_exercise_achievement_state(exercise, setsByExercise) {
+  const key =
+    String(exercise?.exercise_id || "").trim() ||
+    String(exercise?.name || "").trim();
+  const totalSets = setsByExercise.get(key) || 0;
+
+  const tiers = [
+    { id: "bronze", title: "Bronze", threshold: 25 },
+    { id: "silver", title: "Silber", threshold: 50 },
+    { id: "gold", title: "Gold", threshold: 100 },
+    { id: "platinum", title: "Platin", threshold: 200 },
+    { id: "diamond", title: "Diamant", threshold: 400 },
+    { id: "legend", title: "Legende", threshold: 800 },
+  ];
+
+  let achievedTier = null;
+  for (let i = 0; i < tiers.length; i++) {
+    if (totalSets >= tiers[i].threshold) {
+      achievedTier = tiers[i];
+    }
+  }
+
+  if (!achievedTier) {
+    return {
+      title: "Bronze",
+      target: tiers[0].threshold,
+      totalSets,
+      unlocked: false,
+      tierId: "bronze",
+    };
+  }
+
+  const nextTier = tiers.find((tier) => tier.threshold > totalSets);
+  return {
+    title: achievedTier.title,
+    target: nextTier ? nextTier.threshold : achievedTier.threshold,
+    totalSets,
+    unlocked: true,
+    tierId: achievedTier.id,
+  };
+}
+
 /////////////////////////////////////
 //* ANCHOR - Render exercises
 /////////////////////////////////////
@@ -2451,6 +2524,12 @@ function open_exercise() {
 
   lbl_trainingsarea.innerHTML = `${selected_Exercise.trainingsplace}`;
   const trainingamount = save_Object.trainings.length - 1;
+  const setsByExercise = get_cumulative_sets_by_exercise();
+  const achievementState = get_exercise_achievement_state(
+    selected_Exercise,
+    setsByExercise,
+  );
+
   exercise_table.innerHTML = "";
   let last_training_date = null;
 
@@ -2509,7 +2588,40 @@ function open_exercise() {
       exercise_table.appendChild(tableContainer);
       last_training_date = trainings_date;
     }
-    lbl_solved_sum.innerHTML = `Insgesamt ${solved_exercise_amount} mal absolviert mit insgesamt ${solved_set_sum} Sätzen`;
+    lbl_solved_sum.innerHTML = `
+      <div class="exercise-detail-summary__item">
+        <span class="exercise-detail-summary__label">Trainings</span>
+        <strong class="exercise-detail-summary__value">${solved_exercise_amount}</strong>
+      </div>
+      <div class="exercise-detail-summary__item">
+        <span class="exercise-detail-summary__label">Saetze gesamt</span>
+        <strong class="exercise-detail-summary__value">${solved_set_sum}</strong>
+      </div>
+    `;
+  }
+
+  if (exercise_detail_achievement) {
+    const stateLabel = achievementState.unlocked
+      ? `${achievementState.title} freigeschaltet`
+      : `${achievementState.title} in Arbeit`;
+
+    const tierClass = achievementState.tierId
+      ? `is-${achievementState.tierId}`
+      : "";
+    const modClass = achievementState.unlocked
+      ? `exercise-detail-achievement__badge is-unlocked ${tierClass}`
+      : `exercise-detail-achievement__badge ${tierClass}`;
+
+    const progressLabel = achievementState.unlocked
+      ? achievementState.target > achievementState.totalSets
+        ? `${achievementState.totalSets}/${achievementState.target} Saetze bis naechster Rang`
+        : `${achievementState.totalSets} Saetze Gesamt`
+      : `${achievementState.totalSets}/${achievementState.target} Saetze`;
+
+    exercise_detail_achievement.innerHTML = `
+      <span class="${modClass}">${stateLabel}</span>
+      <span class="exercise-detail-achievement__progress">${progressLabel}</span>
+    `;
   }
 
   //* show if the exercise has not been performed before
@@ -2518,6 +2630,19 @@ function open_exercise() {
     lbl.innerHTML = "Noch keine Übung absolviert";
     lbl.style.color = "yellow";
     exercise_table.appendChild(lbl);
+  }
+
+  if (solved_exercise_amount === 0) {
+    lbl_solved_sum.innerHTML = `
+      <div class="exercise-detail-summary__item">
+        <span class="exercise-detail-summary__label">Trainings</span>
+        <strong class="exercise-detail-summary__value">0</strong>
+      </div>
+      <div class="exercise-detail-summary__item">
+        <span class="exercise-detail-summary__label">Saetze gesamt</span>
+        <strong class="exercise-detail-summary__value">0</strong>
+      </div>
+    `;
   }
 }
 

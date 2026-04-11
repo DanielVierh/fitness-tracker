@@ -230,6 +230,113 @@
     text-transform: uppercase;
     cursor: pointer;
   }
+
+  .exercise-history-head {
+    width: 100%;
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    h3 {
+      margin: 0;
+      text-align: left;
+    }
+  }
+
+  .exercise-detail-achievement {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+
+    .exercise-detail-achievement__badge {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      background: rgba(0, 0, 0, 0.35);
+      color: rgba(255, 255, 255, 0.9);
+
+      &.is-unlocked {
+        border-color: rgba(255, 209, 102, 0.85);
+        color: #ffe7a2;
+      }
+
+      &.is-bronze {
+        border-color: #cd7f32;
+        color: #f2c08a;
+      }
+
+      &.is-silver {
+        border-color: #c0c0c0;
+        color: #f1f1f1;
+      }
+
+      &.is-gold {
+        border-color: #ffd700;
+        color: #ffeaa0;
+      }
+
+      &.is-platinum {
+        border-color: #6fd7ff;
+        color: #c8f2ff;
+      }
+
+      &.is-diamond {
+        border-color: #8ad8ff;
+        color: #dff6ff;
+        box-shadow: 0 0 8px rgba(138, 216, 255, 0.35);
+      }
+
+      &.is-legend {
+        border-color: #dba9ff;
+        color: #f1dcff;
+        box-shadow: 0 0 10px rgba(219, 169, 255, 0.4);
+      }
+    }
+
+    .exercise-detail-achievement__progress {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  .exercise-detail-summary {
+    margin: 10px 0 6px 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+
+    .exercise-detail-summary__item {
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.11),
+        rgba(255, 255, 255, 0.04)
+      );
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .exercise-detail-summary__label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.8px;
+      color: rgba(255, 255, 255, 0.76);
+      text-transform: uppercase;
+    }
+
+    .exercise-detail-summary__value {
+      display: block;
+      margin-top: 3px;
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+  }
 }
 
 ///////////////////////////////////////////////
