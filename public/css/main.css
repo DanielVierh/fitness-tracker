@@ -695,6 +695,10 @@ tr:nth-child(even) {
   border-color: rgba(120, 255, 161, 0.6);
   box-shadow: 0 0 12px rgba(120, 255, 161, 0.2);
 }
+.challenge-section .challenge-card.challenge-card--failed {
+  border-color: rgba(255, 126, 126, 0.7);
+  box-shadow: 0 0 12px rgba(255, 126, 126, 0.18);
+}
 .challenge-section .challenge-card.challenge-card--archived {
   opacity: 0.75;
 }
@@ -742,6 +746,60 @@ tr:nth-child(even) {
   color: #ffffff;
   font-weight: bold;
   font-size: 0.88rem;
+}
+.challenge-section .challenge-card .challenge-card__achievements {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+.challenge-section .challenge-card .challenge-card__achievements span {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.28);
+}
+.challenge-section .challenge-card .challenge-card__achievements .challenge-achievement-badge {
+  border-color: rgba(120, 255, 161, 0.65);
+  color: rgb(182, 255, 199);
+}
+.challenge-section .challenge-card .challenge-card__history {
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 7px 8px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.challenge-section .challenge-card .challenge-card__history .challenge-card__history-title {
+  margin: 0 0 6px 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.challenge-section .challenge-card .challenge-card__history ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.challenge-section .challenge-card .challenge-card__history li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+.challenge-section .challenge-card .challenge-card__history li strong {
+  color: #ffffff;
+}
+.challenge-section .challenge-card .challenge-card__history .challenge-card__history-more {
+  margin: 7px 0 0 0;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.72);
 }
 .challenge-section .challenge-card .challenge-card__actions {
   margin-top: 10px;

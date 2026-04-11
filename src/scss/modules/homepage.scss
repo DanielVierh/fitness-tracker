@@ -606,6 +606,11 @@
       box-shadow: 0 0 12px rgba(120, 255, 161, 0.2);
     }
 
+    &.challenge-card--failed {
+      border-color: rgba(255, 126, 126, 0.7);
+      box-shadow: 0 0 12px rgba(255, 126, 126, 0.18);
+    }
+
     &.challenge-card--archived {
       opacity: 0.75;
     }
@@ -660,6 +665,69 @@
       color: #ffffff;
       font-weight: bold;
       font-size: 0.88rem;
+    }
+
+    .challenge-card__achievements {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.74rem;
+      color: rgba(255, 255, 255, 0.9);
+
+      span {
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 999px;
+        padding: 2px 8px;
+        background: rgba(0, 0, 0, 0.28);
+      }
+
+      .challenge-achievement-badge {
+        border-color: rgba(120, 255, 161, 0.65);
+        color: rgba(182, 255, 199, 1);
+      }
+    }
+
+    .challenge-card__history {
+      margin-top: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 7px 8px;
+      background: rgba(0, 0, 0, 0.22);
+
+      .challenge-card__history-title {
+        margin: 0 0 6px 0;
+        font-size: 0.74rem;
+        letter-spacing: 0.5px;
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.88);
+
+        strong {
+          color: #ffffff;
+        }
+      }
+
+      .challenge-card__history-more {
+        margin: 7px 0 0 0;
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.72);
+      }
     }
 
     .challenge-card__actions {

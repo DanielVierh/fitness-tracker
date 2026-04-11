@@ -1615,12 +1615,77 @@ function normalize_challenge(raw) {
     status: raw.status || "active",
     createdAt: raw.createdAt || challenge_to_iso_date(new Date()),
     archivedAt: raw.archivedAt || "",
+    completionHistory: normalize_challenge_completion_history(
+      raw.completionHistory,
+    ),
+    completionCount: Math.max(0, Number(raw.completionCount) || 0),
+    bestValue: Math.max(0, Number(raw.bestValue) || 0),
+    lastCompletedAt: raw.lastCompletedAt || "",
   };
+
+  const historyCount = normalized.completionHistory.length;
+  if (normalized.completionCount !== historyCount) {
+    normalized.completionCount = historyCount;
+    challenges_need_save = true;
+  }
+
+  if (historyCount > 0 && !normalized.lastCompletedAt) {
+    normalized.lastCompletedAt =
+      normalized.completionHistory[historyCount - 1].completedAt;
+    challenges_need_save = true;
+  }
+
+  if (historyCount > 0) {
+    const bestFromHistory = normalized.completionHistory.reduce(
+      (acc, item) => Math.max(acc, Number(item.achievedValue) || 0),
+      0,
+    );
+    if (normalized.bestValue !== bestFromHistory) {
+      normalized.bestValue = bestFromHistory;
+      challenges_need_save = true;
+    }
+  }
 
   if (!raw.id || !raw.type || !raw.periodType || !raw.targetValue) {
     challenges_need_save = true;
   }
 
+  return normalized;
+}
+
+function normalize_challenge_completion_history(rawHistory) {
+  if (!Array.isArray(rawHistory)) return [];
+
+  const normalized = rawHistory
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const completedAt = String(entry.completedAt || "").trim();
+      const achievedValue = Number(entry.achievedValue);
+      const targetValue = Number(entry.targetValue);
+      const periodType = String(entry.periodType || "").trim();
+      const windowStart = String(entry.windowStart || "").trim();
+      const windowEnd = String(entry.windowEnd || "").trim();
+
+      if (
+        !completedAt ||
+        !Number.isFinite(achievedValue) ||
+        !Number.isFinite(targetValue)
+      ) {
+        return null;
+      }
+
+      return {
+        completedAt,
+        achievedValue,
+        targetValue,
+        periodType,
+        windowStart,
+        windowEnd,
+      };
+    })
+    .filter((entry) => entry !== null);
+
+  normalized.sort((a, b) => a.completedAt.localeCompare(b.completedAt));
   return normalized;
 }
 
@@ -1792,11 +1857,11 @@ function render_challenges() {
 
   const computed = save_Object.challenges.map((challenge) => {
     const progress = compute_challenge_progress(challenge, today);
-    const status = derive_challenge_status(challenge, progress, today);
-    if (challenge.status !== status) {
-      challenge.status = status;
+    if (track_challenge_completion(challenge, progress, today)) {
       challenges_need_save = true;
     }
+    const status = derive_challenge_status(challenge, progress, today);
+
     return {
       challenge,
       progress,
@@ -1811,6 +1876,9 @@ function render_challenges() {
 
   const visible = computed.filter((item) => {
     if (selectedFilter === "all") return true;
+    if (selectedFilter === "successes") {
+      return (item.challenge.completionCount || 0) > 0;
+    }
     if (selectedFilter === "completed") return item.status === "completed";
     return item.status === "active";
   });
@@ -1822,7 +1890,13 @@ function render_challenges() {
     const doneCount = computed.filter(
       (item) => item.status === "completed",
     ).length;
-    summary.textContent = `Aktiv: ${activeCount} | Erledigt: ${doneCount}`;
+    const failedCount = computed.filter(
+      (item) => item.status === "failed",
+    ).length;
+    const successCount = computed.filter(
+      (item) => (item.challenge.completionCount || 0) > 0,
+    ).length;
+    summary.textContent = `Aktiv: ${activeCount} | Erledigt: ${doneCount} | Verpasst: ${failedCount} | Erfolge: ${successCount}`;
   }
 
   list.innerHTML = "";
@@ -1870,6 +1944,35 @@ function render_challenge_card(challenge, progress, status) {
       ? `<button data-action="activate" data-challenge-id="${challenge.id}">Reaktivieren</button>`
       : `<button data-action="archive" data-challenge-id="${challenge.id}">Archivieren</button>`;
 
+  const completionHistory = Array.isArray(challenge.completionHistory)
+    ? challenge.completionHistory
+    : [];
+  const recentCompletions = completionHistory.slice(-5).reverse();
+  const completionSummary =
+    challenge.completionCount > 0
+      ? `<div class="challenge-card__achievements">
+          <span class="challenge-achievement-badge">${challenge.completionCount}x geschafft</span>
+          <span>Zuletzt: ${format_challenge_display_date(challenge.lastCompletedAt)}</span>
+          <span>Bestwert: ${format_number(challenge.bestValue || 0, 1)} ${unit}</span>
+        </div>`
+      : "";
+
+  const completionTimeline =
+    challenge.completionCount > 0
+      ? `<div class="challenge-card__history">
+          <p class="challenge-card__history-title">Verlauf</p>
+          <ul>
+            ${recentCompletions
+              .map(
+                (entry) =>
+                  `<li><span>${format_challenge_display_date(entry.completedAt)}</span><strong>${format_number(entry.achievedValue, 1)} ${unit}</strong></li>`,
+              )
+              .join("")}
+          </ul>
+          ${completionHistory.length > recentCompletions.length ? `<p class="challenge-card__history-more">+${completionHistory.length - recentCompletions.length} weitere Erfolge</p>` : ""}
+        </div>`
+      : "";
+
   card.innerHTML = `
     <div class="challenge-card__head">
       <h4>${challenge.title}</h4>
@@ -1880,6 +1983,8 @@ function render_challenge_card(challenge, progress, status) {
       <div class="challenge-card__bar-fill" style="width:${percent}%"></div>
     </div>
     <div class="challenge-card__numbers">${format_number(progress.value, 1)} / ${format_number(challenge.targetValue, 1)} ${unit}</div>
+    ${completionSummary}
+    ${completionTimeline}
     <div class="challenge-card__actions">
       ${actionButton}
       <button data-action="delete" data-challenge-id="${challenge.id}">Loeschen</button>
@@ -1892,25 +1997,82 @@ function render_challenge_card(challenge, progress, status) {
 function derive_challenge_status(challenge, progress, now) {
   if (challenge.status === "archived") return "archived";
 
-  if (progress.isCompleted) {
-    if (
-      challenge.periodType === "weekly" ||
-      challenge.periodType === "monthly"
-    ) {
-      return "active";
-    }
-    return "completed";
+  if (challenge.periodType === "weekly" || challenge.periodType === "monthly") {
+    return "active";
   }
+
+  if (progress.isCompleted) return "completed";
 
   if (
     challenge.periodType === "deadline" &&
     challenge.endDate &&
     challenge_strip_time(new Date(challenge.endDate)) < now
   ) {
-    return "active";
+    return "failed";
   }
 
   return "active";
+}
+
+function track_challenge_completion(challenge, progress, nowDate) {
+  if (!progress.isCompleted) return false;
+
+  if (!Array.isArray(challenge.completionHistory)) {
+    challenge.completionHistory = [];
+  }
+
+  const nowIso = challenge_to_iso_date(nowDate);
+  const window = get_challenge_window(challenge, nowDate);
+  const windowStart = challenge_to_iso_date(window.start);
+  const windowEnd = challenge_to_iso_date(window.end);
+
+  let alreadyRecorded = false;
+  if (challenge.periodType === "weekly" || challenge.periodType === "monthly") {
+    alreadyRecorded = challenge.completionHistory.some(
+      (entry) =>
+        entry.periodType === challenge.periodType &&
+        entry.windowStart === windowStart &&
+        entry.windowEnd === windowEnd,
+    );
+  } else {
+    alreadyRecorded = challenge.completionHistory.some(
+      (entry) =>
+        entry.periodType === "deadline" &&
+        entry.windowStart === windowStart &&
+        entry.windowEnd === windowEnd,
+    );
+  }
+
+  if (alreadyRecorded) return false;
+
+  challenge.completionHistory.push({
+    completedAt: nowIso,
+    achievedValue: Number(progress.value) || 0,
+    targetValue: Number(challenge.targetValue) || 0,
+    periodType: challenge.periodType,
+    windowStart,
+    windowEnd,
+  });
+
+  challenge.completionHistory.sort((a, b) =>
+    a.completedAt.localeCompare(b.completedAt),
+  );
+
+  challenge.completionCount = challenge.completionHistory.length;
+  challenge.lastCompletedAt = nowIso;
+  challenge.bestValue = challenge.completionHistory.reduce(
+    (acc, entry) => Math.max(acc, Number(entry.achievedValue) || 0),
+    0,
+  );
+
+  return true;
+}
+
+function format_challenge_display_date(isoDate) {
+  if (!isoDate || typeof isoDate !== "string") return "-";
+  const parts = isoDate.split("-");
+  if (parts.length !== 3) return isoDate;
+  return `${parts[2]}.${parts[1]}.${parts[0]}`;
 }
 
 function compute_challenge_progress(challenge, nowDate) {
@@ -2100,6 +2262,7 @@ function get_type_label(type) {
 
 function get_status_label(status) {
   if (status === "completed") return "Erledigt";
+  if (status === "failed") return "Verpasst";
   if (status === "archived") return "Archiv";
   return "Aktiv";
 }
