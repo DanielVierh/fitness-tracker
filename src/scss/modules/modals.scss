@@ -573,12 +573,13 @@
 
   &.active {
     background-color: darkred;
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 25px;
-    height: 20px;
-    width: 20px;
+    padding: 1px;
+    height: 40px;
+    width: 40px;
     position: absolute;
     top: 10px;
     left: 10px;
