@@ -1125,7 +1125,7 @@ tr:nth-child(even) {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
+  padding: 25px;
   height: 20px;
   width: 20px;
   position: absolute;
@@ -1409,7 +1409,7 @@ tr:nth-child(even) {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
+  padding: 25px;
   height: 20px;
   width: 20px;
   position: absolute;
