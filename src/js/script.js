@@ -81,6 +81,30 @@ const exercise_detail_achievement = document.getElementById(
 const exercise_progress_chart = document.getElementById(
   "exercise_progress_chart",
 );
+const modal_training_complete = document.getElementById(
+  "modal_training_complete",
+);
+const training_complete_summary = document.getElementById(
+  "training_complete_summary",
+);
+const training_complete_subtitle = document.getElementById(
+  "training_complete_subtitle",
+);
+const training_complete_exercise_list = document.getElementById(
+  "training_complete_exercise_list",
+);
+const training_complete_challenge_list = document.getElementById(
+  "training_complete_challenge_list",
+);
+const training_complete_tier_list = document.getElementById(
+  "training_complete_tier_list",
+);
+const training_complete_achievement_empty = document.getElementById(
+  "training_complete_achievement_empty",
+);
+const btn_training_complete_continue = document.getElementById(
+  "btn_training_complete_continue",
+);
 
 /////////////////////////////////////
 //* ANCHOR -  Variablen
@@ -2994,6 +3018,12 @@ modal_close_btn.forEach((c_btn) => {
   });
 });
 
+if (btn_training_complete_continue) {
+  btn_training_complete_continue.addEventListener("click", () => {
+    location.reload();
+  });
+}
+
 /////////////////////////////////////
 //* ANCHOR - Observer
 /////////////////////////////////////
@@ -3162,59 +3192,338 @@ btn_finish.addEventListener("click", () => {
   finish_training();
 });
 function finish_training() {
-  const decision = window.confirm("Soll das Training beendet werden?");
-  if (decision) {
-    delete save_Object.last_exercise_id; //* remove last exercise id from save obj
-    const trainingsdate = new Date(save_Object.training_start);
-    const day = trainingsdate.getDate();
-    const month = trainingsdate.getMonth() + 1;
-    const year = trainingsdate.getFullYear();
-    const datum = `${add_zero(day)}.${add_zero(month)}.${year}`;
-
-    const trainingsEnd_timestamp = new Date();
-    const duration = minutesDiff(trainingsEnd_timestamp, trainingsdate);
-
-    //* Trainingsobject erstellen und abspeichern
-    const new_solved_training = new Training(
-      datum,
-      duration,
-      save_Object.current_training,
-    );
-
-    save_Object.trainings.push(new_solved_training);
-
-    //* alle sets zurücksetzen
-    for (let i = 0; i < save_Object.exercises.length; i++) {
-      save_Object.exercises[i].solved_sets = 0;
-    }
-
-    //*Reset current training
+  if (!Array.isArray(save_Object.current_training)) {
     save_Object.current_training = [];
-
-    //* trainingsstart reset
-    save_Object.training_start = "";
-
-    //* set training is running to false
-    training_running = false;
-    save_Object.training_is_running = false;
-
-    // * Save into storage
-    save_into_storage(save_Object);
-
-    const exercArr = new_solved_training.exercises;
-    let exerciseInfoArr = "";
-    for (let j = 0; j < exercArr.length; j++) {
-      const newRow = `\n ${exercArr[j].name} - ${exercArr[j].solved_sets} x `;
-      exerciseInfoArr = exerciseInfoArr + newRow;
-    }
-    //TODO -  replace alert
-    alert(`Training beendet \n Datum: ${datum} \n
-        Zeit: ${duration} \n
-        Übungen: ${exerciseInfoArr}`);
-
-    //* reload page
-    location.reload();
   }
+
+  if (save_Object.current_training.length === 0) {
+    const message = new Message(
+      "Training",
+      "Kein aktives Training zum Beenden vorhanden.",
+      "warning",
+      2200,
+    );
+    message.showMessage();
+    return;
+  }
+
+  if (!save_Object.training_start) {
+    const message = new Message(
+      "Training",
+      "Startzeit fehlt. Bitte neues Training starten.",
+      "warning",
+      2400,
+    );
+    message.showMessage();
+    return;
+  }
+
+  const decision = window.confirm("Soll das Training beendet werden?");
+  if (!decision) return;
+
+  delete save_Object.last_exercise_id; //* remove last exercise id from save obj
+
+  const challengeSnapshot = new Map(
+    (save_Object.challenges || []).map((challenge) => [
+      challenge.id,
+      Number(challenge.completionCount) || 0,
+    ]),
+  );
+
+  const currentTrainingExercises = save_Object.current_training.map(
+    (exercise) => Object.assign({}, exercise),
+  );
+  const exerciseTierSnapshot = capture_exercise_tier_snapshot(
+    currentTrainingExercises,
+  );
+
+  const trainingsdate = new Date(save_Object.training_start);
+  const day = trainingsdate.getDate();
+  const month = trainingsdate.getMonth() + 1;
+  const year = trainingsdate.getFullYear();
+  const datum = `${add_zero(day)}.${add_zero(month)}.${year}`;
+
+  const trainingsEnd_timestamp = new Date();
+  const duration = minutesDiff(trainingsEnd_timestamp, trainingsdate);
+
+  //* Trainingsobject erstellen und abspeichern
+  const new_solved_training = new Training(
+    datum,
+    duration,
+    currentTrainingExercises,
+  );
+
+  save_Object.trainings.push(new_solved_training);
+
+  //* alle sets zurücksetzen
+  for (let i = 0; i < save_Object.exercises.length; i++) {
+    save_Object.exercises[i].solved_sets = 0;
+  }
+
+  //*Reset current training
+  save_Object.current_training = [];
+
+  //* trainingsstart reset
+  save_Object.training_start = "";
+
+  //* set training is running to false
+  training_running = false;
+  save_Object.training_is_running = false;
+
+  // * Save into storage
+  save_into_storage(save_Object);
+
+  const challengeUnlocks = collect_new_challenge_completions(
+    challengeSnapshot,
+    challenge_strip_time(new Date()),
+  );
+  if (challengeUnlocks.changed) {
+    save_into_storage(save_Object);
+  }
+
+  const tierUnlocks = collect_new_exercise_tier_unlocks(
+    exerciseTierSnapshot,
+    currentTrainingExercises,
+  );
+
+  show_training_complete_modal({
+    datum,
+    duration,
+    training: new_solved_training,
+    challengeUnlocks: challengeUnlocks.items,
+    tierUnlocks,
+  });
+}
+
+function resolve_exercise_key(exercise) {
+  return (
+    String(exercise?.exercise_id || "").trim() ||
+    String(exercise?.name || "").trim()
+  );
+}
+
+function build_sets_by_exercise_from_trainings(trainings) {
+  const map = new Map();
+  const safeTrainings = Array.isArray(trainings) ? trainings : [];
+
+  for (let i = 0; i < safeTrainings.length; i++) {
+    const exercises = Array.isArray(safeTrainings[i]?.exercises)
+      ? safeTrainings[i].exercises
+      : [];
+
+    for (let j = 0; j < exercises.length; j++) {
+      const exercise = exercises[j] || {};
+      const key = resolve_exercise_key(exercise);
+      if (!key) continue;
+
+      const sets = Math.max(
+        0,
+        Number(exercise.solved_sets) || Number(exercise.sets) || 0,
+      );
+      map.set(key, (map.get(key) || 0) + sets);
+    }
+  }
+
+  return map;
+}
+
+function get_exercise_tier_level(totalSets) {
+  const thresholds = [25, 50, 100, 200, 400, 800];
+  let level = 0;
+  for (let i = 0; i < thresholds.length; i++) {
+    if (totalSets >= thresholds[i]) {
+      level = i + 1;
+    }
+  }
+  return level;
+}
+
+function get_exercise_tier_label(level) {
+  const labels = [
+    "Kein Rang",
+    "Bronze",
+    "Silber",
+    "Gold",
+    "Platin",
+    "Diamant",
+    "Legende",
+  ];
+  return labels[level] || "Kein Rang";
+}
+
+function capture_exercise_tier_snapshot(currentTrainingExercises) {
+  const snapshot = new Map();
+  const setsByExercise = build_sets_by_exercise_from_trainings(
+    save_Object.trainings,
+  );
+  const safeCurrent = Array.isArray(currentTrainingExercises)
+    ? currentTrainingExercises
+    : [];
+
+  for (let i = 0; i < safeCurrent.length; i++) {
+    const exercise = safeCurrent[i] || {};
+    const key = resolve_exercise_key(exercise);
+    if (!key || snapshot.has(key)) continue;
+    const totalSetsBefore = setsByExercise.get(key) || 0;
+    snapshot.set(key, get_exercise_tier_level(totalSetsBefore));
+  }
+
+  return snapshot;
+}
+
+function collect_new_exercise_tier_unlocks(
+  exerciseTierSnapshot,
+  currentTrainingExercises,
+) {
+  const unlocks = [];
+  const setsByExercise = build_sets_by_exercise_from_trainings(
+    save_Object.trainings,
+  );
+  const seen = new Set();
+  const safeCurrent = Array.isArray(currentTrainingExercises)
+    ? currentTrainingExercises
+    : [];
+
+  for (let i = 0; i < safeCurrent.length; i++) {
+    const exercise = safeCurrent[i] || {};
+    const key = resolve_exercise_key(exercise);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+
+    const beforeLevel = exerciseTierSnapshot.get(key) || 0;
+    const afterLevel = get_exercise_tier_level(setsByExercise.get(key) || 0);
+
+    if (afterLevel > beforeLevel) {
+      unlocks.push({
+        name: String(exercise.name || "Unbekannte Uebung"),
+        fromLabel: get_exercise_tier_label(beforeLevel),
+        toLabel: get_exercise_tier_label(afterLevel),
+      });
+    }
+  }
+
+  return unlocks;
+}
+
+function collect_new_challenge_completions(challengeSnapshot, dateRef) {
+  const items = [];
+  let changed = false;
+  const challenges = Array.isArray(save_Object.challenges)
+    ? save_Object.challenges
+    : [];
+
+  for (let i = 0; i < challenges.length; i++) {
+    const challenge = challenges[i];
+    if (!challenge || challenge.status === "archived") continue;
+
+    const progress = compute_challenge_progress(challenge, dateRef);
+    const beforeCount = challengeSnapshot.get(challenge.id) || 0;
+    const newlyCompleted = track_challenge_completion(
+      challenge,
+      progress,
+      dateRef,
+    );
+    const afterCount = Number(challenge.completionCount) || 0;
+
+    if (newlyCompleted || afterCount > beforeCount) {
+      changed = true;
+      items.push({
+        title: String(challenge.title || "Challenge"),
+        value: Number(progress.value) || 0,
+        target: Number(challenge.targetValue) || 0,
+        unit: String(challenge.unit || ""),
+      });
+    }
+  }
+
+  return { items, changed };
+}
+
+function fill_training_complete_list(
+  listElement,
+  items,
+  formatter,
+  emptyLabel,
+) {
+  if (!listElement) return;
+
+  listElement.innerHTML = "";
+  if (!Array.isArray(items) || items.length === 0) {
+    const li = document.createElement("li");
+    li.classList.add("is-empty");
+    li.textContent = emptyLabel;
+    listElement.appendChild(li);
+    return;
+  }
+
+  items.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = formatter(item);
+    listElement.appendChild(li);
+  });
+}
+
+function show_training_complete_modal(payload) {
+  if (!modal_training_complete || !training_complete_summary) return;
+
+  const training = payload?.training || {};
+  const exercises = Array.isArray(training.exercises) ? training.exercises : [];
+  const totalSets = exercises.reduce(
+    (acc, exercise) => acc + (Number(exercise?.solved_sets) || 0),
+    0,
+  );
+  const totalVolume = safe_sum_of_weight(exercises);
+
+  training_complete_summary.innerHTML = `
+    <div class="training-complete__kpis">
+      <div class="training-complete__kpi"><span>Datum</span><strong>${payload.datum}</strong></div>
+      <div class="training-complete__kpi"><span>Dauer</span><strong>${payload.duration}</strong></div>
+      <div class="training-complete__kpi"><span>Uebungen</span><strong>${exercises.length}</strong></div>
+      <div class="training-complete__kpi"><span>Saetze</span><strong>${totalSets}</strong></div>
+      <div class="training-complete__kpi training-complete__kpi--wide"><span>Volumen</span><strong>${numberWithCommas(Math.round(totalVolume))} kg</strong></div>
+    </div>
+  `;
+
+  fill_training_complete_list(
+    training_complete_exercise_list,
+    exercises,
+    (exercise) =>
+      `${String(exercise?.name || "Unbekannte Uebung")} - ${Number(exercise?.solved_sets) || 0} x`,
+    "Keine Uebungen gespeichert.",
+  );
+
+  fill_training_complete_list(
+    training_complete_challenge_list,
+    payload?.challengeUnlocks || [],
+    (item) =>
+      `${item.title}: ${numberWithCommas(Math.round(item.value))}/${numberWithCommas(Math.round(item.target))} ${item.unit}`.trim(),
+    "In dieser Session keine neue Challenge abgeschlossen.",
+  );
+
+  fill_training_complete_list(
+    training_complete_tier_list,
+    payload?.tierUnlocks || [],
+    (item) => `${item.name}: ${item.fromLabel} -> ${item.toLabel}`,
+    "In dieser Session kein neuer Rangaufstieg.",
+  );
+
+  if (training_complete_subtitle) {
+    const hasAchievements =
+      (payload?.challengeUnlocks || []).length > 0 ||
+      (payload?.tierUnlocks || []).length > 0;
+    training_complete_subtitle.textContent = hasAchievements
+      ? "Starke Session mit neuen Errungenschaften"
+      : "Session erfolgreich abgeschlossen";
+  }
+
+  if (training_complete_achievement_empty) {
+    const hasAchievements =
+      (payload?.challengeUnlocks || []).length > 0 ||
+      (payload?.tierUnlocks || []).length > 0;
+    training_complete_achievement_empty.hidden = hasAchievements;
+  }
+
+  Modal.open_modal(modal_training_complete);
 }
 
 /////////////////////////////////////
