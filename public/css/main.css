@@ -1007,7 +1007,7 @@ tr:nth-child(even) {
 }
 .timer-modal .timer-modal__content {
   width: 100%;
-  max-width: 420px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1024,6 +1024,7 @@ tr:nth-child(even) {
   color: white;
   font-weight: bold;
   letter-spacing: 1px;
+  font-size: 1.3rem;
 }
 .timer-modal .timer-modal__input {
   width: 100%;
@@ -1033,8 +1034,10 @@ tr:nth-child(even) {
   background: rgba(0, 0, 0, 0.4);
   color: white;
   padding: 0 12px;
-  font-size: 1rem;
+  font-size: 2rem;
+  font-weight: bold;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+  text-align: center;
 }
 .timer-modal .timer-modal__recents {
   display: flex;
@@ -1047,10 +1050,12 @@ tr:nth-child(even) {
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 20px 30px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
+  font-size: 1.3rem;
+  font-weight: bold;
 }
 .timer-modal .timer-modal__start {
   width: 100%;
