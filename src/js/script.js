@@ -78,6 +78,9 @@ const lbl_solved_sum = document.getElementById("lbl_solved_sum");
 const exercise_detail_achievement = document.getElementById(
   "exercise_detail_achievement",
 );
+const exercise_progress_chart = document.getElementById(
+  "exercise_progress_chart",
+);
 
 /////////////////////////////////////
 //* ANCHOR -  Variablen
@@ -2532,6 +2535,7 @@ function open_exercise() {
 
   exercise_table.innerHTML = "";
   let last_training_date = null;
+  const exerciseProgressHistory = [];
 
   //* Iterate all trainings and decrement index to show the newest trainings at first
   let solved_exercise_amount = 0;
@@ -2556,6 +2560,15 @@ function open_exercise() {
     }
     //* if exercise == training
     if (is_in === true) {
+      const historyWeight = Number(only_ecercise.weight) || 0;
+      const historySets = Number(only_ecercise.solved_sets) || 0;
+      const historyRepeats = Number(only_ecercise.repeats) || 0;
+      exerciseProgressHistory.push({
+        date: trainings_date,
+        weight: historyWeight,
+        volume: historyWeight * historySets * historyRepeats,
+      });
+
       //* Show label with time between trainings
       let lbl_time_to_last_training = document.createElement("p");
       lbl_time_to_last_training.classList.add("between-trainings");
@@ -2644,6 +2657,168 @@ function open_exercise() {
       </div>
     `;
   }
+
+  render_exercise_progress_chart(exerciseProgressHistory);
+}
+
+function render_exercise_progress_chart(history) {
+  if (!exercise_progress_chart) return;
+
+  if (!Array.isArray(history) || history.length === 0) {
+    exercise_progress_chart.innerHTML = `
+      <div class="exercise-progress__empty">Noch keine Verlaufsdaten vorhanden.</div>
+    `;
+    return;
+  }
+
+  const orderedHistory = [...history].reverse();
+  const weightSeries = orderedHistory.map((entry) => Number(entry.weight) || 0);
+  const volumeSeries = orderedHistory.map((entry) => Number(entry.volume) || 0);
+
+  const latestWeight = weightSeries[weightSeries.length - 1] || 0;
+  const maxWeight = Math.max(...weightSeries, 0);
+  const latestVolume = volumeSeries[volumeSeries.length - 1] || 0;
+  const maxVolume = Math.max(...volumeSeries, 0);
+
+  const weightSvg = build_exercise_progress_svg(orderedHistory, weightSeries, {
+    chartClass: "is-weight",
+    unit: "kg",
+    axisLabel: "Gew",
+  });
+
+  const volumeSvg = build_exercise_progress_svg(orderedHistory, volumeSeries, {
+    chartClass: "is-volume",
+    unit: "kg",
+    axisLabel: "Sum",
+  });
+
+  exercise_progress_chart.innerHTML = `
+    <section class="exercise-progress">
+      <div class="exercise-progress__head">
+        <h4>Verlauf</h4>
+        <span>${orderedHistory.length} Eintrag(e)</span>
+      </div>
+
+      <div class="exercise-progress__grid">
+        <article class="exercise-progress__card">
+          <div class="exercise-progress__metric-head">
+            <strong>Gew</strong>
+            <span>Aktuell ${format_exercise_metric_value(latestWeight)} kg | Max ${format_exercise_metric_value(maxWeight)} kg</span>
+          </div>
+          ${weightSvg}
+        </article>
+
+        <article class="exercise-progress__card">
+          <div class="exercise-progress__metric-head">
+            <strong>Sum</strong>
+            <span>Aktuell ${format_exercise_metric_value(latestVolume)} kg | Max ${format_exercise_metric_value(maxVolume)} kg</span>
+          </div>
+          ${volumeSvg}
+        </article>
+      </div>
+    </section>
+  `;
+}
+
+function build_exercise_progress_svg(history, values, options = {}) {
+  const points = Array.isArray(values) ? values : [];
+  if (points.length === 0) return "";
+
+  const width = 680;
+  const height = 220;
+  const padTop = 16;
+  const padRight = 12;
+  const padBottom = 28;
+  const padLeft = 44;
+  const chartWidth = width - padLeft - padRight;
+  const chartHeight = height - padTop - padBottom;
+
+  let yMax = Math.max(...points, 0);
+  if (yMax <= 0) yMax = 1;
+
+  const xAt = (index) => {
+    if (points.length <= 1) return padLeft + chartWidth / 2;
+    return padLeft + (index / (points.length - 1)) * chartWidth;
+  };
+  const yAt = (value) => {
+    const scaled = Math.max(0, Number(value) || 0) / yMax;
+    return padTop + chartHeight - scaled * chartHeight;
+  };
+
+  const pathData = points
+    .map(
+      (value, index) =>
+        `${index === 0 ? "M" : "L"}${xAt(index).toFixed(2)} ${yAt(value).toFixed(2)}`,
+    )
+    .join(" ");
+
+  const gridLines = [];
+  for (let step = 0; step <= 4; step++) {
+    const ratio = step / 4;
+    const yPos = padTop + ratio * chartHeight;
+    const axisValue = yMax * (1 - ratio);
+    gridLines.push(`
+      <line x1="${padLeft}" y1="${yPos.toFixed(2)}" x2="${width - padRight}" y2="${yPos.toFixed(2)}" class="exercise-progress__grid-line" />
+      <text x="${padLeft - 8}" y="${(yPos + 4).toFixed(2)}" class="exercise-progress__axis-label" text-anchor="end">${format_exercise_metric_value(axisValue)}</text>
+    `);
+  }
+
+  const maxTicks = 6;
+  const interval =
+    points.length <= maxTicks
+      ? 1
+      : Math.ceil((points.length - 1) / (maxTicks - 1));
+  const xTicks = new Set([0, points.length - 1]);
+  for (let idx = 0; idx < points.length; idx += interval) {
+    xTicks.add(idx);
+  }
+
+  const xTickLabels = Array.from(xTicks)
+    .sort((a, b) => a - b)
+    .map((idx) => {
+      const fullDate = String(history[idx]?.date || "");
+      const parts = fullDate.split(".");
+      const shortDate =
+        parts.length >= 2 ? `${parts[0]}.${parts[1]}.` : fullDate;
+      return `<text x="${xAt(idx).toFixed(2)}" y="${height - 8}" class="exercise-progress__x-label" text-anchor="middle">${shortDate}</text>`;
+    })
+    .join("");
+
+  const circles = points
+    .map((value, index) => {
+      const date = history[index]?.date || "";
+      const text =
+        `${date}: ${format_exercise_metric_value(value)} ${options.unit || ""}`.trim();
+      return `
+        <circle cx="${xAt(index).toFixed(2)}" cy="${yAt(value).toFixed(2)}" r="4" class="exercise-progress__point ${options.chartClass || ""}">
+          <title>${text}</title>
+        </circle>
+      `;
+    })
+    .join("");
+
+  return `
+    <svg class="exercise-progress__svg ${options.chartClass || ""}" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${options.axisLabel || "Verlauf"} Verlauf">
+      <text x="${padLeft}" y="12" class="exercise-progress__axis-title">${options.axisLabel || ""}</text>
+      ${gridLines.join("")}
+      <path d="${pathData}" class="exercise-progress__line ${options.chartClass || ""}" fill="none" />
+      ${circles}
+      ${xTickLabels}
+    </svg>
+  `;
+}
+
+function format_exercise_metric_value(value) {
+  const numericValue = Number(value) || 0;
+  if (Math.abs(numericValue) >= 1000) {
+    return numberWithCommas(Math.round(numericValue));
+  }
+
+  if (Math.abs(numericValue % 1) > 0.001) {
+    return numericValue.toFixed(1);
+  }
+
+  return String(Math.round(numericValue));
 }
 
 /////////////////////////////////////

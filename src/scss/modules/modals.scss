@@ -395,6 +395,151 @@
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
     }
   }
+
+  .exercise-progress-chart {
+    width: 100%;
+    margin: 10px 0 14px 0;
+  }
+
+  .exercise-progress {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 12px;
+    padding: 12px;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(0, 0, 0, 0.28)
+    );
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+      0 8px 20px rgba(0, 0, 0, 0.28);
+
+    .exercise-progress__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+
+      h4 {
+        margin: 0;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      span {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    .exercise-progress__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .exercise-progress__card {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      background: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.11),
+        rgba(0, 0, 0, 0.22)
+      );
+      padding: 10px;
+    }
+
+    .exercise-progress__metric-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+
+      strong {
+        font-size: 0.95rem;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+      }
+
+      span {
+        text-align: right;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.82);
+      }
+    }
+
+    .exercise-progress__svg {
+      width: 100%;
+      height: 210px;
+      display: block;
+      overflow: visible;
+    }
+
+    .exercise-progress__grid-line {
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+
+    .exercise-progress__axis-label,
+    .exercise-progress__x-label,
+    .exercise-progress__axis-title {
+      fill: rgba(255, 255, 255, 0.82);
+      font-size: 10px;
+      letter-spacing: 0.3px;
+      font-weight: bold;
+    }
+
+    .exercise-progress__axis-title {
+      fill: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .exercise-progress__line {
+      stroke-width: 3;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    .exercise-progress__line.is-weight,
+    .exercise-progress__point.is-weight {
+      stroke: #7ec8ff;
+      fill: #7ec8ff;
+    }
+
+    .exercise-progress__line.is-volume,
+    .exercise-progress__point.is-volume {
+      stroke: #ffc15f;
+      fill: #ffc15f;
+    }
+
+    .exercise-progress__point {
+      stroke-width: 2;
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.45));
+    }
+  }
+
+  .exercise-progress__empty {
+    border: 1px dashed rgba(255, 255, 255, 0.32);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.5px;
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  @media screen and (min-width: 860px) {
+    .exercise-progress {
+      .exercise-progress__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  }
 }
 
 ///////////////////////////////////////////////
