@@ -3051,6 +3051,9 @@ function observer() {
     const trainingsEnd_timestamp = new Date();
     const duration = minutesDiff(trainingsEnd_timestamp, trainingsdate);
     document.getElementById("lbl_time").innerHTML = `Zeit: ${duration}`;
+    //* Update solved exercises
+    document.getElementById("lbl_overview_exercises").innerHTML =
+      `Absolvierte Übungen: ${sum_of_exercises()}`;
     //*Update solved sets
     document.getElementById("lbl_overview_sets").innerHTML =
       `Absolvierte Sätze: ${sum_of_sets()}`;
@@ -3174,6 +3177,12 @@ function sum_of_sets() {
     solvedSets = solvedSets += save_Object.current_training[i].solved_sets;
   }
   return solvedSets;
+}
+
+//*ANCHOR - Amount of Exercises
+function sum_of_exercises() {
+  let solved_Exercises = save_Object.current_training.length;
+  return solved_Exercises;
 }
 
 //* Slider
