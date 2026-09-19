@@ -2564,7 +2564,6 @@ function open_exercise() {
     setsByExercise,
   );
 
-
   init_set_weight_slider();
   exercise_table.innerHTML = "";
   let last_training_date = null;
@@ -2960,7 +2959,9 @@ function add_solved_set() {
     let new_set_amount = (currentSet += 1);
     save_Object.current_training[currentIndex].solved_sets = new_set_amount;
     save_Object.current_training[currentIndex].weight = setWeight;
-    if (!Array.isArray(save_Object.current_training[currentIndex].set_weights)) {
+    if (
+      !Array.isArray(save_Object.current_training[currentIndex].set_weights)
+    ) {
       save_Object.current_training[currentIndex].set_weights = [];
     }
     save_Object.current_training[currentIndex].set_weights.push(setWeight);
@@ -2988,7 +2989,9 @@ function init_set_weight_slider() {
       ? save_Object.current_training[currentTrainingIndex]
       : null;
 
-  const setWeights = get_exercise_set_weights(currentTrainingExercise || selected_Exercise);
+  const setWeights = get_exercise_set_weights(
+    currentTrainingExercise || selected_Exercise,
+  );
   const lastKnownWeight =
     setWeights.length > 0
       ? setWeights[setWeights.length - 1]
