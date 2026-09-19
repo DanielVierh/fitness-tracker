@@ -207,6 +207,57 @@
     }
   }
 
+  .exercise-set-weight {
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px 14px 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(0, 0, 0, 0.18)
+    );
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+      0 6px 16px rgba(0, 0, 0, 0.18);
+
+    .exercise-set-weight__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+
+      span {
+        color: rgba(255, 255, 255, 0.78);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        font-size: 0.75rem;
+      }
+
+      strong {
+        color: #ffffff;
+        font-size: 1rem;
+        letter-spacing: 0.8px;
+      }
+    }
+
+    .exercise-set-weight__slider {
+      width: 100%;
+      margin: 0;
+      accent-color: $color-main;
+      cursor: pointer;
+    }
+
+    .exercise-set-weight__hint {
+      margin: 8px 0 0 0;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.72rem;
+      letter-spacing: 0.35px;
+    }
+  }
+
   .button-edit {
     background-color: black;
     display: flex;

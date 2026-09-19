@@ -18,6 +18,8 @@ import { time_between_dates } from "./time_between_days.js";
 import { identify_trainingsplace } from "./functions.js";
 import { createTable } from "./create_table.js";
 import { save_into_storage } from "./functions.js";
+import { get_exercise_total_weight } from "./functions.js";
+import { get_exercise_set_weights } from "./functions.js";
 import { Mini_Modal } from "./Classes/MiniModal.js";
 
 restTimer();
@@ -44,6 +46,7 @@ const lbl_number = document.getElementById("lbl_number");
 const lbl_seatsettings = document.getElementById("lbl_seatsettings");
 const lbl_muscleselect = document.getElementById("lbl_muscleselect");
 const lbl_donesets = document.getElementById("lbl_donesets");
+const lbl_set_weight = document.getElementById("lbl_set_weight");
 const btn_trackSport = document.getElementById("btn_trackSport");
 const lbl_trainingsarea = document.getElementById("lbl_trainingsarea");
 const bdy = document.getElementById("bdy");
@@ -81,6 +84,7 @@ const exercise_detail_achievement = document.getElementById(
 const exercise_progress_chart = document.getElementById(
   "exercise_progress_chart",
 );
+const inp_set_weight = document.getElementById("inp_set_weight");
 const modal_training_complete = document.getElementById(
   "modal_training_complete",
 );
@@ -2483,6 +2487,9 @@ btn_saveExercise.addEventListener("click", () => {
     selected_Exercise.machine_seat_settings = inpExercise_seatSettings.value;
     selected_Exercise.musclegroup = muscle_select.value;
     selected_Exercise.trainingsplace = training_Area.value;
+
+    sync_current_training_exercise(selected_Exercise);
+
     const msg = new Message(
       "Gespeichert",
       "Änderungen wurden gespeichert",
@@ -2557,6 +2564,8 @@ function open_exercise() {
     setsByExercise,
   );
 
+
+  init_set_weight_slider();
   exercise_table.innerHTML = "";
   let last_training_date = null;
   let latest_exercise_training_date = null;
@@ -2941,23 +2950,92 @@ function add_solved_set() {
   //* Übung in Training Array speichern
   //* Abgleichen ob bereits vorhanden per id match,
   //* wenn vorhanden eins hochzählen
+  const setWeight = get_selected_set_weight();
   if (check_exercise_in_currentTraining(selected_Exercise)) {
-    let currentSet =
-      save_Object.current_training[
-        `${indexOfExercise(selected_Exercise, save_Object.current_training)}`
-      ].solved_sets;
+    const currentIndex = indexOfExercise(
+      selected_Exercise,
+      save_Object.current_training,
+    );
+    let currentSet = save_Object.current_training[currentIndex].solved_sets;
     let new_set_amount = (currentSet += 1);
-    save_Object.current_training[
-      `${indexOfExercise(selected_Exercise, save_Object.current_training)}`
-    ].solved_sets = new_set_amount;
+    save_Object.current_training[currentIndex].solved_sets = new_set_amount;
+    save_Object.current_training[currentIndex].weight = setWeight;
+    if (!Array.isArray(save_Object.current_training[currentIndex].set_weights)) {
+      save_Object.current_training[currentIndex].set_weights = [];
+    }
+    save_Object.current_training[currentIndex].set_weights.push(setWeight);
     lbl_donesets.innerHTML = `${new_set_amount}`;
   } else {
     //* wenn nein, in das Array übertragen und eins hochzählen
     let cloned_exercise = Object.assign({}, selected_Exercise);
-    cloned_exercise.solved_sets = cloned_exercise.solved_sets += 1;
+    cloned_exercise.weight = setWeight;
+    cloned_exercise.solved_sets = 1;
+    cloned_exercise.set_weights = [setWeight];
     save_Object.current_training.push(cloned_exercise);
     lbl_donesets.innerHTML = `${cloned_exercise.solved_sets}`;
   }
+}
+
+function init_set_weight_slider() {
+  if (!inp_set_weight || !lbl_set_weight) return;
+
+  const currentTrainingIndex = indexOfExercise(
+    selected_Exercise,
+    save_Object.current_training,
+  );
+  const currentTrainingExercise =
+    currentTrainingIndex !== -1
+      ? save_Object.current_training[currentTrainingIndex]
+      : null;
+
+  const setWeights = get_exercise_set_weights(currentTrainingExercise || selected_Exercise);
+  const lastKnownWeight =
+    setWeights.length > 0
+      ? setWeights[setWeights.length - 1]
+      : Number(selected_Exercise.weight) || 0;
+
+  inp_set_weight.value = String(lastKnownWeight);
+  lbl_set_weight.innerHTML = `${format_set_weight_value(lastKnownWeight)} Kg`;
+}
+
+function get_selected_set_weight() {
+  if (!inp_set_weight) {
+    return Number(selected_Exercise.weight) || 0;
+  }
+
+  const sliderWeight = Number(inp_set_weight.value);
+  if (Number.isFinite(sliderWeight)) {
+    return sliderWeight;
+  }
+
+  return Number(selected_Exercise.weight) || 0;
+}
+
+function format_set_weight_value(value) {
+  const numericValue = Number(value) || 0;
+  return Number.isInteger(numericValue)
+    ? String(numericValue)
+    : numericValue.toFixed(1);
+}
+
+function sync_current_training_exercise(exercise) {
+  if (!Array.isArray(save_Object.current_training)) return;
+
+  const currentIndex = indexOfExercise(exercise, save_Object.current_training);
+  if (currentIndex === -1) return;
+
+  const currentTrainingExercise = save_Object.current_training[currentIndex];
+  save_Object.current_training[currentIndex] = {
+    ...currentTrainingExercise,
+    name: exercise.name,
+    weight: exercise.weight,
+    sets: exercise.sets,
+    repeats: exercise.repeats,
+    machineNumber: exercise.machineNumber,
+    machine_seat_settings: exercise.machine_seat_settings,
+    musclegroup: exercise.musclegroup,
+    trainingsplace: exercise.trainingsplace,
+  };
 }
 
 /////////////////////////////////////
@@ -3124,9 +3202,8 @@ function render_active_training_muscle_summary() {
     const entry = currentTraining[i];
     const musclegroup = entry.musclegroup || "-";
     const solvedSets = Number(entry.solved_sets) || 0;
-    const weight = Number(entry.weight) || 0;
     const repeats = Number(entry.repeats) || 0;
-    const movedWeight = solvedSets * repeats * weight;
+    const movedWeight = get_exercise_total_weight(entry);
 
     if (!summaryByMuscle.has(musclegroup)) {
       summaryByMuscle.set(musclegroup, { sets: 0, weight: 0 });
@@ -3225,6 +3302,14 @@ inpExercise_Repeats.addEventListener("input", () => {
 inpExercise_Sets.addEventListener("input", () => {
   lbl_exerciseSets.innerHTML = inpExercise_Sets.value;
 });
+
+if (inp_set_weight && lbl_set_weight) {
+  inp_set_weight.addEventListener("input", () => {
+    lbl_set_weight.innerHTML = `${format_set_weight_value(
+      inp_set_weight.value,
+    )} Kg`;
+  });
+}
 
 /////////////////////////////////////
 //* ANCHOR - finish training

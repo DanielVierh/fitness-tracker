@@ -64,6 +64,30 @@ export function numberWithCommas(val) {
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+export function get_exercise_set_weights(exercise) {
+    if (Array.isArray(exercise?.set_weights) && exercise.set_weights.length > 0) {
+        return exercise.set_weights
+            .map((value) => Number(value) || 0)
+            .filter((value) => Number.isFinite(value));
+    }
+
+    const weight = Number(exercise?.weight) || 0;
+    const solvedSets = Number(exercise?.solved_sets) || 0;
+    return Array.from({ length: solvedSets }, () => weight);
+}
+
+export function get_exercise_total_weight(exercise) {
+    const repeats = Number(exercise?.repeats) || 0;
+    const setWeights = get_exercise_set_weights(exercise);
+
+    if (setWeights.length === 0) {
+        return 0;
+    }
+
+    const totalSetWeight = setWeights.reduce((sum, value) => sum + value, 0);
+    return totalSetWeight * repeats;
+}
+
 export /////////////////////////////////////
 //* ANCHOR - Identify Trainingsplace
 //TODO - Show other Trainingsplace

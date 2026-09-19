@@ -1,4 +1,6 @@
 import { save_into_storage } from './functions.js';
+import { get_exercise_total_weight } from './functions.js';
+import { get_exercise_set_weights } from './functions.js';
 
 export function createTable(title, data, only_exercise, index, save_Object) {
     
@@ -32,12 +34,15 @@ export function createTable(title, data, only_exercise, index, save_Object) {
         const weightCell = document.createElement("td");
         const totalWeightCell = document.createElement("td");
         const muscleCell = document.createElement("td");
-        const totalWeight = data[i].weight * data[i].repeats * data[i].solved_sets;
+        const totalWeight = get_exercise_total_weight(data[i]);
+        const setWeights = get_exercise_set_weights(data[i]);
 
         nameCell.appendChild(document.createTextNode(data[i].name));
         setsCell.appendChild(document.createTextNode(data[i].solved_sets));
         repsCell.appendChild(document.createTextNode(data[i].repeats));
-        weightCell.appendChild(document.createTextNode(data[i].weight));
+        weightCell.appendChild(document.createTextNode(
+            setWeights.length > 0 ? setWeights.join(' / ') : data[i].weight,
+        ));
         totalWeightCell.appendChild(document.createTextNode(totalWeight));
         muscleCell.appendChild(document.createTextNode(data[i].musclegroup));
 
@@ -58,12 +63,15 @@ export function createTable(title, data, only_exercise, index, save_Object) {
         const weightCell = document.createElement("td");
         const totalWeightCell = document.createElement("td");
         const muscleCell = document.createElement("td");
-        const totalWeight = data.weight * data.repeats * data.solved_sets;
+        const totalWeight = get_exercise_total_weight(data);
+        const setWeights = get_exercise_set_weights(data);
 
         nameCell.appendChild(document.createTextNode(data.name));
         setsCell.appendChild(document.createTextNode(data.solved_sets));
         repsCell.appendChild(document.createTextNode(data.repeats));
-        weightCell.appendChild(document.createTextNode(data.weight));
+        weightCell.appendChild(document.createTextNode(
+            setWeights.length > 0 ? setWeights.join(' / ') : data.weight,
+        ));
         totalWeightCell.appendChild(document.createTextNode(totalWeight));
         muscleCell.appendChild(document.createTextNode(data.musclegroup));
 
