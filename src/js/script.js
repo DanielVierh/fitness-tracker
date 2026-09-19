@@ -2559,6 +2559,7 @@ function open_exercise() {
 
   exercise_table.innerHTML = "";
   let last_training_date = null;
+  let latest_exercise_training_date = null;
   const exerciseProgressHistory = [];
 
   //* Iterate all trainings and decrement index to show the newest trainings at first
@@ -2584,6 +2585,10 @@ function open_exercise() {
     }
     //* if exercise == training
     if (is_in === true) {
+      if (!latest_exercise_training_date) {
+        latest_exercise_training_date = trainings_date;
+      }
+
       const historyWeight = Number(only_ecercise.weight) || 0;
       const historySets = Number(only_ecercise.solved_sets) || 0;
       const historyRepeats = Number(only_ecercise.repeats) || 0;
@@ -2635,6 +2640,33 @@ function open_exercise() {
         <strong class="exercise-detail-summary__value">${solved_set_sum}</strong>
       </div>
     `;
+  }
+
+  if (latest_exercise_training_date) {
+    const lbl_time_to_today = document.createElement("p");
+    lbl_time_to_today.classList.add("between-trainings");
+
+    const today = new Date();
+    const today_date = `${add_zero(today.getDate())}.${add_zero(today.getMonth() + 1)}.${today.getFullYear()}`;
+
+    try {
+      const duration_to_today = time_between_dates(
+        today_date,
+        latest_exercise_training_date,
+      );
+
+      if (duration_to_today === 0) {
+        lbl_time_to_today.innerHTML = "Heute trainiert";
+      } else if (duration_to_today === 1) {
+        lbl_time_to_today.innerHTML = "1 Tag seit dem letzten Training";
+      } else {
+        lbl_time_to_today.innerHTML = `${duration_to_today} Tage seit dem letzten Training`;
+      }
+
+      exercise_table.prepend(lbl_time_to_today);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   if (exercise_detail_achievement) {
