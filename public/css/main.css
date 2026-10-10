@@ -1601,7 +1601,27 @@ tr:nth-child(even) {
 .modal-trainints .training-entry__summary {
   margin: 0;
   color: rgba(255, 255, 255, 0.75);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
+}
+.modal-trainints .training-entry__comparisons {
+  margin-bottom: 12px;
+  padding: 10px;
+  border-left: 3px solid rgb(0, 200, 255);
+  border-radius: 4px;
+  background-color: rgba(5, 28, 56, 0.65);
+}
+.modal-trainints .training-entry__comparisons h4 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+.modal-trainints .training-entry__comparison {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.modal-trainints .training-entry__comparison strong {
+  color: white;
 }
 .modal-trainints .training-entry__toggle {
   background-color: #135a23;
@@ -1622,6 +1642,14 @@ tr:nth-child(even) {
 .modal-trainints .training-entry__details table {
   width: 100%;
   table-layout: fixed;
+}
+.modal-trainints .training-entry__details .training-entry__table th {
+  font-size: 0.72rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.modal-trainints .training-entry__details .training-entry__table td {
+  overflow-wrap: anywhere;
 }
 .modal-trainints .training-entry__details th:nth-child(1),
 .modal-trainints .training-entry__details td:nth-child(1) {

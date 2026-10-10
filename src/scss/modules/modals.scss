@@ -821,7 +821,31 @@
     &__summary {
       margin: 0;
       color: rgba(255, 255, 255, 0.75);
-      font-size: 0.85rem;
+      font-size: 0.78rem;
+    }
+
+    &__comparisons {
+      margin-bottom: 12px;
+      padding: 10px;
+      border-left: 3px solid $color-main;
+      border-radius: 4px;
+      background-color: rgba(5, 28, 56, 0.65);
+
+      h4 {
+        margin: 0 0 8px;
+        font-size: 0.9rem;
+      }
+    }
+
+    &__comparison {
+      margin: 6px 0 0;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.82rem;
+      line-height: 1.5;
+
+      strong {
+        color: white;
+      }
     }
 
     &__toggle {
@@ -845,6 +869,18 @@
       table {
         width: 100%;
         table-layout: fixed;
+      }
+
+      .training-entry__table {
+        th {
+          font-size: 0.72rem;
+          line-height: 1.25;
+          overflow-wrap: anywhere;
+        }
+
+        td {
+          overflow-wrap: anywhere;
+        }
       }
 
       th:nth-child(1),
@@ -876,6 +912,7 @@
         display: none;
       }
     }
+
   }
 }
 

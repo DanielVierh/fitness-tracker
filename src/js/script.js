@@ -21,6 +21,7 @@ import { save_into_storage } from "./functions.js";
 import { get_exercise_total_weight } from "./functions.js";
 import { get_exercise_set_weights } from "./functions.js";
 import { Mini_Modal } from "./Classes/MiniModal.js";
+import { is_cardio_session, safe_sum_of_weight } from "./training_classification.js";
 
 restTimer();
 /////////////////////////////////////
@@ -870,23 +871,6 @@ function collect_advanced_statistics_data(targetYear) {
   };
 }
 
-function safe_sum_of_weight(exercises) {
-  if (!Array.isArray(exercises) || exercises.length === 0) return 0;
-
-  const utilityVal = Number(sum_of_weight(exercises).weight);
-  if (Number.isFinite(utilityVal)) return utilityVal;
-
-  let weight = 0;
-  for (let i = 0; i < exercises.length; i++) {
-    const exercise = exercises[i] || {};
-    const exWeight = Number(exercise.weight) || 0;
-    const solvedSets = Number(exercise.solved_sets) || 0;
-    const repeats = Number(exercise.repeats) || 0;
-    weight += exWeight * solvedSets * repeats;
-  }
-  return Number.isFinite(weight) ? weight : 0;
-}
-
 function parse_training_date(dateStr) {
   const day = Number(splitVal(dateStr, ".", 0));
   const month = Number(splitVal(dateStr, ".", 1));
@@ -970,62 +954,6 @@ function parse_duration_to_minutes(duration) {
   const minutes = Number(parts[1]);
   if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return 0;
   return Math.max(0, hours * 60 + minutes);
-}
-
-function is_cardio_session(training) {
-  const exercises = Array.isArray(training?.exercises)
-    ? training.exercises
-    : [];
-  if (exercises.length === 0) return false;
-
-  const hasStrengthAddendum = exercises.some((exercise) => {
-    if (typeof exercise?.name !== "string") return false;
-    const name = exercise.name.trim().toLowerCase();
-    return name.includes("nachtrag") && name.includes("kraft");
-  });
-  if (hasStrengthAddendum) return false;
-
-  const cardioNamePatterns = [
-    /\bcardio\b/i,
-    /\bausdauer\b/i,
-    /\bjoggen\b/i,
-    /\bjogging\b/i,
-    /\blaufband\b/i,
-    /\bwalking\b/i,
-    /\bspinning\b/i,
-    /\bergometer\b/i,
-    /\bcrosstrainer\b/i,
-    /\bstepper\b/i,
-    /\bschwimmen\b/i,
-    /\bzumba\b/i,
-    /\bhiit\b/i,
-  ];
-
-  const isExplicitCardioExercise = (exercise) => {
-    const name = String(exercise?.name || "").trim();
-    if (!name) return false;
-    return cardioNamePatterns.some((pattern) => pattern.test(name));
-  };
-
-  const hasExplicitCardioExercise = exercises.some((exercise) =>
-    isExplicitCardioExercise(exercise),
-  );
-  const allExercisesExplicitCardio = exercises.every((exercise) =>
-    isExplicitCardioExercise(exercise),
-  );
-
-  const movedWeight = safe_sum_of_weight(exercises);
-  if (movedWeight > 0) {
-    // Bei bewegtem Gewicht nur dann Cardio, wenn die Session rein aus
-    // expliziten Cardio-Übungen besteht.
-    return hasExplicitCardioExercise && allExercisesExplicitCardio;
-  }
-
-  if (hasExplicitCardioExercise) return true;
-
-  // Gleiche Grundlogik wie im Jahres-Chart: nur Sessions ohne bewegtes Gewicht
-  // gelten als Cardio-Session.
-  return movedWeight <= 0;
 }
 
 function safe_exercise_load(exercise) {

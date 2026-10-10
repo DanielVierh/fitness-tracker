@@ -1,8 +1,206 @@
-import { numberWithCommas } from "./functions.js";
+import {
+  get_exercise_set_weights,
+  get_exercise_total_weight,
+  identify_trainingsplace,
+  numberWithCommas,
+} from "./functions.js";
 import { sum_of_weight } from "./sum_of_weight";
 import { createTable } from "./create_table.js";
 import { time_between_dates } from "./time_between_days.js";
-import { identify_trainingsplace } from "./functions.js";
+import { classify_training_for_comparison } from "./training_classification.js";
+
+const trainingNumberFormatter = new Intl.NumberFormat("de-DE", {
+  maximumFractionDigits: 1,
+});
+
+function find_previous_cardio_training(trainings, trainingIndex) {
+  for (let index = trainingIndex - 1; index >= 0; index--) {
+    if (
+      classify_training_for_comparison(trainings[index]) === "cardio" &&
+      parse_duration_minutes(trainings[index].duration) > 0
+    ) {
+      return trainings[index];
+    }
+  }
+  return null;
+}
+
+function find_previous_exercise_training(
+  trainings,
+  trainingIndex,
+  exercise,
+) {
+  if (
+    exercise.trainingsplace !== "Fitnessstudio" &&
+    exercise.trainingsplace !== "Heimtraining"
+  ) {
+    return null;
+  }
+
+  for (let index = trainingIndex - 1; index >= 0; index--) {
+    const training = trainings[index];
+    if (classify_training_for_comparison(training) !== "strength") continue;
+
+    const previousExercise = (training.exercises || []).find((candidate) => {
+      if (candidate.trainingsplace !== exercise.trainingsplace) return false;
+
+      const currentId = String(exercise.exercise_id || "").trim();
+      const previousId = String(candidate.exercise_id || "").trim();
+      if (currentId && previousId) return currentId === previousId;
+
+      const currentName = String(exercise.name || "").trim().toLowerCase();
+      const previousName = String(candidate.name || "").trim().toLowerCase();
+      return currentName.length > 0 && currentName === previousName;
+    });
+
+    if (previousExercise) {
+      return { exercise: previousExercise, training };
+    }
+  }
+  return null;
+}
+
+function parse_duration_minutes(duration) {
+  if (typeof duration !== "string") return 0;
+  const parts = duration.split(":").map(Number);
+  if (parts.some((part) => !Number.isFinite(part))) return 0;
+
+  if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  return 0;
+}
+
+function format_training_number(value) {
+  return trainingNumberFormatter.format(value);
+}
+
+function format_change(previousValue, currentValue) {
+  const change = currentValue - previousValue;
+  if (change === 0) return "unverändert";
+
+  const sign = change > 0 ? "+" : "−";
+  const percentage =
+    previousValue > 0
+      ? `, ${sign}${format_training_number(Math.abs((change / previousValue) * 100))} %`
+      : "";
+  return `${sign}${format_training_number(Math.abs(change))}${percentage}`;
+}
+
+function create_strength_comparison(exercise, previousMatch) {
+  const comparison = document.createElement("p");
+  comparison.classList.add("training-entry__comparison");
+
+  const label = document.createElement("strong");
+  label.textContent = `${exercise.name || "Übung"}: `;
+  comparison.appendChild(label);
+
+  if (!previousMatch) {
+    comparison.append("noch kein passendes Vergleichstraining");
+    return comparison;
+  }
+
+  const previousExercise = previousMatch.exercise;
+  const currentWeights = get_exercise_set_weights(exercise);
+  const previousWeights = get_exercise_set_weights(previousExercise);
+  const currentMaxWeight = Math.max(...currentWeights, 0);
+  const previousMaxWeight = Math.max(...previousWeights, 0);
+  const currentVolume = get_exercise_total_weight(exercise);
+  const previousVolume = get_exercise_total_weight(previousExercise);
+
+  comparison.append(
+    `Vergleich zu ${previousMatch.training.training_date || "letztem Training"}: `,
+  );
+
+  if (previousMaxWeight > 0 || currentMaxWeight > 0) {
+    comparison.append(
+      `max. Gewicht ${format_training_number(previousMaxWeight)} → ${format_training_number(currentMaxWeight)} kg (${format_change(previousMaxWeight, currentMaxWeight)})`,
+    );
+  } else {
+    const previousSets = Number(previousExercise.solved_sets) || 0;
+    const currentSets = Number(exercise.solved_sets) || 0;
+    comparison.append(
+      `${previousSets} → ${currentSets} absolvierte Sätze (${format_change(previousSets, currentSets)})`,
+    );
+  }
+
+  if (previousVolume > 0 || currentVolume > 0) {
+    comparison.append(
+      ` · Volumen ${numberWithCommas(Math.round(previousVolume))} → ${numberWithCommas(Math.round(currentVolume))} kg (${format_change(previousVolume, currentVolume)})`,
+    );
+  } else {
+    const previousRepeats = Number(previousExercise.repeats) || 0;
+    const currentRepeats = Number(exercise.repeats) || 0;
+    comparison.append(
+      ` · Wiederholungen/Satz ${previousRepeats} → ${currentRepeats} (${format_change(previousRepeats, currentRepeats)})`,
+    );
+  }
+
+  return comparison;
+}
+
+function create_training_comparison(training, trainingIndex, trainings) {
+  const comparison = document.createElement("section");
+  comparison.classList.add("training-entry__comparisons");
+
+  const heading = document.createElement("h4");
+  heading.textContent = "Vergleich zum letzten passenden Training";
+  comparison.appendChild(heading);
+
+  const trainingType = classify_training_for_comparison(training);
+  if (trainingType === "cardio") {
+    const previousTraining = find_previous_cardio_training(
+      trainings,
+      trainingIndex,
+    );
+    const currentDuration = parse_duration_minutes(training.duration);
+    const previousDuration = previousTraining
+      ? parse_duration_minutes(previousTraining.duration)
+      : 0;
+    const detail = document.createElement("p");
+    detail.classList.add("training-entry__comparison");
+
+    if (!previousTraining || currentDuration <= 0) {
+      detail.textContent = "Noch keine passende Cardio-Einheit zum Vergleichen.";
+    } else {
+      detail.textContent = `Cardio-Dauer: ${format_training_number(previousDuration)} → ${format_training_number(currentDuration)} Min (${format_change(previousDuration, currentDuration)}) · ${previousTraining.training_date}`;
+    }
+    comparison.appendChild(detail);
+    return comparison;
+  }
+
+  if (trainingType !== "strength") {
+    const detail = document.createElement("p");
+    detail.classList.add("training-entry__comparison");
+    detail.textContent =
+      "Gemischtes Training: Kraft und Cardio werden nicht miteinander verglichen.";
+    comparison.appendChild(detail);
+    return comparison;
+  }
+
+  const comparableExercises = training.exercises.filter(
+    (exercise) =>
+      exercise.trainingsplace === "Fitnessstudio" ||
+      exercise.trainingsplace === "Heimtraining",
+  );
+  if (comparableExercises.length === 0) {
+    const detail = document.createElement("p");
+    detail.classList.add("training-entry__comparison");
+    detail.textContent =
+      "Trainingsort nicht eindeutig; ein passender Vergleich ist nicht verfügbar.";
+    comparison.appendChild(detail);
+    return comparison;
+  }
+
+  comparableExercises.forEach((exercise) => {
+    comparison.appendChild(
+      create_strength_comparison(
+        exercise,
+        find_previous_exercise_training(trainings, trainingIndex, exercise),
+      ),
+    );
+  });
+  return comparison;
+}
 
 export function render_trainings(save_Object, spezific_date, options = {}) {
   const {
@@ -119,6 +317,22 @@ export function render_trainings(save_Object, spezific_date, options = {}) {
         const heading = tableContainer.querySelector("h3");
         const deleteButton = tableContainer.querySelector(".delete-button");
         const table = tableContainer.querySelector("table");
+        const tableHeadings = [
+          ["Übung", "Name der Übung"],
+          ["Sätze", "Absolvierte Sätze"],
+          ["Wdh.", "Wiederholungen je Satz"],
+          ["kg", "Trainingsgewicht je Satz in Kilogramm"],
+          ["Vol.", "Bewegtes Volumen in Kilogramm"],
+          ["Muskel", "Trainierte Muskelgruppe"],
+        ];
+        table.querySelectorAll("th").forEach((cell, columnIndex) => {
+          const [label, description] = tableHeadings[columnIndex] || [];
+          if (!label) return;
+          cell.textContent = label;
+          cell.title = description;
+          cell.setAttribute("scope", "col");
+        });
+        table.classList.add("training-entry__table");
 
         const trainingEntry = document.createElement("div");
         trainingEntry.classList.add("training-entry");
@@ -131,13 +345,14 @@ export function render_trainings(save_Object, spezific_date, options = {}) {
         details.id = `training_details_${i}_${targetWrapperId}`;
         details.hidden = true;
 
-        const summary = document.createElement("p");
-        summary.classList.add("training-entry__summary");
+        const training = save_Object.trainings[i];
         const completedSets = exc.reduce(
           (total, exercise) =>
             total + (Number(exercise?.solved_sets) || 0),
           0,
         );
+        const summary = document.createElement("p");
+        summary.classList.add("training-entry__summary");
         summary.textContent = `${exc.length} ${exc.length === 1 ? "Übung" : "Übungen"} · ${completedSets} ${completedSets === 1 ? "Satz" : "Sätze"} absolviert`;
 
         const toggleButton = document.createElement("button");
@@ -156,12 +371,13 @@ export function render_trainings(save_Object, spezific_date, options = {}) {
             : "Mehr anzeigen";
           trainingEntry.classList.toggle("is-open", willOpen);
         });
-
         header.appendChild(heading);
         header.appendChild(toggleButton);
-
         trainingEntry.appendChild(header);
         trainingEntry.appendChild(summary);
+        details.appendChild(
+          create_training_comparison(training, i, save_Object.trainings),
+        );
         details.appendChild(deleteButton);
         details.appendChild(table);
 
