@@ -37,6 +37,7 @@ const modal_settings = document.getElementById("modal_settings");
 const btn_home = document.getElementById("btn_home");
 const btn_settings = document.getElementById("btn_settings");
 const btn_open_edit = document.getElementById("btn_open_edit");
+const footer_buttons = document.querySelectorAll("footer .footer-btn");
 const modal_close_btn = document.querySelectorAll(".modal_close_btn");
 const lbl_trainingsname = document.getElementById("lbl_trainingsname");
 const lbl_weight = document.getElementById("lbl_weight");
@@ -3081,7 +3082,16 @@ function indexOfExercise(exercise, arr) {
 //* ANCHOR - Modals
 /////////////////////////////////////
 
+function set_active_footer_button(active_button) {
+  footer_buttons.forEach((button) => {
+    button.classList.toggle("active", button === active_button);
+  });
+}
+
+set_active_footer_button(btn_home);
+
 btn_open_edit.addEventListener("click", () => {
+  set_active_footer_button(btn_open_edit);
   Modal.open_modal(modal_edit);
   is_edit = false;
   btn_delete_exercise.classList.remove("active");
@@ -3111,6 +3121,7 @@ btn_show_trainings.addEventListener("click", () => {
 });
 
 btn_gotoSolvedTrainings.addEventListener("click", () => {
+  set_active_footer_button(btn_gotoSolvedTrainings);
   Modal.open_modal(modal_trainings);
   render_trainings(save_Object);
   statistic();
@@ -3118,15 +3129,18 @@ btn_gotoSolvedTrainings.addEventListener("click", () => {
 });
 
 btn_home.addEventListener("click", () => {
+  set_active_footer_button(btn_home);
   Modal.close_all_modals();
 });
 
 btn_settings.addEventListener("click", () => {
+  set_active_footer_button(btn_settings);
   Modal.open_modal(modal_settings);
 });
 
 modal_close_btn.forEach((c_btn) => {
   c_btn.addEventListener("click", () => {
+    set_active_footer_button(btn_home);
     Modal.close_all_modals();
   });
 });

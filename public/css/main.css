@@ -56,6 +56,11 @@ footer .footer-btn {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+footer .footer-btn.active {
+  background-color: #2B4A6F;
+  box-shadow: inset 0 -3px rgb(0, 200, 255);
 }
 
 .add-button {
