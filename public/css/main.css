@@ -369,6 +369,21 @@ tr:nth-child(even) {
   border-radius: 6px;
   pointer-events: none;
 }
+.chart .chart__comparison {
+  display: block;
+  margin-bottom: 3px;
+  padding: 3px 5px;
+  border-radius: 4px;
+  background-color: #000;
+  color: white;
+  white-space: nowrap;
+}
+.chart .chart__comparison--positive {
+  color: #81c784;
+}
+.chart .chart__comparison--negative {
+  color: #ff8a80;
+}
 .chart .chart__stack {
   position: absolute;
   left: 0;

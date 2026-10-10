@@ -315,6 +315,8 @@ function fill_chart(selct_year) {
   const strengthFitti = Array(12).fill(0);
   const strengthHome = Array(12).fill(0);
   const strengthOther = Array(12).fill(0);
+  const previousYearTotals = Array(12).fill(0);
+  const previousYearDays = new Set();
 
   // Gruppiere Trainings nach Datum (Trainingstag) und aggregiere Exercises,
   // damit pro Tag genau 1 Kategorie gezählt wird.
@@ -323,6 +325,18 @@ function fill_chart(selct_year) {
     const training = save_Object.trainings[i];
     const solved_Date = training.training_date;
     const solved_year = splitVal(solved_Date, ".", 2);
+    if (String(solved_year) === String(current_Year - 1)) {
+      const monthIndex = Number(splitVal(solved_Date, ".", 1)) - 1;
+      if (
+        !Number.isNaN(monthIndex) &&
+        monthIndex >= 0 &&
+        monthIndex < 12 &&
+        !previousYearDays.has(solved_Date)
+      ) {
+        previousYearTotals[monthIndex] += 1;
+        previousYearDays.add(solved_Date);
+      }
+    }
     if (String(solved_year) !== String(current_Year)) continue;
 
     if (!byDay.has(solved_Date)) {
@@ -444,6 +458,18 @@ function fill_chart(selct_year) {
     const label = document.createElement("div");
     label.classList.add("chart__label");
     label.innerHTML = `${month_Descr_arr[index]}<br>${month}`;
+
+    const difference = month - previousYearTotals[index];
+    const comparison = document.createElement("span");
+    comparison.classList.add("chart__comparison");
+    if (difference > 0) {
+      comparison.classList.add("chart__comparison--positive");
+    } else if (difference < 0) {
+      comparison.classList.add("chart__comparison--negative");
+    }
+    comparison.textContent = `${difference > 0 ? "+" : ""}${difference}`;
+    comparison.title = `Differenz zu ${current_Year - 1}: ${month} statt ${previousYearTotals[index]} Trainingstag(e)`;
+    label.prepend(comparison);
 
     const stack = document.createElement("div");
     stack.classList.add("chart__stack");

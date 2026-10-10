@@ -177,6 +177,24 @@
     pointer-events: none;
   }
 
+  .chart__comparison {
+    display: block;
+    margin-bottom: 3px;
+    padding: 3px 5px;
+    border-radius: 4px;
+    background-color: #000;
+    color: white;
+    white-space: nowrap;
+  }
+
+  .chart__comparison--positive {
+    color: #81c784;
+  }
+
+  .chart__comparison--negative {
+    color: #ff8a80;
+  }
+
   .chart__stack {
     position: absolute;
     left: 0;
