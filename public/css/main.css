@@ -1533,6 +1533,49 @@ tr:nth-child(even) {
 .modal-trainints .trainings-wrapper {
   width: 100%;
 }
+.modal-trainints .training-volume-trend {
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(5, 28, 56, 0.8);
+}
+.modal-trainints .training-volume-trend h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.modal-trainints .training-volume-trend__chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.modal-trainints .training-volume-trend__empty {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+.modal-trainints .training-volume-trend__grid-line {
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-width: 1;
+}
+.modal-trainints .training-volume-trend__axis-label, .modal-trainints .training-volume-trend__date-label {
+  fill: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+}
+.modal-trainints .training-volume-trend__line {
+  fill: none;
+  stroke: rgb(0, 200, 255);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.modal-trainints .training-volume-trend__point {
+  fill: rgb(0, 200, 255);
+  stroke: #051C38;
+  stroke-width: 2;
+}
 .modal-trainints .training-entry {
   width: 100%;
   margin: 10px 0;
@@ -1554,6 +1597,11 @@ tr:nth-child(even) {
   font-size: 1rem;
   min-width: 0;
   overflow-wrap: anywhere;
+}
+.modal-trainints .training-entry__summary {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
 }
 .modal-trainints .training-entry__toggle {
   background-color: #135a23;

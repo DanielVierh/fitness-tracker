@@ -742,6 +742,58 @@
     width: 100%;
   }
 
+  .training-volume-trend {
+    width: 100%;
+    margin: 0 0 20px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(5, 28, 56, 0.8);
+
+    h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    &__chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    &__empty {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    &__grid-line {
+      stroke: rgba(255, 255, 255, 0.16);
+      stroke-width: 1;
+    }
+
+    &__axis-label,
+    &__date-label {
+      fill: rgba(255, 255, 255, 0.7);
+      font-size: 11px;
+    }
+
+    &__line {
+      fill: none;
+      stroke: $color-main;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    &__point {
+      fill: $color-main;
+      stroke: $color-primary-4;
+      stroke-width: 2;
+    }
+  }
+
   .training-entry {
     width: 100%;
     margin: 10px 0;
@@ -764,6 +816,12 @@
         min-width: 0;
         overflow-wrap: anywhere;
       }
+    }
+
+    &__summary {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.85rem;
     }
 
     &__toggle {
