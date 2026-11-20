@@ -70,6 +70,7 @@
     .exercise-place-label {
       color: yellow;
       font-size: 16px;
+      text-align: center;
       text-shadow: 0 3px 10px black;
     }
 
@@ -98,6 +99,11 @@
     }
   }
 
+  .timer-button {
+    position: static;
+    margin: 0 auto 20px;
+  }
+
   .active-training-sect {
     width: 100%;
     max-width: 600px;
@@ -105,9 +111,9 @@
   }
 
   .finish-button.active-training {
-    position: static;
+    position: sticky;
     left: auto;
-    bottom: auto;
+    bottom: 0;
     transform: none;
     width: 100%;
     max-width: 600px;
@@ -976,7 +982,6 @@
         display: none;
       }
     }
-
   }
 }
 

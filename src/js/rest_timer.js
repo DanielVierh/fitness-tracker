@@ -1,7 +1,7 @@
 export function restTimer() {
-  const restTimerButton = document.getElementById("btn_timer");
+  const restTimerButtons = document.querySelectorAll(".timer-button");
   const timerLabel = document.getElementById("lbl_timer");
-  if (!restTimerButton || !timerLabel) return;
+  if (!restTimerButtons.length || !timerLabel) return;
 
   const STORAGE_ACTIVE = "fitness_timer_active";
   const STORAGE_RECENTS = "fitness_timer_recent_durations";
@@ -212,11 +212,13 @@ export function restTimer() {
   }
 
   // Open modal
-  restTimerButton.addEventListener("click", () => {
-    const modal = ensureTimerModal();
-    setInputsFromDuration(modal, getLastDuration());
-    renderRecents(modal);
-    openModal(modal);
+  restTimerButtons.forEach((restTimerButton) => {
+    restTimerButton.addEventListener("click", () => {
+      const modal = ensureTimerModal();
+      setInputsFromDuration(modal, getLastDuration());
+      renderRecents(modal);
+      openModal(modal);
+    });
   });
 
   // Modal events (delegated after creation)
