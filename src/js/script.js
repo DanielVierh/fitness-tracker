@@ -30,7 +30,10 @@ restTimer();
 //* ANCHOR - Elemente
 
 const exercise_container = document.getElementById("exercise_container");
-const btn_add = document.getElementById("btn_add");
+const btn_open_exercises = document.getElementById("btn_open_exercises");
+const btn_exercises = document.getElementById("btn_exercises");
+const modal_exercises = document.getElementById("modal_exercises");
+const btn_close_exercise = document.getElementById("btn_close_exercise");
 const btn_saveExercise = document.getElementById("btn_saveExercise");
 const modal_edit = document.getElementById("modal_edit");
 const modal_exercise = document.getElementById("modal_exercise");
@@ -39,7 +42,9 @@ const btn_home = document.getElementById("btn_home");
 const btn_settings = document.getElementById("btn_settings");
 const btn_open_edit = document.getElementById("btn_open_edit");
 const footer_buttons = document.querySelectorAll("footer .footer-btn");
-const modal_close_btn = document.querySelectorAll(".modal_close_btn");
+const modal_close_btn = document.querySelectorAll(
+  ".modal_close_btn:not(#btn_close_exercise)",
+);
 const lbl_trainingsname = document.getElementById("lbl_trainingsname");
 const lbl_weight = document.getElementById("lbl_weight");
 const lbl_sets = document.getElementById("lbl_sets");
@@ -144,6 +149,9 @@ window.onload = () => {
   init_advanced_statistics_controls();
   init_challenge_controls();
   render_challenges();
+  if (training_running) {
+    open_exercises_modal();
+  }
 
   setInterval(() => {
     observer();
@@ -3044,6 +3052,17 @@ function set_active_footer_button(active_button) {
 
 set_active_footer_button(btn_home);
 
+function open_exercises_modal() {
+  set_active_footer_button(btn_exercises);
+  Modal.open_modal(modal_exercises);
+}
+
+btn_open_exercises.addEventListener("click", open_exercises_modal);
+
+btn_exercises.addEventListener("click", open_exercises_modal);
+
+btn_close_exercise.addEventListener("click", open_exercises_modal);
+
 btn_open_edit.addEventListener("click", () => {
   set_active_footer_button(btn_open_edit);
   Modal.open_modal(modal_edit);
@@ -3056,12 +3075,6 @@ btn_edit.addEventListener("click", () => {
   btn_delete_exercise.classList.add("active");
   Modal.open_modal(modal_edit);
   load_exercise_into_edit();
-});
-
-btn_add.addEventListener("click", () => {
-  Modal.open_modal(modal_edit);
-  is_edit = false;
-  btn_delete_exercise.classList.remove("active");
 });
 
 btn_open_calendar.addEventListener("click", () => {

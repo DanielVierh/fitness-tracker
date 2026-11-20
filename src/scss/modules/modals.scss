@@ -51,6 +51,70 @@
   }
 }
 
+// Exercise modal (Übungen + aktives Training)
+.modal-exercises {
+  &.active {
+    padding-bottom: 80px;
+  }
+
+  .exercises {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    padding-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    background: linear-gradient(to left, $color-primary-0, transparent);
+
+    .exercise-place-label {
+      color: yellow;
+      font-size: 16px;
+      text-shadow: 0 3px 10px black;
+    }
+
+    .exercise {
+      background: linear-gradient(to right, $color-primary-0, transparent);
+      border: 1px solid rgba(255, 255, 255, 0.151);
+      color: white;
+      font-weight: bold;
+      letter-spacing: 2px;
+      min-height: 40px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 6px $color-main;
+      cursor: pointer;
+
+      &.half-solved {
+        background-color: yellow;
+        color: black;
+      }
+
+      &.solved {
+        background-color: green;
+      }
+    }
+  }
+
+  .active-training-sect {
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+  }
+
+  .finish-button.active-training {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px 0;
+  }
+}
+
 .mini-modal {
   &.active {
     width: 100%;
