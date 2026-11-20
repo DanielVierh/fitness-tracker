@@ -219,6 +219,98 @@ tr:nth-child(even) {
   letter-spacing: 3px;
 }
 
+.training-dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 800px;
+  margin: 20px auto 0 auto;
+  padding: 0 12px;
+}
+
+.training-dashboard__card {
+  --dashboard-color: rgb(0, 200, 255);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgb(0, 200, 255);
+  background: linear-gradient(to bottom, #051C38, transparent);
+  text-align: center;
+}
+.training-dashboard__card.training-dashboard__card--cardio {
+  --dashboard-color: #ffb300;
+}
+
+.training-dashboard__title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: var(--dashboard-color);
+}
+
+.training-dashboard__ring {
+  position: relative;
+  width: min(100%, 150px);
+  aspect-ratio: 1;
+}
+.training-dashboard__ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.training-dashboard__ring--good {
+  --dashboard-color: #4caf50;
+}
+.training-dashboard__ring--warning {
+  --dashboard-color: #ffc107;
+}
+.training-dashboard__ring--danger {
+  --dashboard-color: #f44336;
+}
+
+.training-dashboard__track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 10;
+}
+
+.training-dashboard__progress {
+  fill: none;
+  stroke: var(--dashboard-color);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s ease;
+  filter: drop-shadow(0 0 4px var(--dashboard-color));
+}
+
+.training-dashboard__value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+.training-dashboard__value small {
+  font-size: 14px;
+  margin-left: 2px;
+}
+
+.training-dashboard__hint {
+  margin: 12px 0 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+}
+.training-dashboard__hint.is-focus {
+  color: var(--dashboard-color);
+  font-weight: bold;
+}
+
 .last-trainings {
   margin-top: 20px;
   display: flex;

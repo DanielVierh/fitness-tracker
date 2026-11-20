@@ -22,6 +22,7 @@ import { get_exercise_total_weight } from "./functions.js";
 import { get_exercise_set_weights } from "./functions.js";
 import { Mini_Modal } from "./Classes/MiniModal.js";
 import { is_cardio_session, safe_sum_of_weight } from "./training_classification.js";
+import { render_training_dashboard } from "./training_dashboard.js";
 
 restTimer();
 /////////////////////////////////////
@@ -145,6 +146,7 @@ let save_Object = {
 /////////////////////////////////////
 window.onload = () => {
   load_local_storage();
+  render_training_dashboard(save_Object);
   add_years_to_select();
   init_advanced_statistics_controls();
   init_challenge_controls();
