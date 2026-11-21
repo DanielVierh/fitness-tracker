@@ -239,9 +239,22 @@ tr:nth-child(even) {
   box-shadow: 0 0 6px rgb(0, 200, 255);
   background: linear-gradient(to bottom, #051C38, transparent);
   text-align: center;
+  animation: statsReveal 600ms ease backwards;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+.training-dashboard__card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 14px rgb(0, 200, 255);
 }
 .training-dashboard__card.training-dashboard__card--cardio {
   --dashboard-color: #ffb300;
+  animation-delay: 80ms;
+}
+.training-dashboard__card.training-dashboard__card--cardio:hover {
+  box-shadow: 0 0 14px #ffb300;
+}
+.training-dashboard__card.training-dashboard__card--strength {
+  animation-delay: 200ms;
 }
 
 .training-dashboard__title {
@@ -282,8 +295,8 @@ tr:nth-child(even) {
   stroke: var(--dashboard-color);
   stroke-width: 10;
   stroke-linecap: round;
-  transition: stroke-dashoffset 0.8s ease;
   filter: drop-shadow(0 0 4px var(--dashboard-color));
+  animation: ringDraw 1.2s cubic-bezier(0.22, 1, 0.36, 1) 300ms backwards;
 }
 
 .training-dashboard__value {
@@ -309,6 +322,7 @@ tr:nth-child(even) {
 .training-dashboard__hint.is-focus {
   color: var(--dashboard-color);
   font-weight: bold;
+  animation: focusPulse 2.4s ease-in-out infinite;
 }
 
 .last-trainings {
@@ -323,6 +337,7 @@ tr:nth-child(even) {
   border-radius: 8px;
   box-shadow: 0 0 6px rgb(0, 200, 255);
   background: linear-gradient(to bottom, #051C38, transparent);
+  animation: statsReveal 600ms ease 350ms backwards;
 }
 .last-trainings .secondary-button {
   background-color: #135a23;
@@ -330,8 +345,61 @@ tr:nth-child(even) {
   border-radius: 8px;
   letter-spacing: 1.5px;
   cursor: pointer;
+  transition: transform 170ms ease, box-shadow 170ms ease;
+}
+.last-trainings .secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+.last-trainings .secondary-button:active {
+  transform: translateY(0) scale(0.97);
 }
 
+.homepage h1 {
+  animation: statsReveal 700ms ease backwards;
+}
+.homepage .exercises-button,
+.homepage .timer-button {
+  transition: transform 170ms ease, box-shadow 170ms ease;
+}
+.homepage .exercises-button:hover,
+.homepage .timer-button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgb(0, 200, 255);
+}
+.homepage .exercises-button:active,
+.homepage .timer-button:active {
+  transform: scale(0.94);
+}
+
+@keyframes ringDraw {
+  from {
+    stroke-dashoffset: 314.16;
+  }
+}
+@keyframes focusPulse {
+  0%, 100% {
+    text-shadow: 0 0 0 transparent;
+  }
+  50% {
+    text-shadow: 0 0 8px currentColor;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .homepage h1,
+  .training-dashboard__card,
+  .training-dashboard__progress,
+  .training-dashboard__hint.is-focus,
+  .last-trainings {
+    animation: none;
+  }
+  .training-dashboard__card:hover,
+  .homepage .exercises-button:hover,
+  .homepage .timer-button:hover,
+  .last-trainings .secondary-button:hover {
+    transform: none;
+  }
+}
 .statistic-headline {
   width: 100%;
   text-align: center;

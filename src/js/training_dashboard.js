@@ -154,10 +154,27 @@ function build_card_markup(title, score, hint, isFocus) {
           stroke-dashoffset="${offset.toFixed(2)}"
         />
       </svg>
-      <span class="training-dashboard__value">${score}<small>%</small></span>
+      <span class="training-dashboard__value"><span class="training-dashboard__number">${score}</span><small>%</small></span>
     </div>
     <p class="training-dashboard__hint${isFocus ? " is-focus" : ""}">${hint}</p>
   `;
+}
+
+//* ANCHOR - Zahl zählt von 0 auf den Score hoch (bei reduzierter Bewegung sofort)
+function animate_count_up(element, target) {
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (!element || reduceMotion || target === 0) return;
+
+  const duration = 1000;
+  const start = performance.now();
+  const step = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    element.textContent = Math.round(target * eased);
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  element.textContent = 0;
+  requestAnimationFrame(step);
 }
 
 export function render_training_dashboard(save_Object, today = new Date()) {
@@ -181,5 +198,14 @@ export function render_training_dashboard(save_Object, today = new Date()) {
     balance.strength.score,
     build_hint(strengthCategory, balance.strength),
     balance.strength.isFocus,
+  );
+
+  animate_count_up(
+    cardioContainer.querySelector(".training-dashboard__number"),
+    balance.cardio.score,
+  );
+  animate_count_up(
+    strengthContainer.querySelector(".training-dashboard__number"),
+    balance.strength.score,
   );
 }
